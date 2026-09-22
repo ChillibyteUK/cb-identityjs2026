@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cb-identityjs2026/child-page-nav",
+	"title": "CB Child Page Nav",
+	"category": "cb-identityjs2026",
+	"icon": "list-view",
+	"attributes": {
+		"parentPage": { "type": "number", "default": 0 },
+		"title": { "type": "string", "default": "" }
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"align": true
+	},
+	"editorScript": "file:./build/index.js",
+	"render": "file:./render.php"
+}

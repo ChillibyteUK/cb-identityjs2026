@@ -1,0 +1,25 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cb-identityjs2026/content-builder",
+	"title": "CB Content Builder",
+	"category": "cb-identityjs2026",
+	"icon": "layout",
+	"attributes": {
+		"rows": { "type": "array", "default": [] },
+		"backgroundImageId": { "type": "number", "default": 0 }
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"align": true,
+		"color": {
+			"background": true,
+			"text": false,
+			"gradient": false,
+			"__experimentalSkipSerialization": true
+		}
+	},
+	"editorScript": "file:./build/index.js",
+	"render": "file:./render.php"
+}

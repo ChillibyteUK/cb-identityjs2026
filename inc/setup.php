@@ -23,11 +23,20 @@ function cb_identityjs2026_setup() {
 	add_theme_support( 'editor-styles' );
 	add_theme_support( 'disable-custom-colors' );
 
-	// Rename/extend per project.
+	// Rename/extend per project. The footer_menu_* locations match
+	// identity's real footer structure (cb-identity2025/footer.php) —
+	// one location per footer column that's a real menu rather than
+	// hardcoded links. See footer-identity.php.
 	register_nav_menus(
 		array(
-			'primary' => __( 'Primary Menu', 'cb-identityjs2026' ),
-			'footer'  => __( 'Footer Menu', 'cb-identityjs2026' ),
+			'primary'               => __( 'Primary Menu', 'cb-identityjs2026' ),
+			'footer'                => __( 'Footer Menu', 'cb-identityjs2026' ),
+			'footer_menu_services'  => __( 'Footer: Services', 'cb-identityjs2026' ),
+			'footer_menu_about'     => __( 'Footer: About', 'cb-identityjs2026' ),
+			'footer_menu_identity'  => __( 'Footer: Our Brands', 'cb-identityjs2026' ),
+			'footer_menu_media'     => __( 'Footer: News', 'cb-identityjs2026' ),
+			'footer_menu_global'    => __( 'Footer: Locations', 'cb-identityjs2026' ),
+			'footer_menu_legal'     => __( 'Footer: Legal & Info', 'cb-identityjs2026' ),
 		)
 	);
 }

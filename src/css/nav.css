@@ -13,10 +13,26 @@
 	padding-block: var(--space-2);
 }
 
+/* Pinned to the viewport top — e.g. identity's header. Doesn't reserve
+   space for itself; the page needs its own top padding/margin to avoid
+   content jumping underneath (not set here — height isn't confirmed). */
+.navbar--fixed-top {
+	position: fixed;
+	inset-inline: 0;
+	top: 0;
+	z-index: 20;
+}
+
+/* Confirmed in cb-identitygroup2026/_child_theme.scss: flat 32px, no
+   mobile/782px variant — matching exactly, not adding one. */
+.admin-bar .navbar--fixed-top {
+	top: 32px;
+}
+
 .navbar-brand {
-	font-weight: var(--fw-700);
+	font-weight: var(--fw-heading-h1);
 	text-decoration: none;
-	color: var(--col-body);
+	color: var(--col-heading);
 }
 
 .navbar-toggler {
@@ -24,7 +40,7 @@
 	align-items: center;
 	gap: var(--space-1);
 	padding: var(--space-1) var(--space-2);
-	border: 1px solid var(--col-grey-300);
+	border: 1px solid var(--col-border);
 	border-radius: var(--radius-sm);
 	background: none;
 	cursor: pointer;
@@ -40,10 +56,9 @@
 	display: block;
 	position: absolute;
 	top: 100%;
-	left: 0;
-	right: 0;
-	background-color: var(--col-body-bg);
-	border-top: 1px solid var(--col-grey-300);
+	inset-inline: 0;
+	background-color: var(--col-bg);
+	border-top: 1px solid var(--col-border);
 	box-shadow: var(--shadow-lg);
 	padding: var(--space-3);
 	max-height: calc(100vh - 100%);
@@ -63,12 +78,12 @@
 .nav-link {
 	display: block;
 	text-decoration: none;
-	color: var(--col-body);
+	color: var(--col-text);
 	padding: var(--space-1) 0;
 
 	&.active,
 	&[aria-current="page"] {
-		font-weight: var(--fw-600);
+		font-weight: var(--fw-bold);
 	}
 }
 
@@ -76,7 +91,8 @@
    floating panel from "lg" up. */
 .dropdown-menu {
 	list-style: none;
-	margin: var(--space-1) 0 var(--space-1) var(--space-3);
+	margin-block: var(--space-1);
+	margin-inline-start: var(--space-3);
 	padding: 0;
 	display: none;
 }
@@ -130,12 +146,12 @@
 	.dropdown-menu {
 		position: absolute;
 		top: 100%;
-		left: 0;
+		inset-inline-start: 0;
 		min-width: 10rem;
 		margin: 0;
 		padding: var(--space-2);
-		background-color: var(--col-body-bg);
-		border: 1px solid var(--col-grey-300);
+		background-color: var(--col-bg);
+		border: 1px solid var(--col-border);
 		border-radius: var(--radius-sm);
 		box-shadow: var(--shadow-lg);
 		z-index: 10;

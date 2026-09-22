@@ -1,0 +1,159 @@
+/*
+ * Page Header — see identity-global-block-spec.md. Built from About Page
+ * Header; confirmed against the real _cb_about_page_header.scss AND the
+ * identity-specific override in _header-site-overrides.scss (the base
+ * SCSS alone is wrong for identity — white background, lime heading — the
+ * override flips it to dark/white, confirmed live on
+ * identityglobal.com/about/). The tint overlays (real source's
+ * .intro-overlay / .about-overlay) are ::before pseudo-elements here rather
+ * than extra wrapper divs — matches this project's established pattern
+ * (Child Page Nav, CTA) and keeps the markup to exactly the spec's stated
+ * semantic classes.
+ */
+
+.page-header {
+	position: relative;
+	background-color: var(--col-bg);
+	color: var(--col-text);
+	isolation: isolate;
+}
+
+.page-header--has-background {
+	position: relative;
+}
+
+.page-header--has-background::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -2;
+	background: var(--bg-url, none) center / cover no-repeat fixed;
+}
+
+.page-header__top {
+	position: relative;
+	padding-block: var(--space-6) var(--space-5);
+	isolation: isolate;
+}
+
+@media (min-width: 768px) {
+	.page-header__top {
+		padding-block: 8rem 6rem;
+	}
+}
+
+.page-header__top > .id-container,
+.page-header__panel > .id-container {
+	padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+	.page-header__top > .id-container,
+	.page-header__panel > .id-container {
+		padding-inline: var(--space-5);
+	}
+}
+
+.page-header--has-background .page-header__top::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background-color: rgba(0, 0, 0, 0.6);
+}
+
+.page-header__title {
+	margin: 0 0 var(--space-4);
+	padding-block: 1rem var(--space-5);
+	border-block: 1px solid var(--col-border);
+	font-family: var(--ff-heading);
+	font-size: var(--fs-page-header-title);
+	font-weight: var(--fw-light);
+	line-height: 1;
+	color: var(--col-text);
+}
+
+.page-header__intro {
+	font-family: var(--ff-body);
+	font-weight: var(--fw-light);
+	line-height: var(--lh-page-header-intro);
+	color: var(--col-text);
+	text-wrap: balance;
+}
+
+@media (min-width: 768px) {
+	.page-header__intro {
+		/* Real source's column is Bootstrap's col-md-8 (66.67% of its row) —
+		   not a ch-based measure — full width below md, confirmed live at
+		   both 1024px and 375px viewports. */
+		max-width: 66.6667%;
+	}
+}
+
+/* Confirmed live (both desktop and mobile): only the first paragraph gets
+   the larger "lede" size — every paragraph after it drops to the smaller
+   rung, regardless of how many there are. */
+.page-header__intro p:first-child {
+	font-size: var(--fs-page-header-lede);
+}
+
+.page-header__intro p:not(:first-child) {
+	font-size: var(--fs-page-header-intro);
+}
+
+.page-header__intro a {
+	color: var(--col-accent-alt);
+	transition: color var(--transition);
+}
+
+.page-header__intro a:hover {
+	color: var(--col-accent-hover);
+}
+
+.page-header__panel {
+	position: relative;
+	border-top: 1px solid var(--col-border);
+	padding-block: var(--space-5);
+	isolation: isolate;
+}
+
+.page-header__panel::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background-color: var(--col-overlay-colour);
+}
+
+.page-header__panel-text {
+	margin-block-end: 0.5em;
+	font-family: var(--ff-body);
+	font-size: var(--fs-page-header-intro);
+	font-weight: var(--fw-light);
+	line-height: var(--lh-page-header-intro);
+	color: var(--col-text);
+	text-wrap: balance;
+}
+
+@media (min-width: 768px) {
+	.page-header__panel-text {
+		/* Real source's column is col-md-9 (75% of its row) — confirmed
+		   live, same as __intro's col-md-8 above. */
+		max-width: 75%;
+	}
+}
+
+.page-header__quote {
+	margin: 0 0 var(--space-4);
+	font-family: var(--ff-heading);
+	font-size: var(--fs-h3);
+	font-weight: var(--fw-heading);
+	color: var(--col-heading);
+}
+
+.page-header__quote-author,
+.page-header__quote-company {
+	font-size: var(--fs-small);
+	font-weight: var(--fw-body);
+	color: var(--col-text-muted);
+}

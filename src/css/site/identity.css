@@ -1,0 +1,284 @@
+/*
+ * Identity header/nav/footer — structural overrides that aren't expressible
+ * as tokens. Confirmed against cb-identity2025/src/sass/theme/_header.scss,
+ * _footer.scss, and live identityglobal.com computed styles (SCSS and live
+ * disagree often enough on this project that live wins every time — see
+ * git history). Loaded only when CB_SITE === 'identity', after
+ * theme.min.css and the brand tokens stylesheet — see inc/enqueue.php.
+ */
+
+/*
+ * Suisse font files — the 4 weights actually used by identity's token
+ * scale (--fw-light/regular/book/semibold), copied from
+ * cb-identitygroup2026/fonts/ (Hairline/Thin/Medium/Bold/Black/italics
+ * exist as files there too but aren't referenced by any token, so not
+ * copied — dead @font-face declarations still cost a request).
+ *
+ * font-weight: 600 on the Semibold face, NOT the 500 cb-identitygroup2026's
+ * own _typography.scss uses — that 500 is the same mislabelling bug
+ * confirmed earlier ($fw-semi: 500 should be 600). Declaring the real face
+ * at our corrected 600 means var(--fw-semibold) matches it exactly, no
+ * browser font-weight fallback-matching ambiguity.
+ */
+@font-face {
+	font-family: "Suisse";
+	src: url("../../fonts/SuisseIntl-Light.woff2") format("woff2");
+	font-weight: 300;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Suisse";
+	src: url("../../fonts/SuisseIntl-Regular.woff2") format("woff2");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Suisse";
+	src: url("../../fonts/SuisseIntl-Book.woff2") format("woff2");
+	font-weight: 450;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Suisse";
+	src: url("../../fonts/SuisseIntl-Semibold.woff2") format("woff2");
+	font-weight: 600;
+	font-style: normal;
+	font-display: swap;
+}
+
+#masthead {
+	background-color: var(--col-bg); /* solid at rest — confirmed against live identityglobal.com computed style at scroll position 0 */
+	padding-block: var(--space-2); /* real header has its own py-2 (8px) on top of .navbar's own 8px padding — measured total height 59.89px live vs 48px without this */
+	transition: background-color 0.3s ease;
+}
+
+/* Past 50px scroll — toggled by src/js/nav-scroll-background.js. Confirmed
+   in cb-identitygroup2026/_header.scss: hsl(var(--hsl-ink) / 0.8), i.e.
+   --col-bg at 80% opacity. color-mix ties it to --col-bg directly instead
+   of duplicating the hex as a separate hsl literal. */
+#masthead.scrolled {
+	background-color: color-mix(in srgb, var(--col-bg) 80%, transparent);
+}
+
+.id-container {
+	width: min(100%, 1920px);
+	margin-inline: auto;
+}
+
+#masthead .navbar-nav {
+	gap: var(--space-4); /* 24px — measured against live identityglobal.com, not the skeleton's default --space-2 */
+}
+
+.logo-clip {
+	display: inline-block;
+	overflow: hidden;
+	height: 25px;
+}
+
+.logo-clip svg {
+	display: block;
+	height: 25px;
+	width: auto;
+}
+
+/*
+ * Logo reveal animation — ported verbatim (CSS half) from
+ * cb-identity2025/src/sass/theme/_header.scss + src/js/custom-javascript.js
+ * (the JS half — see src/js/logo-clip-animate.js). On load, JS measures the
+ * #logo-bars group's rendered width and sets --logo-final-offset (a
+ * negative px value) on #site-logo-clip, then adds .animate ~60ms later,
+ * which the transition below animates smoothly. Hovering always shows the
+ * settled/untransformed position.
+ */
+.logo-inner {
+	display: inline-block;
+	transform: translateX(0);
+	transition: transform 700ms cubic-bezier(0.22, 0.9, 0.32, 1);
+	will-change: transform;
+}
+
+.logo-clip.animate .logo-inner {
+	transform: translateX(var(--logo-final-offset, 0px));
+}
+
+.logo-clip:hover .logo-inner,
+.logo-clip:focus .logo-inner {
+	transform: translateX(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.logo-inner {
+		transition: none;
+		transform: translateX(0) !important;
+	}
+}
+
+/*
+ * Bold-on-hover without layout shift — ported exactly from the real shared
+ * theme, cb-identitygroup2026/src/sass/theme/_header.scss (its generic
+ * .navbar-nav .nav-link rules; identity's own colour/weight values are
+ * still the ones confirmed live against identityglobal.com below, not that
+ * file's own default purple). The mechanism: .nav-link is a single-column
+ * implicit grid; the real (light) text is row 1, the invisible bold
+ * ::after (data-text, set by the nav walker) is row 2 with height:0 so it's
+ * invisible and adds no vertical space — but the grid's ONE column still
+ * sizes to the widest row's content (the bold copy), and place-items:
+ * center centers each row's content within that shared, bold-sized column.
+ * That's what makes growth on hover centred, not left-anchored — the
+ * narrower text is always centred inside space already reserved for bold.
+ */
+#masthead .nav-link {
+	display: inline-grid;
+	place-items: center;
+	text-align: center;
+	padding-block: 0; /* real source SCSS says "padding: 0 0 0 0" but the LIVE site measures 8px left/right at desktop width — trusting the live measurement, not the SCSS, per this project's own track record of the two disagreeing */
+	padding-inline: 0.5rem;
+	font-family: var(--ff-body);
+	font-size: 1rem; /* 16px — confirmed against live identityglobal.com computed style, not the --fs-200/1.125rem the SCSS source implied */
+	font-weight: var(--fw-regular); /* 400 — confirmed against live computed style; NOT var(--fw-body), which is identity's body-text weight (light/300), a different confirmed value */
+	color: var(--col-text);
+	text-decoration: none;
+	transition: color var(--transition), font-weight var(--transition);
+}
+
+#masthead .nav-link::after {
+	content: attr(data-text);
+	font-weight: var(--fw-semibold);
+	display: block;
+	height: 0;
+	overflow: hidden;
+	visibility: hidden;
+	pointer-events: none;
+}
+
+#masthead .nav-link:hover,
+#masthead .nav-link:focus {
+	color: var(--col-accent);
+	font-weight: var(--fw-semibold); /* 600 — measured via actual :hover state on live identityglobal.com */
+	text-decoration: none;
+}
+
+#masthead .nav-link.active,
+#masthead .nav-link[aria-current="page"] {
+	color: var(--col-accent);
+}
+
+/*
+ * Identity collapses its nav at 1200px, not the shared skeleton's 992px
+ * ("lg") default — confirmed against the real site's own
+ * "navbar-expand-xl" (Bootstrap's xl breakpoint, 1200px), read directly
+ * from its stylesheet's media rule, not assumed from the class name.
+ * nav.css's shared @media (min-width: 992px) block already does the right
+ * thing at >=1200px; this just reverts it back to mobile/collapsed
+ * presentation in the 992-1199px gap.
+ */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+	#masthead .navbar-toggler {
+		display: inline-flex;
+	}
+
+	#masthead .navbar-collapse {
+		display: none;
+	}
+
+	#masthead .navbar-collapse.is-open {
+		display: block;
+		position: absolute;
+		top: 100%;
+		inset-inline: 0;
+		width: auto;
+		max-height: calc(100vh - 100%);
+		overflow-y: auto;
+		background-color: var(--col-bg);
+		border-top: 1px solid var(--col-border);
+		box-shadow: var(--shadow-lg);
+		padding: var(--space-3);
+	}
+
+	#masthead .navbar-nav {
+		flex-direction: column;
+	}
+}
+
+/*
+ * Footer — confirmed live (identityglobal.com, 1024px+): bg #0d0d0c, text
+ * white, base font-size 16px flat (not a role token — same "no exact match"
+ * situation as the nav-link 16px earlier), footer-title weight 600
+ * (fw-semibold — the corrected value, not _tokens.scss's mislabelled
+ * $fw-semi: 500), menu links weight 300 (fw-light), colophon colour
+ * #77766c / 14.2224px (matches --col-text-muted / --fs-small exactly),
+ * logo-wrap border rgba(255,255,255,0.4) (matches --col-border exactly).
+ */
+.footer {
+	background-color: var(--col-bg);
+	color: var(--col-text);
+	font-size: 1rem;
+}
+
+.footer-title {
+	font-weight: var(--fw-semibold);
+}
+
+.footer__menu {
+	list-style: none;
+	padding-inline-start: 0;
+	font-weight: var(--fw-light);
+}
+
+.footer__menu li {
+	padding-bottom: 0.25rem;
+}
+
+.footer a,
+.footer a:visited {
+	color: inherit; /* mailto: links register as :visited after one click — browser default visited-purple was leaking through unhandled */
+	text-decoration: none;
+	transition: color var(--transition);
+}
+
+.footer a:hover {
+	color: #aeada1; /* col-neutral-500, confirmed in cb-identity2025/_tokens.scss — distinct from --col-text-muted (#77766c, neutral-700), not an approximation */
+	text-decoration: none; /* explicit: base.css's generic a:not([class]):hover underline rule would otherwise catch wp_nav_menu's unclassed <a> tags */
+}
+
+.footer strong {
+	font-weight: var(--fw-semibold); /* the connect@ email is wrapped in <strong> by [contact_email]; browser-default bold doesn't match our 600 face */
+}
+
+.footer__logo {
+	border-block: 1px solid var(--col-border);
+}
+
+.footer__logo-clip {
+	overflow: hidden;
+	display: block;
+	width: 100%;
+	/* Settled state is inner at 200% width (JS), so displayed height is 2x
+	   the SVG's own viewBox ratio (1332.6 x 81.83) relative to clip's own
+	   width: 1332.6 / (81.83 * 2). Derived in CSS, not measured in JS, so
+	   it's correct on the very first paint — no timing race. */
+	aspect-ratio: 1332.6 / 163.66;
+}
+
+.footer__logo-inner {
+	display: block;
+	transform-origin: left center;
+	will-change: transform;
+}
+
+.footer__logo-inner svg {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+.footer__colophon {
+	color: var(--col-text-muted);
+	font-size: var(--fs-small);
+}

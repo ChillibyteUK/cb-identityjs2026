@@ -27,13 +27,13 @@ select {
 	display: block;
 	width: 100%;
 	padding: var(--space-2);
-	border: 1px solid var(--col-grey-300);
+	border: 1px solid var(--col-border);
 	border-radius: var(--radius-sm);
-	background-color: var(--col-white);
-	color: var(--col-body);
+	background-color: var(--col-bg);
+	color: var(--col-text);
 
 	&:focus-visible {
-		outline: 2px solid var(--col-primary);
+		outline: 2px solid var(--col-accent);
 		outline-offset: 1px;
 	}
 }
@@ -41,15 +41,63 @@ select {
 .btn {
 	display: inline-block;
 	padding: var(--space-2) var(--space-3);
-	border: 1px solid var(--col-primary);
+	border: 1px solid var(--col-button-bg);
 	border-radius: var(--radius-sm);
-	background-color: var(--col-primary);
-	color: var(--col-white);
+	background-color: var(--col-button-bg);
+	color: var(--col-button-text);
 	text-decoration: none;
 	cursor: pointer;
 
 	&:focus-visible {
-		outline: 2px solid var(--col-primary);
+		outline: 2px solid var(--col-accent);
 		outline-offset: 2px;
 	}
+}
+
+/*
+ * Shared "funky" button — confirmed against cb-identitygroup2026's real
+ * .id-button (_buttons.scss): a coloured backdrop shape behind the label,
+ * slightly rotated at rest, straightening on hover. Used by Home Intro's
+ * link and Contact Directory (both real usages) — token-driven so it's not
+ * identity-specific despite living in the shared CSS, unlike the real
+ * source which hardcodes var(--col-red-600) directly.
+ */
+.id-button {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: auto;
+	padding: 5px 20px;
+	border: none;
+	font-size: var(--fs-h1);
+	font-weight: var(--fw-regular);
+	line-height: 1;
+	color: var(--col-button-text);
+	text-align: center;
+	text-decoration: none;
+	vertical-align: middle;
+	isolation: isolate;
+	cursor: pointer;
+}
+
+.id-button::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background-color: var(--col-button-bg);
+	transform: rotate(-3deg);
+	transition: transform 0.3s ease;
+}
+
+.id-button:hover,
+.id-button:focus-visible {
+	color: var(--col-button-text);
+	text-decoration: none;
+}
+
+.id-button:hover::before,
+.id-button:focus-visible::before {
+	transform: rotate(0deg);
 }

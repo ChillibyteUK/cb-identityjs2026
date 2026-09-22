@@ -5,7 +5,7 @@
  * @package cb-identityjs2026
  */
 
-get_header();
+get_header( cb_identityjs2026_get_site() );
 ?>
 
 <div class="container">
@@ -14,4 +14,4 @@ get_header();
 </div>
 
 <?php
-get_footer();
+get_footer( cb_identityjs2026_get_site() );

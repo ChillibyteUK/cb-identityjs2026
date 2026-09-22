@@ -1,0 +1,125 @@
+/*
+ * Feature Overlay — see identity-global-block-spec.md. Built from
+ * cb-image-feature-overlay, checked against both cb-identity2025 (older,
+ * frozen) and cb-identitygroup2026 (newer, 2026-08-28 dated comments) plus
+ * live identityglobal.com/services/, since the two local sources had
+ * genuinely diverged (see the spec's own notes on this block).
+ *
+ * Real source uses Bootstrap row/col-lg-8/col-lg-4 g-5 for the Hero title/
+ * CTA split — re-expressed as CSS Grid per this project's established
+ * convention (see Brand Grid/Push Panel), 8:4 columns = a 2fr/1fr ratio at
+ * this project's own lg breakpoint (992px).
+ *
+ * .id-button (the CTA) is this project's existing shared button component
+ * (src/css/forms.css) — reused directly rather than a bespoke style, since
+ * the real source's own CTA is exactly that component (confirmed live:
+ * transparent background, white text/border).
+ */
+
+.feature-overlay {
+	position: relative;
+	display: flex;
+	align-items: flex-end;
+	min-height: var(--_height, 70vh);
+	background-color: var(--col-feature-overlay-bg);
+	color: var(--col-text);
+}
+
+.feature-overlay--has-background-image {
+	overflow: hidden;
+}
+
+.feature-overlay--has-background-image::before {
+	content: "";
+	position: absolute;
+	inset: -3rem 0;
+	z-index: 0;
+	background-image: var(--_bg-url);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	transform: translateY(var(--cb-image-feature-overlay-parallax-y, 0));
+	will-change: transform;
+}
+
+.feature-overlay--hero {
+	min-height: var(--_height, calc(100vh - var(--h-top, 0px)));
+}
+
+.feature-overlay__overlay {
+	position: relative;
+	z-index: 1;
+	width: 100%;
+	isolation: isolate;
+}
+
+.feature-overlay__overlay::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background: var(--_overlay-bg-url, url("../img/blur.jpg")) center / cover no-repeat;
+	opacity: 0.9;
+}
+
+.feature-overlay__overlay > .id-container {
+	padding-inline: var(--space-4);
+	padding-block: var(--space-4);
+}
+
+@media (min-width: 768px) {
+	.feature-overlay__overlay > .id-container {
+		padding-inline: var(--space-5);
+		padding-block: var(--space-5);
+	}
+}
+
+.feature-overlay__content {
+	max-width: 64rem;
+	font-size: var(--fs-feature-overlay-content);
+	font-weight: var(--fw-light);
+	letter-spacing: var(--ls-feature-overlay-content);
+	text-wrap: balance;
+}
+
+.feature-overlay__content p:last-child {
+	margin-bottom: 0;
+}
+
+.feature-overlay__hero-row {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--space-5);
+	margin-block-start: var(--space-4);
+	padding-block: var(--space-4) var(--space-5);
+	border-block-start: 1px solid var(--col-border);
+}
+
+@media (min-width: 992px) {
+	.feature-overlay__hero-row {
+		grid-template-columns: 2fr 1fr;
+	}
+}
+
+.feature-overlay__title {
+	margin: 0;
+	font-size: var(--fs-feature-overlay-title);
+	font-weight: var(--fw-feature-overlay-title);
+	line-height: 1;
+	letter-spacing: var(--ls-feature-overlay-title);
+	text-wrap: balance;
+	color: inherit;
+}
+
+.feature-overlay__cta {
+	display: inline-block;
+	margin-block: var(--space-3) var(--space-5);
+}
+
+.feature-overlay__cta-intro {
+	font-size: var(--fs-feature-overlay-cta-intro);
+	font-weight: var(--fw-regular);
+	letter-spacing: -0.005em;
+	line-height: var(--lh-body);
+	text-wrap: balance;
+}

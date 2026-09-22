@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cb-identityjs2026/logo-marquee",
+	"title": "CB Logo Marquee",
+	"category": "cb-identityjs2026",
+	"icon": "images-alt2",
+	"attributes": {
+		"logoSource": { "type": "string", "default": "site_wide" },
+		"logoGallery": { "type": "array", "default": [] }
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"align": true
+	},
+	"editorScript": "file:./build/index.js",
+	"render": "file:./render.php"
+}

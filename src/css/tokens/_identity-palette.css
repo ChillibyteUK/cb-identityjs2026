@@ -1,0 +1,80 @@
+/*
+ * identity's full named colour scale — every distinct hue/shade swatch, for
+ * the Gutenberg colour picker only. Values confirmed directly against
+ * /var/www/id/wp-content/themes/cb-identity2025/src/sass/theme/_tokens.scss
+ * (identity's own original theme, its most direct and complete real
+ * source — replaces an earlier, incomplete transcription from
+ * cb-identitygroup2026/inc/cb-site-tokens.php, which had real gaps: no
+ * purple-600/800/100, no green-700, no red scale beyond 500/600 — confirmed
+ * missing after a user report that purple-600 wasn't selectable). Uses this
+ * source's own real scale name "green" (not "lime" — that renaming was
+ * cb-identitygroup2026's own later standardisation, confirmed in
+ * identity.css's comment on --col-accent-alt; this file mirrors the
+ * original source exactly instead).
+ *
+ * Deliberately kept separate from identity.css itself: that file holds
+ * ROLE tokens only (--col-bg, --col-accent, etc.), consumed by block/site
+ * CSS via var() — see MULTI-BRAND.md's "Token roles, not token values"
+ * rule. Nothing in this file is ever meant to be referenced by var() in
+ * block CSS; it exists purely so generate-theme-json.js's --col-* scan
+ * (which can't tell "role" from "raw value") picks these up as additional
+ * editor swatches. identity.css @imports this file (postcss-import inlines
+ * it at build time, same mechanism a brand file uses to reuse another
+ * brand's tokens wholesale) so both the real site build and the theme.json
+ * generator see it without a second build step.
+ *
+ * --col-white/--col-primary-black duplicate this project's own --col-text/
+ * --col-bg role tokens by value (both real, both in the source) — kept as
+ * separate swatches anyway, for fidelity to the real source rather than
+ * de-duplicating against a same-valued but differently-named role token.
+ */
+
+:root {
+  --col-primary-black: #0d0d0c;
+  --col-white: #ffffff;
+
+  --col-neutral-100: #f8f7f0;
+  --col-neutral-200: #ebe9e1;
+  --col-neutral-300: #dddcd2;
+  --col-neutral-400: #c9c7bc;
+  --col-neutral-500: #aeada1;
+  --col-neutral-600: #939287;
+  --col-neutral-700: #77766c;
+  --col-neutral-800: #5e5d55;
+  --col-neutral-900: #505049;
+  --col-neutral-1000: #363531;
+  --col-neutral-1100: #22211e;
+
+  --col-purple-100: #f1f0ff;
+  --col-purple-200: #e0deff;
+  --col-purple-300: #d0ccff;
+  --col-purple-400: #bcb7ff;
+  --col-purple-500: #a49bfd;
+  --col-purple-600: #8b7ff0;
+  --col-purple-700: #7162e1;
+  --col-purple-800: #4c35d0;
+  --col-purple-900: #2f13ba; /* main purple */
+  --col-purple-1000: #190a83;
+
+  --col-green-100: #eefed9;
+  --col-green-200: #ddfbb2;
+  --col-green-300: #cafc83;
+  --col-green-400: #b8ff52; /* main green */
+  --col-green-500: #adf448;
+  --col-green-600: #94dd2c;
+  --col-green-700: #6bb600;
+  --col-green-800: #5e9f00;
+  --col-green-900: #4c8200;
+  --col-green-1000: #3d6900;
+
+  --col-red-100: #fff0f0;
+  --col-red-200: #ffdfdf;
+  --col-red-300: #ffc0c0;
+  --col-red-400: #ff8989;
+  --col-red-500: #ec5a5a;
+  --col-red-600: #e03030; /* main red */
+  --col-red-700: #c21d1d;
+  --col-red-800: #a51616;
+  --col-red-900: #850d0d;
+  --col-red-1000: #6e0606;
+}

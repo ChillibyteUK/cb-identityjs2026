@@ -84,7 +84,12 @@ if ( ! class_exists( 'CB_Identity_JS_2026_Nav_Walker' ) ) {
 					$link_classes[] = 'active';
 				}
 
-				$output .= '<a class="' . esc_attr( implode( ' ', $link_classes ) ) . '" href="' . esc_url( $item->url ) . '"';
+				// data-text duplicates the label for CSS to render an invisible
+				// bold copy that reserves layout width — lets a brand change
+				// font-weight on hover/current without a text reflow/layout
+				// shift. Inert (no visual effect) unless a brand's own CSS
+				// targets it; see src/css/site/identity.css.
+				$output .= '<a class="' . esc_attr( implode( ' ', $link_classes ) ) . '" href="' . esc_url( $item->url ) . '" data-text="' . esc_attr( $item->title ) . '"';
 				if ( $is_current ) {
 					$output .= ' aria-current="page"';
 				}

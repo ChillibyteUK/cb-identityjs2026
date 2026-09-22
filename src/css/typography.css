@@ -1,0 +1,49 @@
+/*
+ * Real self-hosted SuisseIntl font files — confirmed live on
+ * identityglobal.com/about/ (2026-09-22): 4 weights declared
+ * (Light/Regular/Book/Semibold, matching cb-identitygroup2026's own real
+ * _typography.scss exactly), with Light/Regular/Semibold preloaded via
+ * <link rel="preload"> on the real page. The .woff2 files themselves were
+ * already sitting in this theme's own fonts/ directory, unused — this
+ * file was the missing piece (src/css/typography.css was an empty stub,
+ * already @imported by theme.css, never filled in).
+ *
+ * font-display: swap — matches the real site's own value exactly.
+ * `optional` and `block` were both tried and reverted: what was actually
+ * being reported as "FOUT" turned out to be the Detail List scroll-reveal
+ * animation's own initial-state flash (see scroll-animate.js), not a font
+ * swap at all — reverted to the real, verified value instead of chasing
+ * the wrong cause with an unverified deviation.
+ */
+
+@font-face {
+	font-family: "Suisse";
+	src: url("../fonts/SuisseIntl-Light.woff2") format("woff2");
+	font-weight: 300;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Suisse";
+	src: url("../fonts/SuisseIntl-Regular.woff2") format("woff2");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Suisse";
+	src: url("../fonts/SuisseIntl-Book.woff2") format("woff2");
+	font-weight: 450;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Suisse";
+	src: url("../fonts/SuisseIntl-Semibold.woff2") format("woff2");
+	font-weight: 600;
+	font-style: normal;
+	font-display: swap;
+}

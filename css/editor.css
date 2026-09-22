@@ -24,6 +24,58 @@
  * error), so don't reorder that array without keeping this in mind.
  */
 
+/*
+ * Editor canvas is always in edit mode, never a true preview — force plain
+ * white/black regardless of the current brand's tokens (identity's are
+ * dark bg/white text). Literal values, not var(--col-bg)/var(--col-text):
+ * this loads before the brand tokens file (see inc/editor.php's
+ * add_editor_style() order), so referencing those variables here would
+ * still resolve to whatever the brand sets, since custom properties
+ * resolve live against whichever :root declaration loads last, regardless
+ * of where a var() reference itself is written. !important because this is
+ * a deliberate, permanent override of the theme's own inherited colours,
+ * not a fight to leave unresolved.
+ */
+.editor-styles-wrapper,
+.editor-styles-wrapper h1,
+.editor-styles-wrapper h2,
+.editor-styles-wrapper h3,
+.editor-styles-wrapper h4,
+.editor-styles-wrapper h5,
+.editor-styles-wrapper h6,
+.editor-styles-wrapper p,
+.editor-styles-wrapper a {
+	background-color: #fff !important;
+	color: #000 !important;
+}
+
+/*
+ * Same leak, one level down: forms.css's generic input/textarea/select
+ * rule (background-color/color: var(--col-bg)/var(--col-text)) resolves
+ * against whatever brand is loaded in this same iframe too — every native
+ * Gutenberg field and every custom block field (TextControl, SelectControl,
+ * etc. all render real <input>/<textarea>/<select> elements) was inheriting
+ * identity's dark-bg/white-text, i.e. rendering inverted against the now-
+ * white canvas. Same fix, same reasoning as the wrapper rule above.
+ */
+.editor-styles-wrapper input,
+.editor-styles-wrapper textarea,
+.editor-styles-wrapper select {
+	background-color: #fff !important;
+	color: #000 !important;
+	border: 1px solid #757575 !important; /* WP admin's own standard field border grey — the white-on-white identity border (--col-border) was invisible against the now-white canvas, and this WP version's SelectControl renders with no box-shadow/border of its own to fall back on either */
+}
+
+/* Modern @wordpress/components InputControl (TextControl et al) shows its
+   border via box-shadow on this wrapper, not a border on the <input>
+   itself — same invisibility problem, needs the same explicit fix.
+   SelectControl shares this same wrapper class, but the <select> above
+   already gets a real border directly — excluded here so it doesn't also
+   get a redundant shadow on top of it. */
+.editor-styles-wrapper .components-input-control__container:not(:has(select)) {
+	box-shadow: 0 0 0 1px #757575 !important;
+}
+
 .editor-styles-wrapper .wp-block {
 	max-width: var(--container-max-width);
 	margin-inline: auto;

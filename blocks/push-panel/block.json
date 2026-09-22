@@ -1,0 +1,32 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cb-identityjs2026/push-panel",
+	"title": "CB Push Panel",
+	"category": "cb-identityjs2026",
+	"icon": "align-pull-left",
+	"attributes": {
+		"backgroundId": { "type": "number", "default": 0 },
+		"leftContentType": { "type": "string", "default": "text" },
+		"title": { "type": "string", "default": "" },
+		"leftContent": { "type": "string", "default": "" },
+		"logoId": { "type": "number", "default": 0 },
+		"description": { "type": "string", "default": "" },
+		"linkText": { "type": "string", "default": "" },
+		"linkUrl": { "type": "string", "default": "" },
+		"linkTarget": { "type": "boolean", "default": false }
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"align": true,
+		"color": {
+			"text": false,
+			"background": true,
+			"gradient": false,
+			"__experimentalSkipSerialization": true
+		}
+	},
+	"editorScript": "file:./build/index.js",
+	"render": "file:./render.php"
+}

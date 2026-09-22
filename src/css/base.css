@@ -12,12 +12,12 @@ html {
 
 body {
 	margin: 0;
-	font-family: var(--font-family-base);
-	font-size: var(--fs-base);
-	font-weight: var(--fw-400);
-	line-height: var(--line-height-base);
-	color: var(--col-body);
-	background-color: var(--col-body-bg);
+	font-family: var(--ff-body);
+	font-size: var(--fs-body);
+	font-weight: var(--fw-body);
+	line-height: var(--lh-body);
+	color: var(--col-text);
+	background-color: var(--col-bg);
 }
 
 h1,
@@ -26,13 +26,20 @@ h3,
 h4,
 h5,
 h6 {
-	margin: 0 0 var(--space-3);
-	font-weight: var(--fw-700);
-	line-height: var(--line-height-heading);
+	margin-block: 0 var(--space-3);
+	font-family: var(--ff-heading);
+	font-weight: var(--fw-heading);
+	line-height: var(--lh-heading);
+	color: var(--col-heading);
 }
 
+/* h1 gets its own weight/line-height role — identity's audited source
+   confirms h1 is a heavier weight and tighter line-height than h2/h3, not
+   the same "--fw-heading" value (see tokens/identity.css's comment). */
 h1 {
 	font-size: var(--fs-h1);
+	font-weight: var(--fw-heading-h1);
+	line-height: var(--lh-heading-h1);
 }
 h2 {
 	font-size: var(--fs-h2);
@@ -52,10 +59,11 @@ h6 {
 
 p {
 	margin: 0 0 var(--space-3);
+	text-wrap: pretty;
 }
 
 a {
-	color: var(--col-primary);
+	color: var(--col-accent);
 	text-decoration: none;
 }
 
@@ -77,6 +85,20 @@ video {
 	display: block;
 }
 
+/* Confirmed live (2026-09-22): the browser's own default <mark> styling
+   (background-color: yellow, universal UA stylesheet rule) was bleeding
+   through Gutenberg's inline text-colour format — it wraps formatted text
+   in a bare <mark>, whether the editor picked Text or Background colour,
+   distinguishing the two only by which has-*-color/has-*-background-color
+   class gets added. Picking Text colour only (no background class) left
+   that browser default entirely unreset. WP's own generated
+   has-*-background-color rule (global-styles-inline-css, !important) still
+   wins over this when a background genuinely was chosen. */
+mark {
+	background-color: transparent;
+	color: inherit;
+}
+
 /*
  * Bootstrap-derived project themes get this from `.figure-caption` — this
  * skeleton has no Bootstrap to extend, so it's a plain reset instead.
@@ -86,14 +108,14 @@ video {
  */
 figcaption {
 	margin-top: 0.5em;
-	font-size: 0.875rem;
-	line-height: var(--line-height-base);
+	font-size: var(--fs-small);
+	line-height: var(--lh-body);
 	color: #6c757d;
 }
 
 ul,
 ol {
-	padding-left: var(--space-4);
+	padding-inline-start: var(--space-4);
 }
 
 .visually-hidden {
@@ -106,4 +128,41 @@ ol {
 	clip: rect(0, 0, 0, 0) !important;
 	white-space: nowrap !important;
 	border: 0 !important;
+}
+
+/* [social_icons] shortcode output (inc/social-icons.php) — never had any
+   CSS at all before this, since it went unused until identity's footer. */
+.social-icons {
+	display: flex; /* block-level flex, not inline — real markup is a plain <div>, sits on its own line below whatever precedes it */
+	align-items: center;
+	gap: var(--space-2);
+}
+
+.social-icons a {
+	display: inline-flex;
+}
+
+.social-icons svg {
+	width: 2rem; /* 32px — confirmed live, matches real fa-2x sizing */
+	height: 2rem;
+}
+
+/*
+ * Initial hidden state for src/js/scroll-animate.js's [data-animate="fade-up"]
+ * reveal, set here in CSS rather than left to GSAP's own gsap.fromTo() "from"
+ * values — that JS-only approach paints the element visible first (its
+ * normal styles, no opacity rule), then hides it once GSAP runs, then
+ * reveals it again on scroll: a real, confirmed "flashes in then disappears
+ * before the animation kicks in" bug, not a font-loading one. CSS applies
+ * before first paint, so the element is already in its pre-animation state
+ * from frame one — GSAP's tween only ever animates it back to visible, never
+ * hides an already-visible element.
+ *
+ * Scoped under .js (set by the inline script in header.php, before any
+ * stylesheet) so a no-JS visitor — who'll never get the reveal at all —
+ * still sees the content normally instead of it staying hidden forever.
+ */
+.js [data-animate="fade-up"] {
+	opacity: 0;
+	transform: translateY(24px);
 }

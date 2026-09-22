@@ -1,0 +1,61 @@
+/*
+ * Section Title — see identity-global-block-spec.md. Built from
+ * cb-signpost-header, confirmed against the real theme's
+ * _cb_signpost_header.scss/.php: border-top/bottom line (no background —
+ * the real block is transparent on the page, confirmed, unlike the
+ * spec's own provisional --col-bg-alt token binding, which would show as
+ * a stray light-grey box on identity's dark pages and isn't overridden
+ * anywhere for identity), uppercase small label, no letter-spacing set
+ * (checked — --ls-label isn't used by the real source here, so it's
+ * omitted rather than guessed in).
+ *
+ * font-size is the real --fs-300 rung, confirmed live in
+ * cb-site-tokens.php's identity row (clamp(1rem, 0.95rem + 0.5vw,
+ * 1.25rem)) — the same value already confirmed and in use for
+ * --fs-child-page-nav-header, a different block using the same rung.
+ *
+ * Gutenberg's native text/background-colour support (block.json's
+ * supports.color) is applied manually in render.php (skip-serialization —
+ * see that file's own docblock) — colour is set here, at .section-title,
+ * matching the real source's own has-*-color placement. No background-color
+ * default here: the real source is transparent unless an editor picks one,
+ * so has-*-background-color (added only when picked) has nothing to
+ * override.
+ *
+ * .section-title__text needs its own explicit `color: inherit` rather than
+ * just relying on plain CSS inheritance from .section-title: base.css's
+ * global `h1, h2, h3, h4, h5, h6 { color: var(--col-heading); }` rule
+ * (base.css) is a real declared value, and inheritance always loses to any
+ * declared value regardless of specificity — confirmed live, this silently
+ * made the colour picker a no-op (h2 always rendered --col-heading, which
+ * only ever coincidentally matched this block's own accent default).
+ * .section-title__text's own class selector outranks base.css's bare `h2`
+ * element selector, so `color: inherit` here wins and actually pulls the
+ * picked/default colour from .section-title.
+ */
+
+.section-title {
+	border-block: 1px solid var(--col-border);
+	color: var(--col-accent);
+}
+
+.section-title > .id-container {
+	padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+	.section-title > .id-container {
+		padding-inline: var(--space-5);
+	}
+}
+
+.section-title__text {
+	margin: 0;
+	color: inherit;
+	padding-block: 1rem 0.75rem;
+	font-family: var(--ff-body);
+	font-size: var(--fs-section-title);
+	font-weight: var(--fw-regular);
+	line-height: 1;
+	text-transform: uppercase;
+}

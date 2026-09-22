@@ -99,6 +99,43 @@ function get_icon( $name ) {
 }
 
 /**
+ * [contact_email] shortcode — mailto: link built from Site-Wide Settings'
+ * `email` field, obfuscated with antispambot(). Mirrors cb-identity2025's
+ * own contact_email shortcode (inc/cb-utility.php), reading from
+ * cb_identityjs2026_get_setting() instead of an ACF options field, and
+ * get_icon() instead of a Font Awesome <i> tag (this theme has no icon
+ * font — see CLAUDE.md).
+ *
+ * @param array $atts class (string), text (string, defaults to the email
+ *                    address itself), icon (bool, prepends get_icon('email')).
+ * @return string
+ */
+add_shortcode(
+	'contact_email',
+	function ( $atts ) {
+		$atts = shortcode_atts(
+			array(
+				'class' => '',
+				'text'  => '',
+				'icon'  => false,
+			),
+			$atts,
+			'contact_email'
+		);
+
+		$email = cb_identityjs2026_get_setting( 'email' );
+		if ( ! $email ) {
+			return '';
+		}
+
+		$icon_html   = $atts['icon'] ? get_icon( 'email' ) : '';
+		$anchor_text = $icon_html . ( ! empty( $atts['text'] ) ? wp_kses_post( $atts['text'] ) : esc_html( $email ) );
+
+		return '<a href="mailto:' . esc_attr( antispambot( $email ) ) . '" class="' . esc_attr( $atts['class'] ) . '">' . $anchor_text . '</a>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $anchor_text built from wp_kses_post()/esc_html() plus get_icon()'s already-sanitised theme SVGs.
+	}
+);
+
+/**
  * Queue Q&A pairs for the aggregated FAQPage JSON-LD schema, output once in
  * the footer by output_faq_schema(). Safe to call from multiple
  * FAQ-style blocks on the same page — everything queued is combined into a

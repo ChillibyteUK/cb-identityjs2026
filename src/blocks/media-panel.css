@@ -1,0 +1,89 @@
+/*
+ * Media Panel — see identity-global-block-spec.md. Video-mode rules ported
+ * exactly from cb-identitygroup2026/src/sass/theme/blocks/_cb_full_video.scss
+ * (this file previously invented its own .ratio wrapper and unmute-button
+ * position instead of using it — don't repeat that).
+ */
+
+.media-panel {
+	background-color: var(--col-bg);
+}
+
+.media-panel__image {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+.media-panel--top-border .media-panel__image {
+	border-top: 1px solid var(--col-border);
+}
+
+.media-panel--video {
+	position: relative; /* anchors .media-panel__unmute's position: absolute */
+}
+
+.media-panel__video {
+	width: 100%;
+	aspect-ratio: 16 / 9;
+	border: 0;
+}
+
+.media-panel__unmute {
+	position: absolute;
+	z-index: 2;
+	top: 3rem;
+	left: 50%;
+	transform: translateX(-50%);
+	padding: 0.5rem 1rem;
+	background-color: hsl(53 36% 96% / 0.9); /* --hsl-neutral-050, confirmed identity value */
+	color: #0d0d0c; /* --col-primary-black, confirmed identity value — same hex as --col-bg */
+	border: none;
+	border-radius: 2rem;
+	font-size: var(--fs-small);
+	cursor: pointer;
+}
+
+.media-panel__unmute:hover,
+.media-panel__unmute:focus {
+	background-color: #ffffff; /* --col-white, confirmed */
+}
+
+/* Once unmuted, fade it back so it's less intrusive over the video — full
+   opacity returns on hover/focus so it's still easy to find again. */
+.media-panel__unmute--playing {
+	opacity: 0.4;
+}
+
+.media-panel__unmute--playing:hover,
+.media-panel__unmute--playing:focus {
+	opacity: 1;
+}
+
+.media-panel__bleed-wrapper {
+	position: relative;
+	width: 100%;
+	height: 400px;
+	overflow: hidden;
+}
+
+@media (min-width: 769px) {
+	.media-panel__bleed-wrapper {
+		height: 90vh;
+		min-height: 780px;
+	}
+}
+
+.media-panel__bleed-wrapper .media-panel__video {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	/* Cover: always at least 100% wide and 16:9 tall relative to viewport */
+	width: 100%;
+	height: 56.25vw; /* 16:9 of viewport width */
+	min-height: 100%; /* fill container height */
+	min-width: 177.78vh; /* 16:9 of container height — overrides width on tall containers */
+	aspect-ratio: auto;
+	transform: translate(-50%, -50%);
+	border: 0;
+}

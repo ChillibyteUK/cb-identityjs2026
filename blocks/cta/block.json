@@ -1,0 +1,18 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cb-identityjs2026/cta",
+	"title": "CB CTA",
+	"category": "cb-identityjs2026",
+	"icon": "megaphone",
+	"attributes": {
+		"ctaChoice": { "type": "string", "default": "" }
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"align": true
+	},
+	"editorScript": "file:./build/index.js",
+	"render": "file:./render.php"
+}

@@ -14,11 +14,11 @@
 }
 
 .accordion-item {
-  border-bottom: 1px solid var(--col-grey-200);
+  border-bottom: 1px solid var(--col-border);
 }
 
 .accordion-item:first-child {
-  border-top: 1px solid var(--col-grey-200);
+  border-top: 1px solid var(--col-border);
 }
 
 .accordion-header {
@@ -29,7 +29,7 @@
   padding-block: var(--space-3);
   list-style: none;
   cursor: pointer;
-  font-weight: var(--fw-700);
+  font-weight: var(--fw-bold);
 }
 
 .accordion-header::-webkit-details-marker {
@@ -50,5 +50,5 @@
 
 .accordion-body {
   padding-bottom: var(--space-3);
-  color: var(--col-black);
+  color: var(--col-text);
 }

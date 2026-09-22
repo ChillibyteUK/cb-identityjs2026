@@ -1,0 +1,33 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cb-identityjs2026/feature-overlay",
+	"title": "CB Feature Overlay",
+	"category": "cb-identityjs2026",
+	"icon": "cover-image",
+	"attributes": {
+		"presentation": { "type": "string", "default": "Inline" },
+		"imageId": { "type": "number", "default": 0 },
+		"overlayImageId": { "type": "number", "default": 0 },
+		"content": { "type": "string", "default": "" },
+		"title": { "type": "string", "default": "" },
+		"titleTag": { "type": "string", "default": "h1" },
+		"ctaLinkText": { "type": "string", "default": "" },
+		"ctaLinkUrl": { "type": "string", "default": "" },
+		"ctaLinkTarget": { "type": "boolean", "default": false },
+		"ctaIntro": { "type": "string", "default": "" },
+		"blockHeight": { "type": "number", "default": 0 }
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"align": true,
+		"typography": {
+			"fontSize": true,
+			"fontWeight": true,
+			"__experimentalSkipSerialization": true
+		}
+	},
+	"editorScript": "file:./build/index.js",
+	"render": "file:./render.php"
+}

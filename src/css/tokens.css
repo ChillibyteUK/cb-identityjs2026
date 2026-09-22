@@ -1,50 +1,43 @@
 /*
- * Design tokens — single source of truth for colour/spacing/type values.
+ * Shared structural tokens + generic role-token defaults. Same for every
+ * brand until a tokens/{brand}.css file overrides a specific one — see
+ * MULTI-BRAND.md. Values here are deliberately generic placeholders, not
+ * any real brand's design — identity is just another variant, not the
+ * baseline (see MULTI-BRAND.md's Status section).
  *
- * Breakpoints are NOT defined here. CSS custom properties can't be read inside
- * an @media condition, so breakpoints live in src/build/tokens.config.js instead,
- * and generate-utilities.js is what turns them into actual responsive CSS. Keep
- * that file as the only place breakpoint pixel values are written down.
+ * Breakpoints live in src/build/tokens.config.js, not here (custom
+ * properties can't be read inside @media).
  */
 
 :root {
-  /* Colour palette — rename/replace per project, keep the slug shape */
-  --col-white: #ffffff;
-  --col-black: #000000;
-  --col-grey-100: #f5f5f5;
-  --col-grey-300: #d9d9d9;
-  --col-grey-700: #4a4a4a;
-  --col-blue-700: #1d4ed8;
+  /* Weight scale — confirmed shared across every brand's themes. */
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-book: 450;
+  --fw-semibold: 600;
+  --fw-semi: 500; /* confirmed identical in both cb-identity2025 and cb-identitygroup2026's own _tokens.scss */
 
-  --col-primary: var(--col-blue-700);
-  --col-body: var(--col-black);
-  --col-body-bg: var(--col-white);
+  /* Rung font-size scale — the real system's own literal fs-* naming
+     (content builder modules and similar per-instance size/weight ACF
+     selects pick a rung directly, not a semantic role token). Confirmed
+     against cb-identitygroup2026/src/sass/theme/_tokens.scss (2026-09-22) —
+     identity's own row has no override for any of these, they fall through
+     to this same base scale. fs-300/fs-800/fs-950 are deliberately absent:
+     none exist in the current real source (fs-950 only exists in the
+     older, now-superseded cb-identity2025 copy and resolves to nothing
+     live in the current theme — not reproduced here on that basis). */
+  --fs-50: 0.8889rem;
+  --fs-100: 1rem;
+  --fs-200: 1.1111rem;
+  --fs-400: clamp(1.2222rem, 1.1rem + 0.6vw, 1.375rem);
+  --fs-500: clamp(1.4444rem, 1.25rem + 0.9vw, 1.75rem);
+  --fs-600: clamp(1.6667rem, 1.4rem + 1.2vw, 2rem);
+  --fs-700: clamp(1.9444rem, 1.6rem + 1.4vw, 2.25rem);
+  --fs-850: clamp(2.3333rem, 1.9rem + 2vw, 3.125rem);
+  --fs-875: clamp(2.7778rem, 2.2rem + 2.5vw, 3.5rem);
+  --fs-900: clamp(3.3333rem, 2.6rem + 3vw, 5rem);
 
-  /* Type scale */
-  --font-family-base: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --fs-base: 1rem;
-  --fs-h1: clamp(2rem, 1.6rem + 2vw, 3rem);
-  --fs-h2: clamp(1.6rem, 1.35rem + 1.25vw, 2.25rem);
-  --fs-h3: clamp(1.3rem, 1.15rem + 0.75vw, 1.75rem);
-  --fs-h4: 1.25rem;
-  --fs-h5: 1.1rem;
-  --fs-h6: 1rem;
-  --fs-small: 0.875rem;
-  --fw-400: 400;
-  --fw-600: 600;
-  --fw-700: 700;
-
-  /* Semantic aliases — generate-utilities.js emits a matching .fw-* class
-	   for every custom property here, so these are free utility classes too
-	   (.fw-normal, .fw-semibold, .fw-bold), not just tokens for use in CSS. */
-  --fw-normal: var(--fw-400);
-  --fw-semibold: var(--fw-600);
-  --fw-bold: var(--fw-700);
-
-  --line-height-base: 1.5;
-  --line-height-heading: 1.2;
-
-  /* Spacing scale — used by both hand-authored CSS and the utility generator */
+  /* Spacing scale */
   --space-0: 0;
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -53,23 +46,106 @@
   --space-5: 3rem;
   --space-6: 5rem;
 
-  /* Radii / shadows / motion */
+  --fs-h4: 1.25rem;
+  --fs-h5: 1.1rem;
+  --fs-h6: 1rem;
+
   --radius-sm: 0.25rem;
   --radius-lg: 0.5rem;
   --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.08);
   --shadow-lg: 0 8px 24px rgb(0 0 0 / 0.12);
   --transition: 150ms ease-in-out;
 
-  /* Layout */
   --container-max-width: 1320px;
   --container-padding: var(--space-3);
   --grid-columns: 12;
   --grid-gutter: var(--space-3);
-
-  /* Minimum item width for .grid — override per instance with an
-	   inline style (e.g. style="--grid-min: 10rem") rather than adding
-	   a new class per layout. Smaller value = more columns fit. */
   --grid-min: 16rem;
-
   --nav-height: 4rem;
+
+  /* --- Generic role-token defaults (light background) --- */
+  --col-bg: #ffffff;
+  --col-bg-alt: #f5f5f5;
+  --col-text: #000000;
+  --col-text-muted: #4a4a4a;
+  --col-heading: var(--col-text);
+  --col-heading-press: var(--col-heading);
+  --col-accent: #1d4ed8;
+  --col-accent-hover: #3b5fdb;
+  --col-accent-alt: var(--col-accent); /* a second accent shade some blocks use (e.g. Home Intro's pre-title) — generic default just reuses the main accent until a brand needs a real second one */
+  --col-accent-text: #ffffff; /* text colour for content sitting on an accent-coloured surface (e.g. Home Intro's highlighted title bars) — distinct from --col-button-text even though they often coincide */
+  --col-button-bg: var(--col-accent);
+  --col-button-text: #ffffff;
+  --col-border: rgba(0, 0, 0, 0.4);
+  --col-overlay-colour: rgba(0, 0, 0, 0.5);
+  --col-overlay-light: rgba(255, 255, 255, 0.2);
+  --col-overlay-dark: rgba(0, 0, 0, 0.2);
+
+  --ff-heading: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --ff-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --fs-h1: clamp(2rem, 1.6rem + 2vw, 3rem);
+  --fs-h2: clamp(1.6rem, 1.35rem + 1.25vw, 2.25rem);
+  --fs-h3: clamp(1.3rem, 1.15rem + 0.75vw, 1.75rem);
+  --fs-subtitle: 1.25rem;
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-content-heading: var(--fs-h1); /* a size between --fs-h3 and hero-title scale — Home Intro's content_heading; generic default just borrows --fs-h1 until a brand needs its own */
+  --fs-hero-title: clamp(2.5rem, 2rem + 4vw, 6rem); /* Home Intro's big animated title — genuinely fluid/viewport-based in the one real source seen so far, not a fixed clamp; generic placeholder only */
+
+  --fw-heading: var(--fw-semibold);
+  --fw-heading-h1: var(--fw-semibold);
+  --fw-body: var(--fw-regular);
+  --fw-bold: var(--fw-semibold);
+  --fw-hero-title: var(--fw-bold); /* real identity value is a literal 500, outside the named weight scale entirely — generic default just borrows --fw-bold */
+
+  --lh-heading: 1.2;
+  --lh-body: 1.5;
+  --ls-label: 0.05em;
+
+  --space-section: var(--space-5);
+  --space-gap: var(--space-3);
+
+  --img-child-page-nav-bg: none; /* Child Page Nav's background image is genuinely per-brand (confirmed: identity/coda/health each use a different file) — no generic default image to fall back to */
+  --fs-child-page-nav-item: var(--fs-h1); /* real source's --fs-850 (its own h1-equivalent rung, distinct from our --fs-h1 role token) — generic default just borrows --fs-h1 until a brand needs its own */
+  --fs-child-page-nav-header: var(--fs-small); /* real source's --fs-300 (its own small-label rung) — generic default just borrows --fs-small */
+
+  --fs-cta-title: var(--fs-h2);
+  --lh-cta-title: var(--lh-heading);
+  --ls-cta-title: normal;
+  --fs-cta-content: var(--fs-body);
+  --lh-cta-content: var(--lh-body);
+  --ls-cta-content: normal;
+
+  --fs-page-header-title: var(--fs-h1);
+  --fs-page-header-lede: var(--fs-h2);
+  --fs-page-header-intro: var(--fs-subtitle);
+  --lh-page-header-intro: var(--lh-body);
+
+  --fs-section-title: var(--fs-small);
+
+  --fs-detail-list-title: var(--fs-h2);
+  --fs-detail-list-intro-title: var(--fs-h1);
+  --fs-detail-list-description: var(--fs-body);
+  --fs-detail-list-bullet: var(--fs-subtitle);
+  --col-detail-list-bullet-border: var(--col-border);
+
+  --fs-push-panel-title: var(--fs-h1);
+  --fs-push-panel-desc: var(--fs-body);
+  --fs-push-panel-left-content: var(--fs-subtitle);
+  --fs-push-panel-link: var(--fs-subtitle);
+
+  --col-brand-grid-bg: var(--col-bg-alt);
+  --fs-brand-grid-intro: var(--fs-h1);
+  --fs-brand-grid-name: var(--fs-small);
+  --fs-brand-grid-strap: var(--fs-small);
+  --fs-brand-grid-last: var(--fs-subtitle);
+
+  --col-feature-overlay-bg: var(--col-bg);
+  --fs-feature-overlay-title: var(--fs-h1);
+  --ls-feature-overlay-title: normal;
+  --fw-feature-overlay-title: var(--fw-heading-h1);
+  --fs-feature-overlay-content: var(--fs-subtitle);
+  --ls-feature-overlay-content: normal;
+  --fs-feature-overlay-cta-intro: var(--fs-body);
 }

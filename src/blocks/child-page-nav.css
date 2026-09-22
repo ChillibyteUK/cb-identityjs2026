@@ -1,0 +1,109 @@
+/*
+ * Child Page Nav — see identity-global-block-spec.md. Built from
+ * cb-services-nav; confirmed against the real _cb_services_nav.scss and
+ * _header-site-overrides.scss. The background image is genuinely per-brand
+ * (identity/coda/health each use a different file) — see
+ * --img-child-page-nav-bg in tokens.css / tokens/identity.css.
+ */
+
+.child-page-nav {
+	position: relative;
+	background-color: var(--col-bg-alt);
+	border-block: 1px solid var(--col-border);
+	overflow: hidden;
+	isolation: isolate;
+}
+
+.child-page-nav::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background: var(--img-child-page-nav-bg) center / cover no-repeat fixed;
+}
+
+.child-page-nav__container {
+	background-color: rgba(255, 255, 255, 0.1);
+}
+
+.child-page-nav__header {
+	margin: 0; /* this theme's generic h1-h6 rule adds margin-block: 0 var(--space-3) by default — reset here since this is a layout element, not prose */
+	background-color: rgba(255, 255, 255, 0.1);
+	border-bottom: 1px solid var(--col-border);
+	padding-block: 1rem;
+	line-height: 1;
+}
+
+.child-page-nav__header .id-container {
+	padding-inline: var(--space-4);
+	color: var(--col-accent);
+	font-family: var(--ff-heading);
+	font-size: var(--fs-child-page-nav-header);
+	font-weight: var(--fw-regular);
+}
+
+@media (min-width: 768px) {
+	.child-page-nav__header .id-container {
+		padding-inline: var(--space-5);
+	}
+}
+
+.child-page-nav__item {
+	display: block;
+	border-bottom: 1px solid var(--col-border);
+	color: var(--col-text);
+	font-family: var(--ff-heading);
+	font-size: var(--fs-child-page-nav-item);
+	font-weight: var(--fw-light);
+	text-decoration: none;
+	transition: background-color var(--transition);
+}
+
+.child-page-nav__item:hover,
+.child-page-nav__item:focus-visible {
+	background-color: rgba(255, 255, 255, 0.1);
+	color: var(--col-text);
+	text-decoration: none;
+}
+
+.child-page-nav__item-inner {
+	display: flex;
+	justify-content: space-between;
+	gap: var(--space-4);
+	padding-block: 1rem;
+	padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+	.child-page-nav__item-inner {
+		padding-inline: var(--space-5);
+	}
+}
+
+.child-page-nav__item-title {
+	margin: 0 0 8px; /* confirmed live on identityglobal.com — the flex row's own auto height depends on this margin (title's flex-item outer box), not just its content line-height */
+	font-family: var(--ff-heading);
+	font-size: var(--fs-child-page-nav-item);
+	font-weight: var(--fw-light);
+	color: inherit;
+}
+
+.child-page-nav__item-icon {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	width: 40px;
+	height: 37px;
+}
+
+@media (min-width: 768px) {
+	.child-page-nav__item-icon {
+		width: 65px;
+		height: 60px;
+	}
+}
+
+.child-page-nav__item-icon svg {
+	width: 100%;
+	height: 100%;
+}

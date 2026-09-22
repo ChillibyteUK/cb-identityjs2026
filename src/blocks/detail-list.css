@@ -1,0 +1,126 @@
+/*
+ * Detail List — see identity-global-block-spec.md. "Paired" layout built
+ * from About Detail, confirmed live on identityglobal.com/about/'s "WHY
+ * CHOOSE IDENTITY?" section: background/color/border (#0d0d0c, white,
+ * rgba(255,255,255,0.4) — already this project's --col-bg/--col-text/
+ * --col-border tokens exactly), padding-bottom 96px (6rem), first-item
+ * padding-top 16px (1rem), title/description padding-block 12px (0.75rem,
+ * no matching scale rung, used literally), title font-size 36px (real
+ * --fs-700 — identity has no override, falls through to the shared base
+ * scale, cross-checked identical across idtravel/health's own rows in
+ * cb-site-tokens.php), description font-size 22px (real --fs-400, same
+ * fallthrough), description line-height 34.1px = exactly 1.55 × 22px,
+ * matching this project's own --lh-body token (the real source doesn't
+ * set it explicitly either — it's relying on the same ambient body
+ * line-height coda's/idtravel's/identity's shared base already uses).
+ *
+ * "Bullet List" layout built from cb-details.php/_cb_details.scss — no
+ * live instance currently uses this mode, so it's sourced from the real
+ * SCSS directly rather than independently confirmed on a real page.
+ *
+ * .detail-list__title needs its own explicit `color: inherit`: base.css's
+ * global `h1, h2, h3, h4, h5, h6 { color: var(--col-heading); }` rule is a
+ * real declared value that would otherwise win over the section's
+ * inherited colour regardless of specificity — the exact same collision
+ * already found and fixed on Section Title's h2 this session, applied
+ * here proactively.
+ */
+
+.detail-list {
+	background-color: var(--col-bg);
+	color: var(--col-text);
+	/* Literal 6rem, confirmed live (96px) — this project's --space-6 rung is
+	   actually 5rem (80px), not 6rem, so no scale token matches here. */
+	padding-block-end: 6rem;
+	border-block: 1px solid var(--col-border);
+}
+
+.detail-list > .id-container {
+	padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+	.detail-list > .id-container {
+		padding-inline: var(--space-5);
+	}
+}
+
+.detail-list__item {
+	display: grid;
+	grid-template-columns: 1fr;
+	/* Missed on the first pass — the real row markup carries Bootstrap's
+	   `pb-5` utility class directly (not in the SCSS file, which only
+	   covers the block's own rules), confirmed live: 48px, exactly this
+	   project's own --space-5. Applied unconditionally, on every row
+	   including the last, matching the real markup exactly. */
+	padding-block-end: var(--space-5);
+	border-top: 1px solid var(--col-border);
+}
+
+.detail-list__item:first-child {
+	border-top: none;
+	padding-top: var(--space-3);
+}
+
+@media (min-width: 768px) {
+	.detail-list__item {
+		/* real source's columns are Bootstrap's col-md-6 / col-md-1 (spacer)
+		   / col-md-5 — reproduced as a two-column grid with a column-gap
+		   equal to that spacer's own share of the row (1/12), rather than a
+		   literal spacer element (not in the spec's own semantic class list). */
+		grid-template-columns: 6fr 5fr;
+		column-gap: 8.3333%;
+		/* In the real markup, .col-md-6/.col-md-5 are the actual flex items
+		   (default stretch) and __title/__description sit inside them at
+		   their own natural height, top-aligned — not stretched to match
+		   the taller column. Here __title/__description ARE the grid items
+		   directly (no wrapper div, matching the spec's own class list), so
+		   grid's default stretch would wrongly force the shorter one to
+		   match the taller one's height — confirmed live: real title/desc
+		   heights differ (65px vs 125px on the same row), only converging
+		   once this is set. */
+		align-items: start;
+	}
+}
+
+.detail-list__title {
+	margin: 0;
+	padding-block: 0.75rem;
+	color: inherit;
+	font-size: var(--fs-detail-list-title);
+	font-weight: var(--fw-light);
+}
+
+/* Colour is no longer set here — title is RichText with inline colour
+   formatting (block.json's supports.color.text), so an editor overrides a
+   specific row's colour directly in the content instead of this needing
+   its own dedicated CSS variant. Only size stays block-wide via introRow:
+   there's no per-row equivalent of the block-level Typography size
+   control (see detail-list/src/edit.js's own docblock). */
+.detail-list__item--intro .detail-list__title {
+	font-size: var(--fs-detail-list-intro-title);
+}
+
+.detail-list__description {
+	margin: 0;
+	padding-block: 0.75rem;
+	font-size: var(--fs-detail-list-description);
+	font-weight: var(--fw-light);
+	line-height: var(--lh-body);
+	text-wrap: balance;
+}
+
+/* Bullet variant's own border colour is a distinct lime tint in the real
+   source (cb-details.scss), not the plain white --col-border used by the
+   paired layout above — real value, not a guess (see
+   --col-detail-list-bullet-border in tokens/identity.css). */
+.detail-list__item--bullet {
+	padding-block: 0.75rem;
+	border-top: 1px solid var(--col-detail-list-bullet-border);
+	font-size: var(--fs-detail-list-bullet);
+	font-weight: var(--fw-book);
+}
+
+.detail-list__item--bullet:first-child {
+	border-top: none;
+}

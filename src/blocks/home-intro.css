@@ -1,0 +1,154 @@
+/*
+ * Home Intro — see identity-global-block-spec.md. Confirmed against the
+ * real cb-brand-title-text.scss; the per-line offset/rotation values below
+ * are genuine bespoke design tuning from that source (kept as literals —
+ * not sensibly tokenisable), everything else reads through role tokens.
+ */
+
+.home-intro {
+	background-color: var(--col-bg);
+	color: var(--col-text);
+	border-block: 1px solid var(--col-border);
+}
+
+.home-intro__pre-title {
+	border-bottom: 1px solid var(--col-border);
+}
+
+.home-intro__pre-title > .id-container {
+	padding-block: 1rem;
+	padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+	.home-intro__pre-title > .id-container {
+		padding-inline: var(--space-5);
+	}
+}
+
+.home-intro__pre-title h1 {
+	margin: 0;
+	color: var(--col-accent-alt);
+	font-family: var(--ff-heading);
+	font-weight: var(--fw-regular);
+	font-size: var(--fs-h3);
+	line-height: 1;
+}
+
+.home-intro__row {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--space-5); /* matches real source's row g-5 (3rem gutter, both axes) */
+	padding-block: calc(var(--space-5) + var(--space-4));
+	padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+	.home-intro__row {
+		grid-template-columns: 1fr 1fr;
+		padding-block-start: calc(var(--space-5) * 2);
+		padding-inline: var(--space-5);
+	}
+}
+
+.home-intro__title-col {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+@media (min-width: 768px) {
+	.home-intro__title-col {
+		margin-block-end: var(--space-5);
+	}
+}
+
+/* title-col stays centred up to this point — matches the real source's
+   .cb-brand-title-text__anim, which only switches to flex-start at 1200px,
+   not at the 768px column breakpoint. */
+@media (min-width: 1200px) {
+	.home-intro__title-col {
+		justify-content: flex-start;
+		margin-inline: var(--space-6) calc(var(--space-6) * -1);
+	}
+}
+
+.home-intro__title {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	line-height: 1;
+	overflow: visible; /* prevent clipping when rotated */
+}
+
+.home-intro__title .line {
+	position: relative;
+	display: inline-block;
+	margin-block: 0.1em;
+	transform-origin: 25% center;
+}
+
+.home-intro__title .line:nth-child(2) {
+	transform-origin: 35% center;
+	margin-inline-start: -3.6em;
+	margin-block-start: 0.1em;
+}
+
+.home-intro__title .line:nth-child(3) {
+	margin-inline-start: 1.8em;
+	margin-block-start: -0.25em;
+}
+
+.home-intro__title .bar {
+	position: absolute;
+	inset: -0.1em -0.6em;
+	z-index: 1;
+	background: var(--col-accent);
+	opacity: 0;
+}
+
+.home-intro__title .text {
+	position: relative;
+	z-index: 2;
+	color: var(--col-accent-text);
+	font-family: var(--ff-heading);
+	font-size: var(--fs-hero-title);
+	font-weight: var(--fw-semibold);
+	letter-spacing: -0.02em;
+	text-align: start;
+	opacity: 0;
+}
+
+.home-intro__title .text1 {
+	transform: rotate(-3deg);
+}
+
+.home-intro__title .text2 {
+	transform: rotate(5deg);
+}
+
+.home-intro__title .text3 {
+	transform: rotate(-6deg);
+}
+
+.home-intro__content-heading {
+	margin-block-end: var(--space-4);
+	font-family: var(--ff-heading);
+	font-size: var(--fs-content-heading);
+	font-weight: var(--fw-book);
+	line-height: 1.1;
+	color: var(--col-text);
+}
+
+.home-intro__content {
+	font-family: var(--ff-body);
+	font-size: var(--fs-subtitle);
+	font-weight: var(--fw-light);
+	color: var(--col-text);
+	text-wrap: pretty;
+}
+
+.home-intro__link {
+	margin-block-start: var(--space-4);
+}

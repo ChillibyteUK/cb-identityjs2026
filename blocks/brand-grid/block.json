@@ -1,0 +1,20 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cb-identityjs2026/brand-grid",
+	"title": "CB Brand Grid",
+	"category": "cb-identityjs2026",
+	"icon": "grid-view",
+	"attributes": {
+		"introText": { "type": "string", "default": "" },
+		"brands": { "type": "array", "default": [] },
+		"closingText": { "type": "string", "default": "" }
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"align": true
+	},
+	"editorScript": "file:./build/index.js",
+	"render": "file:./render.php"
+}

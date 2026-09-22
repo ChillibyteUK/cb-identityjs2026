@@ -1,3 +1,12 @@
+<?php
+/**
+ * Footer template — default, shared by every install that has no
+ * footer-{CB_SITE}.php of its own. See header.php's top comment and
+ * MULTI-BRAND.md's "Header/footer per install" section.
+ *
+ * @package cb-identityjs2026
+ */
+?>
 </main>
 
 <footer id="footer">

@@ -1,6 +1,12 @@
 <?php
 /**
- * Header template.
+ * Header template — default, shared by every install that has no
+ * header-{CB_SITE}.php of its own. Only `identity` exists today, and it
+ * uses this file — see MULTI-BRAND.md's "Header/footer per install"
+ * section before adding a brand-specific override. Templates call
+ * get_header( cb_identityjs2026_get_site() ), which is plain WordPress
+ * core behaviour (locate_template falling back to this file) — nothing
+ * custom here.
  *
  * @package cb-identityjs2026
  */
@@ -10,6 +16,7 @@
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script>document.documentElement.classList.add( 'js' );</script>
 	<?php wp_head(); ?>
 </head>
 

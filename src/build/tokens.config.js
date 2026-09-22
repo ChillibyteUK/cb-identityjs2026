@@ -55,7 +55,10 @@ const utilities = {
 	'text-align': {
 		className: 'text',
 		prop: 'text-align',
-		values: { start: 'left', center: 'center', end: 'right' },
+		// Logical values — flip for free under dir="rtl" (R7.5). Don't
+		// change these back to left/right; that's the exact mirroring bug
+		// this project has to avoid for Arabic.
+		values: { start: 'start', center: 'center', end: 'end' },
 	},
 	// values read from tokens.css's --fw-* custom properties at generate time
 	// (see readTokenValues() in generate-utilities.js) — add a --fw-300 there
@@ -74,6 +77,14 @@ const utilities = {
 		className: 'w',
 		prop: 'width',
 		values: { 25: '25%', 50: '50%', 75: '75%', 100: '100%', auto: 'auto' },
+	},
+	// order-0..order-12 — visual reordering of flex/grid children per
+	// breakpoint (e.g. a footer column that's last in source order but
+	// first on mobile). Matches Bootstrap's own order-* range.
+	order: {
+		className: 'order',
+		prop: 'order',
+		values: Object.fromEntries(Array.from({ length: 13 }, (_, n) => [n, String(n)])),
 	},
 };
 

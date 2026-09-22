@@ -2,23 +2,26 @@
 /**
  * Page template.
  *
- * Most projects build page layouts from native blocks rather than the_content()
- * directly — override this per project as needed.
+ * No wrapping .container here — confirmed against the real theme's own
+ * page.php, which renders the_content() completely unwrapped. Each block
+ * handles its own width (most opt into .container/.id-container
+ * internally; a few, like Media Panel's full_width/full_bleed, deliberately
+ * don't). Wrapping everything in .container here would cap every block at
+ * --container-max-width regardless of what the block itself asks for —
+ * exactly the bug that shipped once already in this project.
  *
  * @package cb-identityjs2026
  */
 
-get_header();
+get_header( cb_identityjs2026_get_site() );
 ?>
 
-<div class="container">
-	<?php
-	while ( have_posts() ) {
-		the_post();
-		the_content();
-	}
-	?>
-</div>
+<?php
+while ( have_posts() ) {
+	the_post();
+	the_content();
+}
+?>
 
 <?php
-get_footer();
+get_footer( cb_identityjs2026_get_site() );

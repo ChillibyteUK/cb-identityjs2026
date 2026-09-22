@@ -19,23 +19,28 @@ const fs = require('fs');
 const path = require('path');
 const fg = require('fast-glob');
 const { breakpoints, gridColumns, utilities, spacingScale } = require('./tokens.config');
+const { readTokensFromFile } = require('./read-tokens');
 
 const cssDir = path.resolve(__dirname, '../css');
 const blocksStylesDir = path.resolve(__dirname, '../blocks');
 const tokensFile = path.resolve(cssDir, 'tokens.css');
+// Utility classes are generated once, shared by every brand (see
+// MULTI-BRAND.md) — the output is always a `var(--token)` reference, so the
+// resolved VALUE never has to be known at build time, only which KEYS exist.
+// 'identity' is scanned here purely as the reference/default brand for that
+// key discovery; a brand-only token (present in some other brand's file but
+// not identity's) simply won't get a utility class generated for it, which
+// is fine since blocks never use utility classes — see the block spec's
+// class naming convention.
+const referenceBrandFile = path.resolve(cssDir, 'tokens/identity.css');
 
-// Reads --{prefix}* custom properties straight out of tokens.css's :root block
-// (same approach as generate-theme-json.js) so a utility's value set stays in
-// sync with the token scale with no second place to edit.
+// Reads --{prefix}* custom properties out of tokens.css + the reference
+// brand file's :root blocks (see read-tokens.js) so a utility's value set
+// stays in sync with the token scale with no second place to edit.
 function readTokenValues(prefix) {
-	const cssContent = fs.readFileSync(tokensFile, 'utf8');
-	const rootBlockMatch = cssContent.match(/:root\s*{([\s\S]*?)}/);
-	if (!rootBlockMatch) return {};
-	const varRegex = /--([\w-]+):\s*([^;]+);/g;
+	const tokens = { ...readTokensFromFile(tokensFile), ...readTokensFromFile(referenceBrandFile) };
 	const values = {};
-	let match;
-	while ((match = varRegex.exec(rootBlockMatch[1])) !== null) {
-		const key = match[1];
+	for (const key of Object.keys(tokens)) {
 		if (key.startsWith(prefix)) {
 			values[key.slice(prefix.length)] = `var(--${key})`;
 		}
@@ -99,17 +104,18 @@ function generateUtilities() {
 		}
 	}
 
-	// margin / padding — responsive, same per-breakpoint pattern as gap-*/col-*
-	// s/e (start/end) are physical, not logical — left/right, matching this
-	// file's existing text-align start/end convention above, not RTL-aware
-	// margin-inline-start/end.
+	// margin / padding — responsive, same per-breakpoint pattern as gap-*/col-*.
+	// s/e (start/end) are logical (margin-inline-start/end etc.) — flip for
+	// free under dir="rtl" (R7.5). top/bottom/x/y have no direction-dependent
+	// meaning so stay physical; '' (all sides) mixes both via the logical
+	// block+inline shorthand.
 	const spacingSides = {
-		'': ['top', 'right', 'bottom', 'left'],
+		'': ['top', 'inline-end', 'bottom', 'inline-start'],
 		t: ['top'],
 		b: ['bottom'],
-		s: ['left'],
-		e: ['right'],
-		x: ['left', 'right'],
+		s: ['inline-start'],
+		e: ['inline-end'],
+		x: ['inline-start', 'inline-end'],
 		y: ['top', 'bottom'],
 	};
 	for (const bp of Object.keys(breakpoints)) {

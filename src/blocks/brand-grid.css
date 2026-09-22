@@ -1,0 +1,184 @@
+/*
+ * Brand Grid — see identity-global-block-spec.md. Built from Our Brands,
+ * confirmed live on identityglobal.com/about/'s real "OUR BRANDS" section
+ * at both 1920px and ~500px viewports — the real markup and several real
+ * values have diverged from both local reference themes (no id-container/
+ * row/col-md-9 around the intro any more; card-back's real desktop
+ * padding is 40px/24px/24px/24px, not a uniform 1.5rem; card-back's real
+ * rest opacity is exactly 0 with a fully solid background at desktop, not
+ * the 0.95-alpha background either local SCSS file claims), so every
+ * value below is from live computed styles, not the local files.
+ *
+ * A real, confirmed (not assumed) desktop/mobile behavioural difference:
+ * mobile shows the card back permanently at 0.95 opacity (no hover
+ * mechanism assumed needed on touch), desktop starts at 0 and reveals on
+ * hover/focus. The exact breakpoint transition point wasn't independently
+ * confirmed pixel-by-pixel — 768px matches this project's own established
+ * convention and the real source's own media query, used here on that
+ * basis, not fully re-verified live at that specific px.
+ *
+ * .brand-grid__strap img needs display:inline: base.css's global
+ * `img { display: block }` reset breaks inline text+arrow layout the same
+ * way already found and fixed on Push Panel's own link arrow this
+ * session — applied here proactively rather than waiting to hit it again.
+ */
+
+.brand-grid {
+	background-color: var(--col-brand-grid-bg);
+	color: var(--col-text);
+	border-block: 1px solid var(--col-border);
+}
+
+.brand-grid > .id-container {
+	padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+	.brand-grid > .id-container {
+		padding-inline: var(--space-5);
+	}
+}
+
+.brand-grid__intro {
+	margin: 0 0 var(--space-5);
+	padding-block: 1rem;
+	border-block-end: 1px solid var(--col-border);
+	/* Real --fs-850, real --fw-light — confirmed live (2026-09-22) after a
+	   genuine mismeasurement: the first pass measured the WRAPPER
+	   (.cb-our-brands__intro, 18px/400 — that's just the ambient body
+	   default it happens to inherit, never actually rendered since a
+	   child overrides it), not .cb-our-brands__title, the actual text
+	   element inside it, which is 50px/300 — the same "measured the
+	   wrapper, not the styled child" mistake already made once this
+	   session on Page Header's __intro vs __intro-text. */
+	font-size: var(--fs-brand-grid-intro);
+	font-weight: var(--fw-light);
+}
+
+/* text-wrap: balance has to target the inner <p> directly — RichText's
+   multiline="p" puts the actual text in a child <p>, and base.css's global
+   `p { text-wrap: pretty }` (src/css/base.css) wins over balance set on
+   this wrapper div since that rule targets the <p> itself. */
+.brand-grid__intro p {
+	text-wrap: balance;
+}
+
+.brand-grid__row {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--space-5);
+	padding-block-end: var(--space-5);
+}
+
+@media (min-width: 768px) {
+	.brand-grid__row {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (min-width: 1200px) {
+	.brand-grid__row {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+@media (min-width: 1400px) {
+	.brand-grid__row {
+		grid-template-columns: repeat(4, 1fr);
+	}
+}
+
+.brand-grid__card {
+	position: relative;
+	display: block;
+	aspect-ratio: 16 / 9;
+	overflow: hidden;
+	color: inherit;
+	text-decoration: none;
+}
+
+.brand-grid__card-front {
+	display: grid;
+	place-items: center;
+	height: 100%;
+	padding: 1rem;
+}
+
+.brand-grid__logo {
+	/* width: auto is required, not just max-width/height: wp_get_attachment_image()
+	   outputs literal width="1" height="1" HTML attributes for an SVG with
+	   no readable intrinsic dimensions (confirmed live, 2026-09-22 — WP
+	   core can't read an SVG's own viewBox without a plugin). Without
+	   overriding width itself, the browser honours that literal 1px
+	   attribute and the logo renders invisibly small regardless of
+	   max-width. */
+	display: block;
+	width: auto;
+	max-width: 100%;
+	max-height: 100%;
+	height: auto;
+}
+
+.brand-grid__card-back {
+	position: absolute;
+	inset: 0;
+	background-color: var(--col-brand-grid-bg);
+	padding: 2.5rem 1.5rem 1.5rem;
+	opacity: 0.95;
+}
+
+@media (min-width: 768px) {
+	.brand-grid__card-back {
+		opacity: 0;
+		transition: opacity 0.3s ease-in-out;
+	}
+
+	.brand-grid__card:focus .brand-grid__card-back,
+	.brand-grid__card:focus-visible .brand-grid__card-back {
+		opacity: 1;
+	}
+}
+
+@media (min-width: 768px) and (hover: hover) {
+	.brand-grid__card:hover .brand-grid__card-back {
+		opacity: 1;
+	}
+}
+
+.brand-grid__name {
+	margin: 0 0 1rem;
+	border-block-end: 1px solid var(--col-border);
+	font-size: var(--fs-brand-grid-name);
+	font-weight: var(--fw-light);
+	text-transform: uppercase;
+}
+
+.brand-grid__strap {
+	font-size: var(--fs-brand-grid-strap);
+	font-weight: 500;
+}
+
+.brand-grid__strap img {
+	display: inline;
+	vertical-align: middle;
+}
+
+.brand-grid__last {
+	grid-column: span var(--brand-grid-last-span-md, 1);
+	padding-block-start: 1.5rem;
+	border-block-start: 1px solid var(--col-border);
+	font-size: var(--fs-brand-grid-last);
+	color: var(--col-accent);
+}
+
+@media (min-width: 1200px) {
+	.brand-grid__last {
+		grid-column: span var(--brand-grid-last-span-xl, 1);
+	}
+}
+
+@media (min-width: 1400px) {
+	.brand-grid__last {
+		grid-column: span var(--brand-grid-last-span-xxl, 1);
+	}
+}

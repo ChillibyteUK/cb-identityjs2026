@@ -1,0 +1,26 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cb-identityjs2026/page-header",
+	"title": "CB Page Header",
+	"category": "cb-identityjs2026",
+	"icon": "cover-image",
+	"attributes": {
+		"title": { "type": "string", "default": "" },
+		"introText": { "type": "string", "default": "" },
+		"animatedTitle": { "type": "string", "default": "" },
+		"secondaryPanelType": { "type": "string", "default": "none" },
+		"secondaryText": { "type": "string", "default": "" },
+		"quote": { "type": "string", "default": "" },
+		"quoteAuthor": { "type": "string", "default": "" },
+		"quoteCompany": { "type": "string", "default": "" },
+		"backgroundId": { "type": "number", "default": 0 }
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"align": true
+	},
+	"editorScript": "file:./build/index.js",
+	"render": "file:./render.php"
+}

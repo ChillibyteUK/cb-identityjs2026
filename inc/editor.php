@@ -23,7 +23,19 @@ defined( 'ABSPATH' ) || exit;
  * @return void
  */
 function cb_identityjs2026_add_editor_styles() {
-	add_editor_style( array( 'css/theme.min.css', 'css/editor.min.css' ) );
+	// theme.min.css first, brand tokens last — same ordering as
+	// inc/enqueue.php on the frontend, and for the same reason:
+	// theme.min.css bundles tokens.css's generic :root defaults, so the
+	// brand override has to load after it to win the cascade. See
+	// MULTI-BRAND.md.
+	$styles = array( 'css/theme.min.css', 'css/editor.min.css' );
+
+	$site = cb_identityjs2026_get_site();
+	if ( null !== $site && file_exists( CB_IDENTITYJS2026_DIR . "/css/tokens/{$site}.min.css" ) ) {
+		$styles[] = "css/tokens/{$site}.min.css";
+	}
+
+	add_editor_style( $styles );
 }
 add_action( 'after_setup_theme', 'cb_identityjs2026_add_editor_styles' );
 
@@ -67,3 +79,46 @@ function cb_identityjs2026_disable_block_directory_inserter() {
 	remove_action( 'enqueue_block_editor_assets', 'wp_enqueue_editor_block_directory_assets' );
 }
 add_action( 'after_setup_theme', 'cb_identityjs2026_disable_block_directory_inserter' );
+
+/**
+ * Pass the site-wide CTAs list to the CTA block's editor script.
+ *
+ * There's no post type or REST-queryable entity behind Site-Wide Settings'
+ * `ctas` repeater — unlike Child Page Nav's page picker, core-data can't
+ * resolve this, so it's localised directly onto the block's own registered
+ * script handle (`{block-name}-editor-script`, per WP's auto-naming from
+ * block.json) as a plain global the block reads at render time.
+ *
+ * @return void
+ */
+function cb_identityjs2026_localize_cta_choices() {
+	if ( ! wp_script_is( 'cb-identityjs2026-cta-editor-script', 'registered' ) ) {
+		return;
+	}
+
+	// array_values() on both ends: repeater rows can have non-sequential
+	// or string keys (e.g. "new_<timestamp>_<n>" from js/repeater-field.js's
+	// "Add row"), and array_map() preserves whatever keys it's given. A
+	// PHP array with non-sequential keys json_encode()s as a JS object, not
+	// an array — silently breaking edit.js's choices.map() the moment a row
+	// is added without ever being re-saved through a full page reload.
+	$ctas    = array_values( cb_identityjs2026_get_repeater_setting( 'ctas' ) );
+	$choices = array_values(
+		array_map(
+			static function ( $cta ) {
+				return array(
+					'id'    => $cta['cta_id'] ?? '',
+					'title' => $cta['title'] ?? '',
+				);
+			},
+			$ctas
+		)
+	);
+
+	wp_add_inline_script(
+		'cb-identityjs2026-cta-editor-script',
+		'window.cbIdentityJs2026Ctas = ' . wp_json_encode( $choices ) . ';',
+		'before'
+	);
+}
+add_action( 'enqueue_block_editor_assets', 'cb_identityjs2026_localize_cta_choices' );

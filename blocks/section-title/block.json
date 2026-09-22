@@ -1,0 +1,24 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cb-identityjs2026/section-title",
+	"title": "CB Section Title",
+	"category": "cb-identityjs2026",
+	"icon": "heading",
+	"attributes": {
+		"title": { "type": "string", "default": "" }
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"align": true,
+		"color": {
+			"text": true,
+			"background": true,
+			"gradient": false,
+			"__experimentalSkipSerialization": true
+		}
+	},
+	"editorScript": "file:./build/index.js",
+	"render": "file:./render.php"
+}

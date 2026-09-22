@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cb-identityjs2026/media-panel",
+	"title": "CB Media Panel",
+	"category": "cb-identityjs2026",
+	"icon": "cover-image",
+	"attributes": {
+		"mediaType": { "type": "string", "default": "image" },
+		"imageId": { "type": "number", "default": 0 },
+		"imageUrl": { "type": "string", "default": "" },
+		"imageAlt": { "type": "string", "default": "" },
+		"topBorder": { "type": "boolean", "default": false },
+		"vimeoId": { "type": "string", "default": "" },
+		"vimeoHash": { "type": "string", "default": "" },
+		"fullWidth": { "type": "boolean", "default": false },
+		"fullBleed": { "type": "boolean", "default": false },
+		"heroMode": { "type": "boolean", "default": false }
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"align": true
+	},
+	"editorScript": "file:./build/index.js",
+	"render": "file:./render.php"
+}

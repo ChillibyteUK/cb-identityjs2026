@@ -16,10 +16,10 @@
  * make one long scrolling page unwieldy. The Scripts tab's three raw markup
  * slots (`custom_head`, `custom_body_open`, `custom_body_close`), gated by
  * `custom_scripts_logged_out_only`, are printed unescaped by design — see
- * inc/head-tags.php. The example fields below
- * (`example_gallery`, `example_repeater`) exist to demonstrate both field
- * types working end to end; rename or replace them with real per-project
- * fields.
+ * inc/head-tags.php. `logos` is a real per-project field (feeds the CB Logo
+ * Slider block's Site-Wide logo source). `example_repeater` is still a
+ * placeholder demonstrating the repeater field type end to end; rename or
+ * replace it with a real per-project field.
  *
  * @package cb-identityjs2026
  */
@@ -67,7 +67,8 @@ function cb_identityjs2026_register_settings_page() {
 	add_settings_section( 'cb_identityjs2026_social', 'Social', '__return_false', 'theme-general-settings' );
 	add_settings_section( 'cb_identityjs2026_tracking', 'Tracking & Verification', '__return_false', 'theme-general-settings' );
 	add_settings_section( 'cb_identityjs2026_scripts', 'Scripts', '__return_false', 'theme-general-settings' );
-	add_settings_section( 'cb_identityjs2026_gallery', 'Gallery', '__return_false', 'theme-general-settings' );
+	add_settings_section( 'cb_identityjs2026_gallery', 'Logos', '__return_false', 'theme-general-settings' );
+	add_settings_section( 'cb_identityjs2026_ctas', 'CTAs', '__return_false', 'theme-general-settings' );
 	add_settings_section( 'cb_identityjs2026_repeater', 'Repeater', '__return_false', 'theme-general-settings' );
 
 	$fields = array(
@@ -81,11 +82,11 @@ function cb_identityjs2026_register_settings_page() {
 			'type'    => 'text',
 			'section' => 'cb_identityjs2026_general',
 		),
-		'facebook_url'              => array(
-			'label'       => 'Facebook URL',
+		'linkedin_url'              => array(
+			'label'       => 'LinkedIn URL',
 			'type'        => 'url',
 			'section'     => 'cb_identityjs2026_social',
-			'placeholder' => 'https://facebook.com/...',
+			'placeholder' => 'https://linkedin.com/company/...',
 			'description' => 'Leave blank to hide this icon from [social_icons].',
 		),
 		'instagram_url'             => array(
@@ -146,11 +147,53 @@ function cb_identityjs2026_register_settings_page() {
 			'default'     => '1',
 			'description' => 'On by default, matching GA/GTM — keeps the team\'s own traffic out of whatever these scripts measure. Untick if a slot holds something every visitor should see, e.g. a chat widget.',
 		),
-		'example_gallery'           => array(
-			'label'       => 'Example Gallery',
+		'logos'                     => array(
+			'label'       => 'Logos',
 			'type'        => 'gallery',
 			'section'     => 'cb_identityjs2026_gallery',
-			'description' => 'A fixed multi-image list — e.g. accreditation badges, a logo strip. Read with cb_identityjs2026_get_repeater_setting-style helper of your own, mirroring cb_identityjs2026_get_footer_accreditation_ids() in the cb-hts-js-2026 sibling theme.',
+			'description' => 'Used in the CB Logo Slider block when its Logo Source is set to Site-Wide. Read with cb_identityjs2026_get_gallery_setting( \'logos\' ).',
+		),
+		'ctas'                      => array(
+			'label'       => 'CTAs',
+			'type'        => 'repeater',
+			'section'     => 'cb_identityjs2026_ctas',
+			'sub_fields'  => array(
+				'cta_id'      => array(
+					'label' => 'CTA ID',
+					'type'  => 'text',
+					'width' => '160px',
+				),
+				'title'       => array(
+					'label' => 'Title',
+					'type'  => 'textarea',
+				),
+				'content'     => array(
+					'label' => 'Content',
+					'type'  => 'textarea',
+				),
+				'link_url'    => array(
+					'label' => 'Link URL',
+					'type'  => 'text',
+					'width' => '260px',
+				),
+				'link_text'   => array(
+					'label' => 'Link Text',
+					'type'  => 'text',
+					'width' => '200px',
+				),
+				'link_target' => array(
+					'label' => 'New Tab',
+					'type'  => 'checkbox',
+				),
+				'background'  => array(
+					'label' => 'Background',
+					'type'  => 'image',
+				),
+				'image'       => array(
+					'label' => 'Image',
+					'type'  => 'image',
+				),
+			),
 		),
 		'example_repeater'          => array(
 			'label'       => 'Example Repeater',
@@ -197,6 +240,47 @@ add_action( 'admin_menu', 'cb_identityjs2026_register_settings_page' );
 function cb_identityjs2026_get_repeater_setting( $key ) {
 	$rows = cb_identityjs2026_get_setting( $key, array() );
 	return is_array( $rows ) ? $rows : array();
+}
+
+/**
+ * Read a `gallery`-type setting as an array of attachment IDs.
+ *
+ * Stored as a CSV string (see cb_identityjs2026_render_gallery_field()) —
+ * this reverses that back into an int array for front-end use.
+ *
+ * @param string $key Setting key, e.g. 'logos'.
+ * @return int[]
+ */
+function cb_identityjs2026_get_gallery_setting( $key ) {
+	return array_filter( array_map( 'absint', explode( ',', cb_identityjs2026_get_setting( $key ) ) ) );
+}
+
+/**
+ * Look up one row from the `ctas` repeater by its `cta_id`.
+ *
+ * Falls back to the first configured CTA when `$cta_id` is empty or doesn't
+ * match any row — same fallback the real cb-cta.php block uses, so a CTA
+ * block never renders completely empty just because its choice wasn't set.
+ *
+ * @param string $cta_id CTA ID to look up.
+ * @return array|null The matching row, the first row as a fallback, or null if no CTAs exist at all.
+ */
+function cb_identityjs2026_get_cta( $cta_id ) {
+	$ctas = cb_identityjs2026_get_repeater_setting( 'ctas' );
+
+	if ( ! $ctas ) {
+		return null;
+	}
+
+	if ( $cta_id ) {
+		foreach ( $ctas as $cta ) {
+			if ( isset( $cta['cta_id'] ) && $cta['cta_id'] === $cta_id ) {
+				return $cta;
+			}
+		}
+	}
+
+	return reset( $ctas );
 }
 
 /**
@@ -363,9 +447,10 @@ function cb_identityjs2026_render_checkbox_field( $args ) {
 /**
  * Render a `gallery`-type field — a hidden CSV-of-IDs input plus a
  * thumbnail strip, driven by the core media modal in multi-select mode.
- * Selection order is preserved as the display order; there's no drag
- * reordering, since re-opening the picker and re-selecting in the wanted
- * order covers it without extra JS.
+ * Initial order is the media-modal selection order; after that, each
+ * thumbnail is HTML5-draggable (see js/gallery-field.js) to reorder without
+ * reopening the picker — dragging updates both the DOM order and the
+ * hidden input's CSV value.
  *
  * @param array $args Field args: key, description.
  * @return void
@@ -388,11 +473,14 @@ function cb_identityjs2026_render_gallery_field( $args ) {
 					continue;
 				}
 				?>
-				<li><img src="<?php echo esc_url( $thumb[0] ); ?>" alt="" style="width: 80px; height: 80px; object-fit: contain; background: #fff; border: 1px solid #ccc;"></li>
+				<li draggable="true" data-id="<?php echo esc_attr( $id ); ?>" style="cursor: grab;"><img src="<?php echo esc_url( $thumb[0] ); ?>" alt="" style="width: 80px; height: 80px; object-fit: contain; background: #fff; border: 1px solid #ccc; pointer-events: none;"></li>
 				<?php
 			}
 			?>
 		</ul>
+		<?php if ( ! empty( $ids ) ) : ?>
+			<p class="description" style="margin-top: -4px;"><?php esc_html_e( 'Drag thumbnails to reorder.', 'cb-identityjs2026' ); ?></p>
+		<?php endif; ?>
 		<p>
 			<button type="button" class="button cb-identityjs2026-gallery-field__select">Select Images</button>
 			<button type="button" class="button cb-identityjs2026-gallery-field__clear">Clear</button>
@@ -426,18 +514,6 @@ function cb_identityjs2026_render_repeater_field( $args ) {
 	$rows       = cb_identityjs2026_get_repeater_setting( $key );
 	?>
 	<div class="cb-identityjs2026-settings-repeater" data-repeater-key="<?php echo esc_attr( $key ); ?>">
-		<div style="display: flex; align-items: center; gap: 12px; padding: 0 12px; margin-bottom: 4px;">
-			<span style="flex: none; width: 22px;"></span>
-			<?php
-			foreach ( $sub_fields as $sub_field ) {
-				$width = 'image' === $sub_field['type'] ? 'flex: none; width: 64px;' : 'flex: 1 1 0%; min-width: 0;';
-				?>
-			<span style="<?php echo esc_attr( $width ); ?> font-size: 12px; font-weight: 600; color: #1d2327;"><?php echo esc_html( $sub_field['label'] ); ?></span>
-				<?php
-			}
-			?>
-			<span style="flex: none; width: 92px;"></span>
-		</div>
 		<div class="cb-identityjs2026-settings-repeater__rows">
 			<?php
 			$number = 0;
@@ -478,69 +554,98 @@ function cb_identityjs2026_render_repeater_field( $args ) {
 function cb_identityjs2026_render_repeater_row( $key, $index, $sub_fields, $row, $number ) {
 	ob_start();
 	?>
-	<div class="cb-identityjs2026-settings-repeater__row" style="display: flex; align-items: flex-end; gap: 12px; border: 1px solid #ccc; padding: 12px; margin-bottom: 8px;">
-		<span
-			class="cb-identityjs2026-settings-repeater__number"
-			style="flex: none; align-self: center; display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #f0f0f1; font-size: 12px; font-weight: 600; color: #50575e;"
-		><?php echo (int) $number; ?></span>
-		<?php
-		foreach ( $sub_fields as $sub_key => $sub_field ) {
-			$name  = sprintf( '%s[%s][%s][%s]', CB_IDENTITYJS2026_SETTINGS_OPTION, $key, $index, $sub_key );
-			$value = $row[ $sub_key ] ?? '';
-
-			if ( 'image' === $sub_field['type'] ) {
-				$thumb = $value ? wp_get_attachment_image_src( absint( $value ), 'thumbnail' ) : false;
+	<div class="cb-identityjs2026-settings-repeater__row" style="border: 1px solid #ccc; padding: 16px; margin-bottom: 12px; background: #fff;">
+		<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+			<span
+				class="cb-identityjs2026-settings-repeater__number"
+				style="display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #f0f0f1; font-size: 12px; font-weight: 600; color: #50575e;"
+			><?php echo (int) $number; ?></span>
+			<div class="cb-identityjs2026-settings-repeater__row-actions" style="display: flex; gap: 4px;">
+				<button type="button" class="button cb-identityjs2026-settings-repeater__move-up" title="Move up">&#9650;</button>
+				<button type="button" class="button cb-identityjs2026-settings-repeater__move-down" title="Move down">&#9660;</button>
+				<button type="button" class="button cb-identityjs2026-settings-repeater__remove-row" title="Remove">&times;</button>
+			</div>
+		</div>
+		<div style="display: flex; flex-wrap: wrap; gap: 12px;">
+			<?php
+			foreach ( $sub_fields as $sub_key => $sub_field ) {
+				$name  = sprintf( '%s[%s][%s][%s]', CB_IDENTITYJS2026_SETTINGS_OPTION, $key, $index, $sub_key );
+				$value = $row[ $sub_key ] ?? '';
+				// Each field is a labelled block that wraps onto its own line
+				// once its basis no longer fits — a "card" of stacked fields,
+				// not a single wide row that needs horizontal scrolling.
+				$basis = ! empty( $sub_field['width'] ) ? $sub_field['width'] : '200px';
+				if ( 'textarea' === $sub_field['type'] ) {
+					$basis = '100%'; // always its own full-width line
+				}
 				?>
-			<div
-				class="cb-identityjs2026-settings-repeater__image"
-				style="flex: none; position: relative; width: 64px; height: 64px; background: #fff; border: 1px solid #ccc;"
-			>
-				<img
-					src="<?php echo $thumb ? esc_url( $thumb[0] ) : ''; ?>"
-					alt=""
-					style="width: 100%; height: 100%; object-fit: contain; display: <?php echo $thumb ? 'block' : 'none'; ?>;"
+			<div style="flex: 1 1 <?php echo esc_attr( $basis ); ?>; min-width: 0;">
+				<label style="display: block; font-size: 11px; font-weight: 600; color: #1d2327; margin-bottom: 4px;"><?php echo esc_html( $sub_field['label'] ); ?></label>
+				<?php if ( 'image' === $sub_field['type'] ) : ?>
+					<?php $thumb = $value ? wp_get_attachment_image_src( absint( $value ), 'thumbnail' ) : false; ?>
+				<div
+					class="cb-identityjs2026-settings-repeater__image"
+					style="position: relative; width: 64px; height: 64px; background: #fff; border: 1px solid #ccc;"
 				>
+					<img
+						src="<?php echo $thumb ? esc_url( $thumb[0] ) : ''; ?>"
+						alt=""
+						style="width: 100%; height: 100%; object-fit: contain; display: <?php echo $thumb ? 'block' : 'none'; ?>;"
+					>
+					<input
+						type="hidden"
+						class="cb-identityjs2026-settings-repeater__image-input"
+						name="<?php echo esc_attr( $name ); ?>"
+						value="<?php echo esc_attr( $value ); ?>"
+					>
+					<div style="position: absolute; inset: auto 0 0 0; display: flex; background: rgba(0, 0, 0, 0.6);">
+						<button
+							type="button"
+							class="cb-identityjs2026-settings-repeater__select-image"
+							data-select-label="Select <?php echo esc_attr( $sub_field['label'] ); ?>"
+							title="<?php echo esc_attr( ( $thumb ? 'Replace ' : 'Select ' ) . $sub_field['label'] ); ?>"
+							style="flex: 1; background: none; border: none; color: #fff; cursor: pointer; padding: 2px 0; font-size: 11px; line-height: 1;"
+						>&#9998;</button>
+						<button
+							type="button"
+							class="cb-identityjs2026-settings-repeater__clear-image"
+							title="Clear"
+							style="flex: 1; background: none; border: none; color: #fff; cursor: pointer; padding: 2px 0; font-size: 13px; line-height: 1; <?php echo $thumb ? '' : 'display: none;'; ?>"
+						>&times;</button>
+					</div>
+				</div>
+				<?php elseif ( 'textarea' === $sub_field['type'] ) : ?>
+				<textarea
+					class="large-text"
+					style="width: 100%; height: 60px;"
+					aria-label="<?php echo esc_attr( $sub_field['label'] ); ?>"
+					name="<?php echo esc_attr( $name ); ?>"
+				><?php echo esc_textarea( $value ); ?></textarea>
+				<?php elseif ( 'checkbox' === $sub_field['type'] ) : ?>
+				<label style="display: flex; align-items: center; gap: 4px; height: 28px;">
+					<input
+						type="checkbox"
+						aria-label="<?php echo esc_attr( $sub_field['label'] ); ?>"
+						name="<?php echo esc_attr( $name ); ?>"
+						value="1"
+						<?php checked( '1', $value ); ?>
+					>
+					<?php esc_html_e( 'Yes', 'cb-identityjs2026' ); ?>
+				</label>
+				<?php else : ?>
 				<input
-					type="hidden"
-					class="cb-identityjs2026-settings-repeater__image-input"
+					type="text"
+					class="regular-text"
+					style="width: 100%;"
+					aria-label="<?php echo esc_attr( $sub_field['label'] ); ?>"
 					name="<?php echo esc_attr( $name ); ?>"
 					value="<?php echo esc_attr( $value ); ?>"
 				>
-				<div style="position: absolute; inset: auto 0 0 0; display: flex; background: rgba(0, 0, 0, 0.6);">
-					<button
-						type="button"
-						class="cb-identityjs2026-settings-repeater__select-image"
-						data-select-label="Select <?php echo esc_attr( $sub_field['label'] ); ?>"
-						title="<?php echo esc_attr( ( $thumb ? 'Replace ' : 'Select ' ) . $sub_field['label'] ); ?>"
-						style="flex: 1; background: none; border: none; color: #fff; cursor: pointer; padding: 2px 0; font-size: 11px; line-height: 1;"
-					>&#9998;</button>
-					<button
-						type="button"
-						class="cb-identityjs2026-settings-repeater__clear-image"
-						title="Clear"
-						style="flex: 1; background: none; border: none; color: #fff; cursor: pointer; padding: 2px 0; font-size: 13px; line-height: 1; <?php echo $thumb ? '' : 'display: none;'; ?>"
-					>&times;</button>
-				</div>
+				<?php endif; ?>
 			</div>
 				<?php
-			} else {
-				?>
-			<input
-				type="text"
-				class="regular-text"
-				style="flex: 1 1 0%; min-width: 0; width: 100%;"
-				aria-label="<?php echo esc_attr( $sub_field['label'] ); ?>"
-				name="<?php echo esc_attr( $name ); ?>"
-				value="<?php echo esc_attr( $value ); ?>"
-			>
-				<?php
 			}
-		}
-		?>
-		<div class="cb-identityjs2026-settings-repeater__row-actions" style="flex: none; display: flex; gap: 4px;">
-			<button type="button" class="button cb-identityjs2026-settings-repeater__move-up" title="Move up">&#9650;</button>
-			<button type="button" class="button cb-identityjs2026-settings-repeater__move-down" title="Move down">&#9660;</button>
-			<button type="button" class="button cb-identityjs2026-settings-repeater__remove-row" title="Remove">&times;</button>
+			?>
 		</div>
 	</div>
 	<?php

@@ -5,6 +5,13 @@ deliberate and not obvious from the code alone. If you're about to reach for
 Sass, Bootstrap, jQuery, an icon font, or flexbox-for-everything, stop and
 re-read the relevant section below first.
 
+**This theme folder is shared, byte-identical, across multiple brand/region
+installs** (identity, gcc, and others as they migrate) — see
+[MULTI-BRAND.md](MULTI-BRAND.md) before touching `src/css/tokens/`,
+`inc/site-config.php`, or any `header-{site}.php`/`footer-{site}.php` file.
+That doc, not this one, is the source of truth for how per-brand tokens,
+`theme.json`, and structural header/footer differences work.
+
 ## What this is
 
 A standalone WordPress theme skeleton — no parent theme, no framework

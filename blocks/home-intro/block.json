@@ -1,0 +1,24 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cb-identityjs2026/home-intro",
+	"title": "CB Home Intro",
+	"category": "cb-identityjs2026",
+	"icon": "cover-image",
+	"attributes": {
+		"preTitle": { "type": "string", "default": "" },
+		"title": { "type": "string", "default": "" },
+		"contentHeading": { "type": "string", "default": "" },
+		"content": { "type": "string", "default": "" },
+		"linkText": { "type": "string", "default": "" },
+		"linkUrl": { "type": "string", "default": "" },
+		"linkTarget": { "type": "boolean", "default": false }
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"align": true
+	},
+	"editorScript": "file:./build/index.js",
+	"render": "file:./render.php"
+}
