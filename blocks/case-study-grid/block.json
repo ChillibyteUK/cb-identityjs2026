@@ -1,0 +1,22 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cb-identityjs2026/case-study-grid",
+	"title": "CB Case Study Grid",
+	"category": "cb-identityjs2026",
+	"icon": "screenoptions",
+	"attributes": {
+		"mode": { "type": "string", "default": "grid" },
+		"heroCaseStudy": { "type": "number", "default": 0 },
+		"count": { "type": "number", "default": 4 },
+		"taxonomyFilter": { "type": "string", "default": "none" },
+		"selectedServices": { "type": "array", "default": [], "items": { "type": "number" } }
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"align": true
+	},
+	"editorScript": "file:./build/index.js",
+	"render": "file:./render.php"
+}

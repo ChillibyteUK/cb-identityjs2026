@@ -1,0 +1,70 @@
+/*
+ * Case Study Hero — see cb-case-study-hero.php. Always a solid near-black
+ * band regardless of brand (real source's own hardcoded
+ * has-primary-black-background-color) — #0d0d0c matches the literal value
+ * already confirmed live for Work Index's own hero overlay gradient
+ * (work-index.css), not otherwise tokenised in this theme.
+ */
+
+.case-study-hero {
+	background-color: #0d0d0c;
+	color: #fff;
+	padding-block: var(--space-6) var(--space-5);
+}
+
+.case-study-hero__title,
+.case-study-hero__subtitle {
+	margin: 0;
+}
+
+.case-study-hero__title .id-container,
+.case-study-hero__subtitle .id-container {
+	padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+	.case-study-hero__title .id-container,
+	.case-study-hero__subtitle .id-container {
+		padding-inline: var(--space-5);
+	}
+}
+
+.case-study-hero__title {
+	padding-block-start: var(--space-3);
+	font-family: var(--ff-heading);
+	font-size: var(--fs-h1);
+	font-weight: var(--fw-heading-h1);
+	line-height: var(--lh-heading-h1);
+	color: #fff;
+}
+
+.case-study-hero__subtitle {
+	padding-block-start: var(--space-2);
+	font-family: var(--ff-heading);
+	font-size: var(--fs-600);
+	font-weight: var(--fw-regular);
+	/* neutral-500, matching the same literal already used for Work Index's
+	   own hero/card descriptions (work-index.css) — not otherwise
+	   tokenised in this theme. */
+	color: #aeada1;
+}
+
+.case-study-hero__video-container {
+	position: relative;
+	margin-block-start: var(--space-5);
+	aspect-ratio: 16 / 9;
+	overflow: hidden;
+}
+
+.case-study-hero__video-overlay {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background: rgba(13, 13, 12, 0.1);
+}
+
+.case-study-hero__video {
+	display: block;
+	width: 100%;
+	height: 100%;
+}

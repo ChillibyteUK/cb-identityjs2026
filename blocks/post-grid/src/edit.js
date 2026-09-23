@@ -76,7 +76,7 @@ function FilterGroupRow( { group, index, onChange, onRemove, canRemove } ) {
 			) : ! ( taxonomyTerms ?? [] ).length ? (
 				<p className="cb-identityjs2026-editor-field__help">{ __( 'No terms found.', 'cb-identityjs2026' ) }</p>
 			) : (
-				<div className="cb-identityjs2026-post-grid-filter-row__terms">
+				<div className="cb-identityjs2026-term-checklist">
 					{ taxonomyTerms.map( ( term ) => (
 						<CheckboxControl
 							key={ term.id }

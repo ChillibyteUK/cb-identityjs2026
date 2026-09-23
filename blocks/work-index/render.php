@@ -10,16 +10,13 @@
  *
  * Deliberately simplified vs. the real source, flagged rather than silently
  * dropped:
- * - No hover-video-preview on cards. The real source reads a `vimeo_url`
- *   ACF field on the case_study post itself; this theme has no meta-field
- *   infrastructure on that CPT yet (case_study was only just registered —
- *   see inc/posttypes.php). Revisit once that exists.
- * - No "hero subtitle" block-parsing (`cb_find_hero_subtitle()` scanning a
- *   case_study's own cb-case-study-hero block for a subtitle field) — that
- *   block doesn't exist in this theme yet either. Falls straight to the
- *   real source's own documented fallback path instead: a trimmed excerpt.
  * - Filter select is a plain <select>, not the real source's TomSelect
  *   combobox enhancement — same filtering behaviour, simpler markup.
+ *
+ * Card description and hover-preview video both come from
+ * cb_identityjs2026_get_case_study_card_meta() (inc/case-study.php) — the
+ * linked case study's own Case Study Hero block subtitle/vimeoId/vimeoHash,
+ * falling back to a trimmed excerpt when that block has no subtitle set.
  *
  * @package cb-identityjs2026
  */
@@ -42,21 +39,6 @@ if ( ! $hero_id ) {
 		$hero_id = $hero_query->posts[0]->ID;
 	}
 	wp_reset_postdata();
-}
-
-/**
- * Trimmed excerpt for a case study card/hero — the real source's own
- * documented fallback when no hero-block subtitle is found (see this
- * file's own header comment for why that lookup isn't built here).
- *
- * @param int $post_id
- * @return string
- */
-if ( ! function_exists( 'cb_identityjs2026_work_index_desc' ) ) {
-	function cb_identityjs2026_work_index_desc( $post_id ) {
-		$excerpt = get_the_excerpt( $post_id );
-		return wp_trim_words( $excerpt, 18, '...' );
-	}
 }
 
 $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'work-index' ) );
@@ -83,7 +65,7 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'work-inde
 						<?php echo esc_html( get_the_title( $hero_id ) ); ?>
 						<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/img/arrow-wh.svg' ); ?>" width="23" height="21" alt="" />
 					</div>
-					<div class="work-index-hero__desc"><?php echo esc_html( cb_identityjs2026_work_index_desc( $hero_id ) ); ?></div>
+					<div class="work-index-hero__desc"><?php echo esc_html( cb_identityjs2026_get_case_study_card_meta( $hero_id )['desc'] ); ?></div>
 				</div>
 			</a>
 		<?php endif; ?>
@@ -128,6 +110,8 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'work-inde
 				)
 			);
 
+			$vimeo_app_id = 58479; // Same fixed Vimeo app/account registration as Media Panel/Case Study Hero.
+
 			while ( $query->have_posts() ) :
 				$query->the_post();
 				$post_id       = get_the_ID();
@@ -145,6 +129,23 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'work-inde
 					}
 					$service_slugs = array_unique( $service_slugs );
 				}
+
+				$card_meta  = cb_identityjs2026_get_case_study_card_meta( $post_id );
+				$video_src  = '';
+				if ( $card_meta['vimeoId'] ) {
+					$video_src = add_query_arg(
+						array(
+							'h'          => $card_meta['vimeoHash'],
+							'dnt'        => '1',
+							'badge'      => '0',
+							'player_id'  => '0',
+							'app_id'     => $vimeo_app_id,
+							'background' => '1',
+							'autoplay'   => '1',
+						),
+						'https://player.vimeo.com/video/' . rawurlencode( $card_meta['vimeoId'] )
+					);
+				}
 				?>
 				<a href="<?php echo esc_url( get_permalink() ); ?>" class="work-index__card" data-service-terms="<?php echo esc_attr( implode( ' ', $service_slugs ) ); ?>">
 					<?php if ( has_post_thumbnail() ) : ?>
@@ -152,12 +153,15 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'work-inde
 							<?php the_post_thumbnail( 'full', array( 'class' => 'work-index__image' ) ); ?>
 						</div>
 					<?php endif; ?>
+					<?php if ( $video_src ) : ?>
+						<div class="work-index__video" data-video-src="<?php echo esc_url( $video_src ); ?>"></div>
+					<?php endif; ?>
 					<div class="work-index__content">
 						<div class="work-index__title">
 							<?php the_title(); ?>
 							<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/img/arrow-n600-solid.svg' ); ?>" width="14" height="13" alt="" />
 						</div>
-						<div class="work-index__desc"><?php echo esc_html( cb_identityjs2026_work_index_desc( $post_id ) ); ?></div>
+						<div class="work-index__desc"><?php echo esc_html( $card_meta['desc'] ); ?></div>
 					</div>
 				</a>
 				<?php
@@ -186,5 +190,35 @@ document.addEventListener('DOMContentLoaded', function () {
 			applyFilter();
 		});
 	}
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+	// Video hover preview: only mount the Vimeo iframe while the card is
+	// hovered/focused, so idle cards never hold a live player in memory —
+	// ported from cb-featured-work.php's own JS.
+	document.querySelectorAll('.work-index__card').forEach(function (card) {
+		var container = card.querySelector('.work-index__video');
+		if (!container) return;
+		var src = container.getAttribute('data-video-src');
+
+		function mountVideo() {
+			if (container.querySelector('iframe')) return;
+			var iframe = document.createElement('iframe');
+			iframe.src = src;
+			iframe.frameBorder = '0';
+			iframe.allow = 'autoplay; fullscreen';
+			iframe.allowFullscreen = true;
+			container.appendChild(iframe);
+		}
+		function unmountVideo() {
+			var iframe = container.querySelector('iframe');
+			if (iframe) iframe.remove();
+		}
+
+		card.addEventListener('mouseenter', mountVideo);
+		card.addEventListener('mouseleave', unmountVideo);
+		card.addEventListener('focusin', mountVideo);
+		card.addEventListener('focusout', unmountVideo);
+	});
 });
 </script>

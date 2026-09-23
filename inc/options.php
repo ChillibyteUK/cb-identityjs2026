@@ -69,6 +69,14 @@ function cb_identityjs2026_register_settings_page() {
 	add_settings_section( 'cb_identityjs2026_scripts', 'Scripts', '__return_false', 'theme-general-settings' );
 	add_settings_section( 'cb_identityjs2026_gallery', 'Logos', '__return_false', 'theme-general-settings' );
 	add_settings_section( 'cb_identityjs2026_ctas', 'CTAs', '__return_false', 'theme-general-settings' );
+	// Only identity has index.php/category-insights.php/category-press.php
+	// (the templates these fields actually feed) — see MULTI-BRAND.md's
+	// "don't build for a brand that doesn't exist yet" rule. Not registering
+	// the section at all (rather than registering it and hiding it) also
+	// keeps its tab out of the nav entirely on other brands, not just its panel.
+	if ( 'identity' === cb_identityjs2026_get_site() ) {
+		add_settings_section( 'cb_identityjs2026_page_ctas', 'Page CTAs', '__return_false', 'theme-general-settings' );
+	}
 	add_settings_section( 'cb_identityjs2026_repeater', 'Repeater', '__return_false', 'theme-general-settings' );
 
 	$fields = array(
@@ -195,6 +203,24 @@ function cb_identityjs2026_register_settings_page() {
 				),
 			),
 		),
+		'cta_index'                 => array(
+			'label'       => 'Index / Blog Home',
+			'type'        => 'cta_select',
+			'section'     => 'cb_identityjs2026_page_ctas',
+			'description' => 'CTA shown at the bottom of index.php (the blog/news index).',
+		),
+		'cta_category_insights'     => array(
+			'label'       => 'Insights Archive',
+			'type'        => 'cta_select',
+			'section'     => 'cb_identityjs2026_page_ctas',
+			'description' => 'CTA shown at the bottom of category-insights.php.',
+		),
+		'cta_category_press'        => array(
+			'label'       => 'Press Archive',
+			'type'        => 'cta_select',
+			'section'     => 'cb_identityjs2026_page_ctas',
+			'description' => 'CTA shown at the bottom of category-press.php.',
+		),
 		'example_repeater'          => array(
 			'label'       => 'Example Repeater',
 			'type'        => 'repeater',
@@ -212,6 +238,12 @@ function cb_identityjs2026_register_settings_page() {
 			'description' => 'Genuinely repeating structured rows — e.g. a client-logo list. Read with cb_identityjs2026_get_repeater_setting( \'example_repeater\' ).',
 		),
 	);
+
+	// Same identity-only gate as the section itself above — these three
+	// would otherwise register against a section that was never added.
+	if ( 'identity' !== cb_identityjs2026_get_site() ) {
+		unset( $fields['cta_index'], $fields['cta_category_insights'], $fields['cta_category_press'] );
+	}
 
 	foreach ( $fields as $key => $field ) {
 		add_settings_field(
@@ -347,6 +379,11 @@ function cb_identityjs2026_render_settings_field( $args ) {
 		return;
 	}
 
+	if ( 'cta_select' === $args['type'] ) {
+		cb_identityjs2026_render_cta_select_field( $args );
+		return;
+	}
+
 	$value = cb_identityjs2026_get_setting( $args['key'] );
 	?>
 	<input
@@ -436,6 +473,55 @@ function cb_identityjs2026_render_checkbox_field( $args ) {
 		>
 		<?php echo esc_html( $args['checkbox_label'] ?? 'Enabled' ); ?>
 	</label>
+	<?php
+	if ( ! empty( $args['description'] ) ) {
+		?>
+		<p class="description"><?php echo esc_html( $args['description'] ); ?></p>
+		<?php
+	}
+}
+
+/**
+ * Render a `cta_select`-type field — a plain <select> of the `ctas`
+ * repeater's own rows (see cb_identityjs2026_get_cta()'s cta_id lookup),
+ * not a static options list, since which CTAs exist is itself editor-
+ * configured. Lets a specific page/template pin a different CTA than
+ * whichever one happens to be first in the CTAs tab, without needing a
+ * block-attribute edit in PHP — see index.php / category-insights.php /
+ * category-press.php, which each read one of these via
+ * cb_identityjs2026_get_setting() and pass it straight through as the CTA
+ * block's own `ctaChoice` attribute (empty stays "use the first CTA",
+ * same fallback the block already has).
+ *
+ * @param array $args Field args: key, description.
+ * @return void
+ */
+function cb_identityjs2026_render_cta_select_field( $args ) {
+	$value = cb_identityjs2026_get_setting( $args['key'] );
+	$ctas  = cb_identityjs2026_get_repeater_setting( 'ctas' );
+	?>
+	<select
+		id="<?php echo esc_attr( $args['key'] ); ?>"
+		name="<?php echo esc_attr( CB_IDENTITYJS2026_SETTINGS_OPTION ); ?>[<?php echo esc_attr( $args['key'] ); ?>]"
+	>
+		<option value=""><?php esc_html_e( '— Default (first CTA) —', 'cb-identityjs2026' ); ?></option>
+		<?php foreach ( $ctas as $cta ) : ?>
+			<?php
+			$cta_id = $cta['cta_id'] ?? '';
+			if ( ! $cta_id ) {
+				continue;
+			}
+			// The repeater's own Title sub-field is a textarea (real saved
+			// CTAs wrap their heading across lines) — collapsed to one line
+			// here purely for a readable dropdown option, not changed at
+			// the source.
+			$label = trim( preg_replace( '/\s+/', ' ', $cta['title'] ?? '' ) );
+			?>
+			<option value="<?php echo esc_attr( $cta_id ); ?>" <?php selected( $value, $cta_id ); ?>>
+				<?php echo esc_html( $label ? "{$cta_id} — {$label}" : $cta_id ); ?>
+			</option>
+		<?php endforeach; ?>
+	</select>
 	<?php
 	if ( ! empty( $args['description'] ) ) {
 		?>

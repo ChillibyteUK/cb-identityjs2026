@@ -2019,6 +2019,182 @@ select {
 	}
 }
 
+/* --- src/blocks/case-study-grid.css --- */
+/*
+ * Case Study Grid — see identity-global-block-spec.md. Card markup/visual
+ * language matches Work Index's own cards (work-index.css) — both are
+ * case_study links with the same stacked image/content treatment — but
+ * kept as its own class namespace per the spec's semantic class list
+ * (.case-study-grid__*), since this is a distinct, smaller, reusable block
+ * rather than the full listing page.
+ */
+
+.case-study-grid {
+	background-color: var(--col-bg);
+}
+
+.case-study-grid__cards {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--space-3);
+	padding-block: var(--space-5);
+}
+
+@media (min-width: 768px) {
+	.case-study-grid__cards {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+.case-study-grid__card {
+	position: relative;
+	display: grid;
+	grid-template-areas: "stack";
+	aspect-ratio: 16 / 9;
+	overflow: hidden;
+	background-color: var(--col-bg-alt);
+	text-decoration: none;
+	color: inherit;
+}
+
+.case-study-grid--hero .case-study-grid__card--hero {
+	aspect-ratio: 21 / 9;
+}
+
+.case-study-grid__image-wrapper {
+	grid-area: stack;
+	width: 100%;
+	height: 100%;
+}
+
+.case-study-grid__image {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.case-study-grid__card:hover .case-study-grid__image {
+	transform: scale(1.05);
+}
+
+.case-study-grid__video {
+	grid-area: stack;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.case-study-grid__video iframe {
+	display: block;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+}
+
+.case-study-grid__content {
+	grid-area: stack;
+	align-self: end;
+	padding: var(--space-5) var(--space-4) var(--space-4);
+	background: linear-gradient(rgba(13, 13, 12, 0), rgba(13, 13, 12, 0.5) 10%, rgba(13, 13, 12, 0.8));
+}
+
+.case-study-grid__title {
+	display: flex;
+	align-items: center;
+	gap: var(--space-2);
+	font-family: var(--ff-heading);
+	font-size: var(--fs-h3);
+	font-weight: var(--fw-heading);
+	color: var(--col-heading);
+}
+
+.case-study-grid--hero .case-study-grid__title {
+	font-size: var(--fs-h1);
+}
+
+.case-study-grid__desc {
+	margin-block-start: var(--space-2);
+	font-size: var(--fs-body);
+	/* col-text-muted per the spec's own token binding — this theme doesn't
+	   have that exact token yet, so using the same neutral-500 literal
+	   already confirmed live for Work Index's own card descriptions
+	   (work-index.css). */
+	color: #aeada1;
+}
+
+/* --- src/blocks/case-study-hero.css --- */
+/*
+ * Case Study Hero — see cb-case-study-hero.php. Always a solid near-black
+ * band regardless of brand (real source's own hardcoded
+ * has-primary-black-background-color) — #0d0d0c matches the literal value
+ * already confirmed live for Work Index's own hero overlay gradient
+ * (work-index.css), not otherwise tokenised in this theme.
+ */
+
+.case-study-hero {
+	background-color: #0d0d0c;
+	color: #fff;
+	padding-block: var(--space-6) var(--space-5);
+}
+
+.case-study-hero__title,
+.case-study-hero__subtitle {
+	margin: 0;
+}
+
+.case-study-hero__title .id-container,
+.case-study-hero__subtitle .id-container {
+	padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+	.case-study-hero__title .id-container,
+	.case-study-hero__subtitle .id-container {
+		padding-inline: var(--space-5);
+	}
+}
+
+.case-study-hero__title {
+	padding-block-start: var(--space-3);
+	font-family: var(--ff-heading);
+	font-size: var(--fs-h1);
+	font-weight: var(--fw-heading-h1);
+	line-height: var(--lh-heading-h1);
+	color: #fff;
+}
+
+.case-study-hero__subtitle {
+	padding-block-start: var(--space-2);
+	font-family: var(--ff-heading);
+	font-size: var(--fs-600);
+	font-weight: var(--fw-regular);
+	/* neutral-500, matching the same literal already used for Work Index's
+	   own hero/card descriptions (work-index.css) — not otherwise
+	   tokenised in this theme. */
+	color: #aeada1;
+}
+
+.case-study-hero__video-container {
+	position: relative;
+	margin-block-start: var(--space-5);
+	aspect-ratio: 16 / 9;
+	overflow: hidden;
+}
+
+.case-study-hero__video-overlay {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background: rgba(13, 13, 12, 0.1);
+}
+
+.case-study-hero__video {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
 /* --- src/blocks/child-page-nav.css --- */
 /*
  * Child Page Nav — see identity-global-block-spec.md. Built from
@@ -4276,6 +4452,19 @@ select {
 
 .work-index__card:hover .work-index__image {
 	transform: scale(1.05);
+}
+
+.work-index__video {
+	grid-area: stack;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.work-index__video iframe {
+	display: block;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
 }
 
 .work-index__content {

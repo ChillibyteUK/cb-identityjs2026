@@ -515,7 +515,12 @@
 	}
 }
 
-.cb-identityjs2026-post-grid-filter-row__terms {
+/*
+ * Scrollable bordered checkbox list for a taxonomy's terms — shared by
+ * Post Grid's per-filter-row term picker and Case Study Grid's Services
+ * picker, not scoped to either block's own naming.
+ */
+.cb-identityjs2026-term-checklist {
 	max-height: 220px;
 	overflow-y: auto;
 	padding: 8px 12px;
