@@ -457,4 +457,38 @@
 	margin-bottom: 1.5rem;
 }
 
+/* Content Builder's own row/module wrappers — plain bordered boxes to keep
+   a many-row, many-module block scannable in the editor's fields-form UI. */
+.cb-identityjs2026-content-builder-row-wrap {
+	margin-block: 1rem;
+	padding: 1rem;
+	border: 1px solid #dcdcde;
+	border-radius: 2px;
+	background: #fff;
+}
+
+.cb-identityjs2026-content-builder-row-wrap__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 0.75rem;
+	font-weight: 600;
+}
+
+.cb-identityjs2026-content-builder-module-wrap {
+	margin-block: 0.75rem;
+	padding: 0.75rem;
+	border: 1px solid #e0e0e0;
+	border-radius: 2px;
+	background: #f6f7f7;
+}
+
+.cb-identityjs2026-content-builder-module-wrap__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 0.5rem;
+	font-weight: 600;
+}
+
 /*# sourceMappingURL=editor.css.map */

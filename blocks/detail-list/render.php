@@ -51,7 +51,12 @@ if ( ! $details ) {
 	return;
 }
 
-$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'detail-list' ) );
+$section_classes = array( 'detail-list' );
+if ( empty( $attributes['hasTopBorder'] ) ) {
+	$section_classes[] = 'detail-list--no-top-border';
+}
+
+$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $section_classes ) ) );
 ?>
 <section <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?>>
 	<div class="id-container">

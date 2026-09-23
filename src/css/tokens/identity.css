@@ -10,6 +10,11 @@
 @import "_identity-palette.css";
 
 :root {
+  /* fs-800 is per-brand-only (not in the shared base _tokens.scss) —
+     identity's own real row in cb-site-tokens.php, confirmed live on
+     identityglobal.com/innovation/ (2026-09-22): 40px. */
+  --fs-800: clamp(1.5rem, 0.9rem + 1.6vw, 2.5rem);
+
   --col-bg: #0d0d0c;
   --col-text: #ffffff;
   --col-text-muted: #77766c; /* neutral-700, confirmed in cb-identity2025/_tokens.scss — never overridden before, caught via footer__colophon rendering the generic #4a4a4a default */

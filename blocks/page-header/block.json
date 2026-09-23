@@ -8,9 +8,11 @@
 	"attributes": {
 		"title": { "type": "string", "default": "" },
 		"introText": { "type": "string", "default": "" },
+		"introTextFontSize": { "type": "string", "default": "" },
 		"animatedTitle": { "type": "string", "default": "" },
 		"secondaryPanelType": { "type": "string", "default": "none" },
 		"secondaryText": { "type": "string", "default": "" },
+		"secondaryTextFontSize": { "type": "string", "default": "" },
 		"quote": { "type": "string", "default": "" },
 		"quoteAuthor": { "type": "string", "default": "" },
 		"quoteCompany": { "type": "string", "default": "" },

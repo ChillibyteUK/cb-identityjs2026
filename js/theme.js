@@ -259,15 +259,23 @@
 	}
 
 	/**
-	 * Home Intro's staggered title reveal — ported from
-	 * cb-identitygroup2026/blocks/cb-brand-title-text.php's inline
-	 * ScrollTrigger timeline (enqueued properly via gsap/gsap-scrolltrigger
-	 * vendor handles instead of the real source's raw per-instance CDN
-	 * <script> tags — see inc/enqueue.php). Self-guarding: no-ops without
-	 * .home-intro__title in the DOM.
+	 * Staggered "bar reveal" title animation — the three-line
+	 * bar-slides-in-then-text-fades-in treatment shared by Home Intro and Page
+	 * Header's animated title. Originally duplicated per-block in both real
+	 * sources (cb-brand-title-text.php and cb-region-page-header.php each had
+	 * their own copy of this exact GSAP timeline) — built once here instead,
+	 * per identity-global-block-spec.md's Page Header note. Self-guarding:
+	 * no-ops without a matching title container, or without gsap/ScrollTrigger.
+	 *
+	 * @param {string} titleSelector   Container holding up to 3 `.line` rows,
+	 *                                 each with a `.barN`/`.textN` pair.
+	 * @param {string} triggerSelector ScrollTrigger's own trigger element —
+	 *                                 usually the title's parent section, not
+	 *                                 the title itself, matching both real
+	 *                                 sources' own trigger choice.
 	 */
-	function initHomeIntroAnimate() {
-	  const title = document.querySelector('.home-intro__title');
+	function initTitleBarRevealAnimate(titleSelector, triggerSelector) {
+	  const title = document.querySelector(titleSelector);
 	  if (!title || typeof window.gsap === 'undefined' || typeof window.ScrollTrigger === 'undefined') return;
 	  window.gsap.registerPlugin(window.ScrollTrigger);
 	  const tl = window.gsap.timeline({
@@ -275,48 +283,60 @@
 	      ease: 'power3.out'
 	    },
 	    scrollTrigger: {
-	      trigger: '.home-intro',
+	      trigger: triggerSelector,
 	      start: 'top center',
 	      toggleActions: 'play none none none',
 	      once: true
 	    }
 	  });
-	  tl.fromTo('.home-intro__title .bar1', {
+	  tl.fromTo(`${titleSelector} .bar1`, {
 	    x: '-150%',
 	    opacity: 0
 	  }, {
 	    x: 0,
 	    opacity: 1,
 	    duration: 0.8
-	  }, 0).fromTo('.home-intro__title .bar2', {
+	  }, 0).fromTo(`${titleSelector} .bar2`, {
 	    x: '150%',
 	    opacity: 0
 	  }, {
 	    x: 0,
 	    opacity: 1,
 	    duration: 0.8
-	  }, 0.3).fromTo('.home-intro__title .bar3', {
+	  }, 0.3).fromTo(`${titleSelector} .bar3`, {
 	    x: '-150%',
 	    opacity: 0
 	  }, {
 	    x: 0,
 	    opacity: 1,
 	    duration: 0.8
-	  }, 0.6).to('.home-intro__title .bar1', {
+	  }, 0.6).to(`${titleSelector} .bar1`, {
 	    rotate: -3,
 	    duration: 0.4
-	  }, '+=0.1').to('.home-intro__title .bar2', {
+	  }, '+=0.1').to(`${titleSelector} .bar2`, {
 	    rotate: 5,
 	    duration: 0.4
-	  }, '-=0.3').to('.home-intro__title .bar3', {
+	  }, '-=0.3').to(`${titleSelector} .bar3`, {
 	    rotate: -6,
 	    duration: 0.4
-	  }, '-=0.3').to('.home-intro__title .text', {
+	  }, '-=0.3').to(`${titleSelector} .text`, {
 	    opacity: 1,
 	    duration: 0.6,
 	    stagger: 0.2
 	  }, '+=0.3');
 	  tl.timeScale(2);
+	}
+
+	/**
+	 * Home Intro's title reveal now lives in the shared
+	 * title-bar-reveal-animate.js (see its own header comment) — Page Header's
+	 * animated title needed the exact same GSAP timeline, and
+	 * identity-global-block-spec.md's Page Header entry is explicit that it
+	 * must be "build it once as a shared component, not copied per block".
+	 * This file is kept only so nothing importing the old name breaks.
+	 */
+	function initHomeIntroAnimate() {
+	  initTitleBarRevealAnimate('.home-intro__title', '.home-intro');
 	}
 
 	/**
@@ -449,6 +469,68 @@
 	  });
 	}
 
+	/**
+	 * Content Builder's background-image parallax — same GSAP ScrollTrigger
+	 * `scrub` reimplementation already used for Feature Overlay's own parallax
+	 * (see feature-overlay-parallax.js), in place of the real source's bespoke
+	 * inline <script>/requestAnimationFrame loop. Self-guarding: no-ops without
+	 * gsap/ScrollTrigger, or without any .content-builder--has-background-image
+	 * element in the DOM.
+	 */
+	function initContentBuilderParallax() {
+	  const elements = document.querySelectorAll('.content-builder--has-background-image');
+	  if (!elements.length) return;
+	  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	  if (prefersReducedMotion || typeof window.gsap === 'undefined' || typeof window.ScrollTrigger === 'undefined') return;
+	  window.gsap.registerPlugin(window.ScrollTrigger);
+	  elements.forEach(el => {
+	    window.gsap.fromTo(el, {
+	      '--content-builder-parallax-y': '-120px'
+	    }, {
+	      '--content-builder-parallax-y': '120px',
+	      ease: 'none',
+	      scrollTrigger: {
+	        trigger: el,
+	        start: 'top bottom',
+	        end: 'bottom top',
+	        scrub: true
+	      }
+	    });
+	  });
+	}
+
+	/**
+	 * Matches the rendered height of every `.content-builder__image-wrap`
+	 * within a row to the tallest one, for any row with 2+ image modules —
+	 * pure runtime measurement in the real source (not derivable from any ACF
+	 * field or static CSS), ported here near-verbatim since it's DOM
+	 * measurement, not an animation GSAP would help with. Re-runs on load and
+	 * on a debounced resize, matching the real source's own timing.
+	 */
+	function initContentBuilderImageHeights() {
+	  const rows = document.querySelectorAll('.content-builder__row');
+	  if (!rows.length) return;
+	  function matchImageHeights() {
+	    rows.forEach(row => {
+	      const wraps = row.querySelectorAll('.content-builder__module--image .content-builder__image-wrap');
+	      if (wraps.length < 2) return;
+	      wraps.forEach(wrap => {
+	        wrap.style.height = '';
+	      });
+	      const tallest = Math.max(...Array.from(wraps).map(wrap => wrap.getBoundingClientRect().height));
+	      wraps.forEach(wrap => {
+	        wrap.style.height = `${tallest}px`;
+	      });
+	    });
+	  }
+	  let resizeTimer;
+	  window.addEventListener('resize', () => {
+	    clearTimeout(resizeTimer);
+	    resizeTimer = setTimeout(matchImageHeights, 100);
+	  });
+	  matchImageHeights();
+	}
+
 	document.addEventListener('DOMContentLoaded', () => {
 	  initLenis();
 	  initNavToggle();
@@ -458,8 +540,11 @@
 	  initFooterLogoAnimate();
 	  initNavScrollBackground();
 	  initHomeIntroAnimate();
+	  initTitleBarRevealAnimate('.page-header__animated-title', '.page-header');
 	  initScrollAnimate();
 	  initFeatureOverlayParallax();
+	  initContentBuilderParallax();
+	  initContentBuilderImageHeights();
 	});
 
 })();

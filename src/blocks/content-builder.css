@@ -1,0 +1,501 @@
+/*
+ * Content Builder — see identity-global-block-spec.md and
+ * content-builder-research.md (this project's own scratchpad research file,
+ * a full audit of cb-content-grid-v2 across both cb-identity2025 and
+ * cb-identitygroup2026 — the two had genuinely diverged; built against
+ * coda's fuller 13-module-type set).
+ *
+ * Deliberate decisions made where the two real sources disagreed:
+ * - has-h2 border-suppression: cb-identity2025 force-removes the row's top
+ *   border when it contains a filled h2 module; cb-identitygroup2026
+ *   silently dropped that rule. Matched to the CURRENT source (no
+ *   suppression) — the `content-builder__row--has-h2` class is still
+ *   applied in render.php for any future use, just has no rule here.
+ * - fs-950 (and fs-300/fs-800): excluded from every select's own choices
+ *   (see constants.js) since none has a real, working token in the current
+ *   source — not reproduced as dead options here either.
+ *
+ * Row grid uses this project's own CSS Grid + custom-property convention
+ * (--content-builder-col-span) instead of literal Bootstrap col-md-*
+ * classes — same real column math (see render.php), different mechanism,
+ * matching Brand Grid/Push Panel's own established pattern.
+ */
+
+/* ---------------------------------------------------------------------
+ * fs-* and fw-* utility scale — the real system's own literal rung classes,
+ * consumed directly by every module's per-instance Font Size/Weight
+ * select. "fw-book" and "fw-semibold" both resolve to --fw-semi (500),
+ * NOT their own distinct --fw-book (450)/--fw-semibold (600) tokens — a
+ * confirmed, deliberate block-local override in the real source (both
+ * themes), replicated here exactly rather than trusting the raw tokens.
+ * --------------------------------------------------------------------- */
+
+.fs-50 { font-size: var(--fs-50); }
+.fs-100 { font-size: var(--fs-100); }
+.fs-200 { font-size: var(--fs-200); }
+.fs-400 { font-size: var(--fs-400); }
+.fs-500 { font-size: var(--fs-500); }
+.fs-600 { font-size: var(--fs-600); line-height: 1.2; }
+.fs-700 { font-size: var(--fs-700); }
+.fs-850 { font-size: var(--fs-850); }
+.fs-875 { font-size: var(--fs-875); }
+.fs-900 { font-size: var(--fs-900); }
+
+.fw-light { font-weight: var(--fw-light); }
+.fw-regular { font-weight: var(--fw-regular); }
+.fw-book,
+.fw-semibold {
+	font-weight: var(--fw-semi);
+}
+
+/* ---------------------------------------------------------------------
+ * Root, background image + parallax, line colour
+ * --------------------------------------------------------------------- */
+
+.content-builder {
+	position: relative;
+}
+
+.content-builder--dark-lines {
+	--content-builder-line-color: rgba(13, 13, 12, 0.25);
+}
+
+.content-builder--light-lines {
+	--content-builder-line-color: rgba(255, 255, 255, 0.5);
+}
+
+.content-builder--has-background-image {
+	overflow: hidden;
+}
+
+.content-builder--has-background-image::before {
+	content: "";
+	position: absolute;
+	inset: -3rem 0;
+	z-index: 0;
+	background-image: var(--_bg-url);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	transform: translateY(var(--content-builder-parallax-y, 0));
+	will-change: transform;
+}
+
+.content-builder > .id-container {
+	position: relative;
+	z-index: 1;
+	padding-block: var(--space-5);
+	padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+	.content-builder > .id-container {
+		padding-inline: var(--space-5);
+	}
+}
+
+/* ---------------------------------------------------------------------
+ * Rows
+ * --------------------------------------------------------------------- */
+
+.content-builder__row {
+	display: grid;
+	grid-template-columns: repeat(12, 1fr);
+	gap: var(--space-5);
+}
+
+.content-builder__row + .content-builder__row {
+	margin-top: 2rem;
+}
+
+.content-builder__row--pt {
+	padding-top: var(--space-4);
+}
+
+.content-builder__row--pb {
+	padding-bottom: var(--space-5);
+}
+
+.content-builder__row--has-line {
+	border-top: 1px solid var(--content-builder-line-color);
+}
+
+.content-builder__col {
+	grid-column: span var(--content-builder-col-span, 12);
+}
+
+@media (max-width: 767.98px) {
+	.content-builder__col {
+		grid-column: span 12;
+	}
+}
+
+/* ---------------------------------------------------------------------
+ * Headings
+ * --------------------------------------------------------------------- */
+
+.content-builder__h1,
+.content-builder__h3 {
+	text-wrap: balance;
+}
+
+.content-builder__h3 {
+	margin-bottom: 0;
+}
+
+.content-builder__h2 {
+	width: 50%;
+	text-wrap: balance;
+}
+
+@media (max-width: 575.98px) {
+	.content-builder__h2 {
+		width: 100%;
+	}
+}
+
+/* ---------------------------------------------------------------------
+ * Text
+ * --------------------------------------------------------------------- */
+
+.content-builder__text p:first-child {
+	margin-top: 0;
+}
+
+.content-builder__text p:last-child {
+	margin-bottom: 0;
+}
+
+.content-builder__text p {
+	text-wrap: pretty;
+	margin-bottom: 1.5rem;
+}
+
+.content-builder__text ul,
+.content-builder__list {
+	margin: 0;
+	padding-inline-start: 0;
+	list-style: none;
+}
+
+.content-builder__text ul li,
+.content-builder__list li {
+	margin-bottom: 0.75rem;
+}
+
+.content-builder__text ul li:not(:first-of-type),
+.content-builder__list li:not(:first-of-type) {
+	padding-top: 0.75rem;
+	border-top: 1px solid var(--content-builder-line-color);
+}
+
+.content-builder__text ul li:last-child,
+.content-builder__list li:last-child {
+	margin-bottom: 0;
+}
+
+/* ---------------------------------------------------------------------
+ * Stats — CSS table display, deliberately, not flex/grid: table-cell's
+ * default vertical-align:baseline aligns each cell's *content* to a shared
+ * baseline while the cell *box* still spans full row height flush with its
+ * siblings, which flex/grid align-items can't do without moving the box
+ * itself and breaking each row's own border-top. Confirmed real source
+ * comment, dated 2026-09-01 — preserved deliberately, not "simplified".
+ * --------------------------------------------------------------------- */
+
+.content-builder__stats {
+	display: table;
+	width: 100%;
+}
+
+.content-builder__stat-item {
+	display: table-row;
+}
+
+.content-builder__stat-item + .content-builder__stat-item {
+	border-top: 1px solid var(--content-builder-line-color);
+}
+
+.content-builder__stat,
+.content-builder__stat-detail {
+	display: table-cell;
+	vertical-align: baseline;
+	padding-block: 0.5rem;
+}
+
+.content-builder__stat {
+	width: 1%;
+	white-space: nowrap;
+	padding-inline-end: 1rem;
+	color: var(--col-purple);
+}
+
+@media (max-width: 767.98px) {
+	.content-builder__stats,
+	.content-builder__stat-item,
+	.content-builder__stat,
+	.content-builder__stat-detail {
+		display: block;
+	}
+
+	.content-builder__stat {
+		width: auto;
+		white-space: normal;
+	}
+}
+
+/* ---------------------------------------------------------------------
+ * Quote
+ * --------------------------------------------------------------------- */
+
+.content-builder__quote-wrap {
+	position: relative;
+}
+
+.content-builder__quote {
+	position: relative;
+	margin: 0 0 1rem;
+	padding-top: 3.5rem;
+	font-size: var(--fs-400);
+	font-weight: var(--fw-light);
+	line-height: 1.25;
+	letter-spacing: -0.005em;
+}
+
+.content-builder__quote::before {
+	content: "\201c";
+	position: absolute;
+	top: -0.5rem;
+	left: -0.25rem;
+	font-size: 8rem;
+	font-weight: var(--fw-semi);
+	opacity: 0.18;
+}
+
+/* ---------------------------------------------------------------------
+ * Links
+ * --------------------------------------------------------------------- */
+
+.content-builder__links-link {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 0.75rem 0;
+	border-top: 1px solid var(--content-builder-line-color);
+	font-size: var(--fs-500);
+	font-weight: var(--fw-light);
+	letter-spacing: -0.01em;
+	color: inherit;
+	text-decoration: none;
+}
+
+.content-builder__links-link:last-child {
+	border-bottom: 1px solid var(--content-builder-line-color);
+}
+
+.content-builder__links-link:hover,
+.content-builder__links-link:focus-visible {
+	background-color: rgba(255, 255, 255, 0.12);
+	color: inherit;
+}
+
+/* ---------------------------------------------------------------------
+ * Logo Grid
+ * --------------------------------------------------------------------- */
+
+.content-builder__logo-grid-row {
+	padding-bottom: 2rem;
+}
+
+.content-builder__logo-grid-row + .content-builder__logo-grid-row {
+	margin-top: 1rem;
+	padding-top: 1rem;
+	border-top: 1px solid var(--content-builder-line-color);
+}
+
+.content-builder__logo-grid-gallery {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.content-builder__logo-grid-item {
+	flex: 0 0 20%;
+	max-width: 20%;
+	padding: 0.5rem;
+}
+
+@media (max-width: 991.98px) {
+	.content-builder__logo-grid-item {
+		flex-basis: 33.33%;
+		max-width: 33.33%;
+	}
+}
+
+@media (max-width: 575.98px) {
+	.content-builder__logo-grid-item {
+		flex-basis: 50%;
+		max-width: 50%;
+	}
+}
+
+.content-builder__logo-grid-image {
+	max-height: 5rem;
+	object-fit: contain;
+}
+
+/* ---------------------------------------------------------------------
+ * Image
+ * --------------------------------------------------------------------- */
+
+.content-builder__image-wrap {
+	overflow: hidden;
+}
+
+.content-builder__image-wrap img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.content-builder__image-contain img {
+	object-fit: contain;
+}
+
+.content-builder__image-native {
+	display: block;
+	max-width: 100%;
+	overflow: visible;
+}
+
+.content-builder__image-native img {
+	width: auto;
+	height: auto;
+	max-width: 100%;
+}
+
+/* Pulls the image flush with the section's own outer edges — cancels the
+ * same --space-4/--space-5 values .content-builder > .id-container pads
+ * with, so it only reads correctly when this image is in the row that sits
+ * against that edge (typically a row's only/first-and-last appearance),
+ * same as any other edge-bleed option. Left padding is left alone: this is
+ * for an image column that's flush against the section's right/top/bottom,
+ * not a full-bleed background. */
+.content-builder__image-wrap--bleed {
+	margin-block: calc(-1 * var(--space-5));
+	margin-inline-end: calc(-1 * var(--space-4));
+}
+
+@media (min-width: 768px) {
+	.content-builder__image-wrap--bleed {
+		margin-inline-end: calc(-1 * var(--space-5));
+	}
+}
+
+/* Bootstrap's own `.ratio`/`.ratio-*` utilities aren't in this theme —
+   reproduced directly here since render.php's aspect-ratio classes reuse
+   those exact names (confirmed real markup, not worth renaming). */
+.ratio {
+	position: relative;
+	width: 100%;
+}
+
+.ratio::before {
+	display: block;
+	padding-top: var(--cb-aspect-ratio, 56.25%);
+	content: "";
+}
+
+.ratio > * {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.ratio-21x9 { --cb-aspect-ratio: calc(9 / 21 * 100%); }
+.ratio-16x9 { --cb-aspect-ratio: calc(9 / 16 * 100%); }
+.ratio-4x3 { --cb-aspect-ratio: calc(3 / 4 * 100%); }
+.ratio-1x1 { --cb-aspect-ratio: 100%; }
+
+/* ---------------------------------------------------------------------
+ * Video
+ * --------------------------------------------------------------------- */
+
+.content-builder__video {
+	border: 0;
+}
+
+/* ---------------------------------------------------------------------
+ * Q&A
+ * --------------------------------------------------------------------- */
+
+.content-builder__qa-row {
+	display: grid;
+	grid-template-columns: 1fr;
+	align-items: start;
+	gap: var(--space-4);
+	padding-bottom: var(--space-5);
+}
+
+@media (min-width: 992px) {
+	.content-builder__qa-row {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+.content-builder__qa-row + .content-builder__qa-row {
+	margin-top: 1rem;
+	padding-top: 1rem;
+	border-top: 1px solid var(--content-builder-line-color);
+}
+
+.content-builder__qa-question {
+	margin: 0;
+	font-size: var(--fs-500);
+	font-weight: var(--fw-semi);
+	letter-spacing: -0.02em;
+}
+
+.content-builder__qa-question--first {
+	font-size: var(--fs-600);
+	letter-spacing: normal;
+	color: var(--col-purple-300);
+}
+
+.content-builder__qa-question--large {
+	font-size: var(--fs-900);
+}
+
+.content-builder__qa-answer {
+	font-size: var(--fs-400);
+	font-weight: var(--fw-regular);
+}
+
+.content-builder__qa-answer--first {
+	font-size: var(--fs-500);
+	font-weight: var(--fw-light);
+	color: var(--col-purple-300);
+}
+
+/* ---------------------------------------------------------------------
+ * Button
+ * --------------------------------------------------------------------- */
+
+.content-builder__cta-title {
+	margin-top: 1rem;
+	font-size: var(--fs-700);
+	font-weight: var(--fw-light);
+	line-height: 1.1;
+	text-wrap: balance;
+}
+
+/* ---------------------------------------------------------------------
+ * Empty
+ * --------------------------------------------------------------------- */
+
+.content-builder__module--empty {
+	min-height: 1px;
+}

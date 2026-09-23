@@ -8,7 +8,13 @@
 
 .child-page-nav {
 	position: relative;
-	background-color: var(--col-bg-alt);
+	/* var(--col-bg), not --col-bg-alt — confirmed live: the real
+	 * cb-services-nav uses --col-primary-black here (identity's --col-bg,
+	 * #0d0d0c), not a light alt background. It's the fallback colour behind
+	 * the ::before image, so it has to read as dark like the photo, not
+	 * near-white — --col-bg-alt (#f5f5f5) was showing through at the
+	 * border-block edges as a hard white line instead of blending in. */
+	background-color: var(--col-bg);
 	border-block: 1px solid var(--col-border);
 	overflow: hidden;
 	isolation: isolate;
@@ -23,6 +29,7 @@
 }
 
 .child-page-nav__container {
+	padding-bottom: var(--space-5);
 	background-color: rgba(255, 255, 255, 0.1);
 }
 

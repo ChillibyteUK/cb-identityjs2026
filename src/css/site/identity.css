@@ -282,3 +282,256 @@
 	color: var(--col-text-muted);
 	font-size: var(--fs-small);
 }
+
+/*
+ * News index (index.php) — identity's own real design, confirmed live
+ * against identityglobal.com/news/ directly (sizes/weights/colours below
+ * are all measured computed values, not guessed from the shared theme's
+ * SCSS). The animated aurora-gradient background on the real
+ * .insight-type__header bars wasn't traceable to any background-image /
+ * pseudo-element on that page (checked the element and every ancestor up
+ * to <body> — all solid #0d0d0c, no bg-image anywhere) despite being
+ * clearly visible live; deliberately not reproduced here rather than
+ * guessing at an effect whose source couldn't be found. Flat #0d0d0c
+ * instead.
+ */
+
+.news-insights {
+	background-color: var(--col-bg);
+}
+
+.news-hero {
+	padding-block: var(--space-6) var(--space-5);
+}
+
+/* Containers weren't containerising at all — .id-container itself has no
+   padding-inline of its own (blocks each add their own, see e.g.
+   .content-builder > .id-container), and these three never did, so the
+   hero's text ran flush to the viewport edge instead of inset like every
+   other section on the page. */
+.news-hero__title .id-container,
+.news-hero__subtitle .id-container,
+.news-hero__intro {
+	padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+	.news-hero__title .id-container,
+	.news-hero__subtitle .id-container,
+	.news-hero__intro {
+		padding-inline: var(--space-5);
+	}
+}
+
+.news-hero__title {
+	margin: 0;
+	border-block-start: 1px solid var(--col-border);
+	font-family: var(--ff-heading);
+	font-size: var(--fs-850);
+	font-weight: var(--fw-semibold);
+	line-height: 1.1;
+	color: var(--col-text);
+}
+
+.news-hero__title .id-container {
+	padding-block: var(--space-3) var(--space-2);
+}
+
+.news-hero__subtitle {
+	margin: 0 0 var(--space-4);
+	border-block: 1px solid var(--col-border);
+	font-family: var(--ff-heading);
+	font-size: var(--fs-700);
+	font-weight: var(--fw-book);
+	line-height: 1.2;
+	/* neutral-800, confirmed live — not otherwise tokenised in this theme. */
+	color: #5e5d55;
+}
+
+.news-hero__subtitle .id-container {
+	/* Symmetric --space-2 top/bottom — the asymmetric padding it had before
+	   (--space-2 var(--space-3)) was overcompensating for something else
+	   entirely (Suisse's own glyph-height quirks), not a real design value;
+	   this reads correctly without it. */
+	padding-block: var(--space-2);
+}
+
+.news-hero__intro {
+	color: var(--col-text);
+	max-width: 66.6667%;
+}
+
+@media (max-width: 767.98px) {
+	.news-hero__intro {
+		max-width: 100%;
+	}
+}
+
+.insight-type {
+	background-color: var(--col-bg);
+}
+
+/* Only genuinely confirmed structural difference between the two sections
+   live: the Press section sits on a solid purple-900, not plain --col-bg
+   like Insights — confirmed live as a fully opaque rgb(47, 19, 186), not
+   --col-overlay-colour's semi-transparent version of the same colour (that
+   token is rgba(47, 19, 186, 0.8), which over a dark page background
+   wouldn't compute to a fully opaque value). Not otherwise tokenised in
+   this theme. */
+.insight-type--accent {
+	background-color: #2f13ba;
+}
+
+.insight-type__header {
+	position: relative;
+	display: block;
+	border-block: 1px solid var(--col-border);
+	color: var(--col-text);
+	text-decoration: none;
+	isolation: isolate;
+	overflow: hidden;
+}
+
+/* The aurora background on these bars, confirmed live — this is the
+   asset/rule I couldn't find earlier (see index.php's news-hero comment):
+   it's genuinely fixed to the viewport (not the element), same technique
+   as Page Header's own --bg-url. Unscoped by grid-type in the real source,
+   so both Insights and Press bars get it, not just one. */
+.insight-type__header::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background: url(../../img/bg180.webp) center / cover no-repeat fixed;
+}
+
+.insight-type__header-inner {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding-block: var(--space-3);
+	padding-inline: var(--space-4);
+	font-family: var(--ff-heading);
+	font-size: var(--fs-700);
+	font-weight: var(--fw-semibold);
+	color: var(--col-text);
+}
+
+@media (min-width: 768px) {
+	.insight-type__header-inner {
+		padding-inline: var(--space-5);
+	}
+}
+
+.insight-type-grid {
+	display: grid;
+	grid-template-columns: repeat(12, 1fr);
+	/* Real source's row is Bootstrap's g-5 (3rem gutter both axes), not this
+	   theme's own generic --grid-gutter (1rem) — confirmed live: 48px. */
+	gap: var(--space-5);
+	padding-block: var(--space-5);
+	padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+	.insight-type-grid {
+		padding-inline: var(--space-5);
+	}
+}
+
+.insight-type-grid__card {
+	display: block;
+	grid-column: span 12;
+	color: inherit;
+	text-decoration: none;
+}
+
+@media (min-width: 768px) {
+	.insight-type-grid__card {
+		grid-column: span var(--insight-card-span, 6);
+	}
+}
+
+.insight-type-grid__card:hover .insight-type-grid__image {
+	transform: scale(1.05);
+}
+
+.insight-type-grid__image-wrapper {
+	overflow: hidden;
+	margin-block-end: 0.25rem;
+}
+
+.insight-type-grid__image {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/*
+ * Per-position aspect ratios — confirmed live, a genuinely varied "collage"
+ * mosaic, not one flat ratio: Insights (grid-type-1) goes 4:3 / 16:9 / 5:4
+ * across its 3 cards; Press (grid-type-2) goes 16:9 / 4:3 / 1:1. Scoped by
+ * section + position (:nth-child, 3 cards per section) rather than a
+ * numbered card-1..card-6 class per real source, since this template
+ * doesn't otherwise need per-instance card classes.
+ */
+.insight-type--dark .insight-type-grid__card:nth-child(1) .insight-type-grid__image-wrapper {
+	aspect-ratio: 4 / 3;
+}
+
+.insight-type--dark .insight-type-grid__card:nth-child(2) .insight-type-grid__image-wrapper {
+	aspect-ratio: 16 / 9;
+}
+
+.insight-type--dark .insight-type-grid__card:nth-child(3) .insight-type-grid__image-wrapper {
+	aspect-ratio: 5 / 4;
+}
+
+.insight-type--accent .insight-type-grid__card:nth-child(1) .insight-type-grid__image-wrapper {
+	aspect-ratio: 16 / 9;
+}
+
+.insight-type--accent .insight-type-grid__card:nth-child(2) .insight-type-grid__image-wrapper {
+	aspect-ratio: 4 / 3;
+}
+
+.insight-type--accent .insight-type-grid__card:nth-child(3) .insight-type-grid__image-wrapper {
+	aspect-ratio: 1 / 1;
+}
+
+.insight-type-grid__category {
+	margin-block-end: var(--space-3);
+	/* neutral-100, confirmed live — not otherwise tokenised in this theme. */
+	border-block-end: 1px solid #f8f7f0;
+	font-size: var(--fs-50);
+	font-weight: var(--fw-regular);
+	text-transform: uppercase;
+	color: var(--col-text);
+}
+
+.insight-type-grid__title {
+	margin: 0 0 var(--space-2);
+	font-family: var(--ff-heading);
+	font-size: var(--fs-200);
+	font-weight: var(--fw-semibold);
+	line-height: 1.4;
+	color: var(--col-text);
+}
+
+.insight-type-grid__date {
+	display: flex;
+	align-items: center;
+	gap: var(--space-2);
+	font-size: var(--fs-50);
+	text-transform: uppercase;
+	/* neutral-600, confirmed live — not otherwise tokenised in this theme. */
+	color: #939287;
+}
+
+/* Press's own date colour is purple-200, not neutral-600 like Insights —
+   confirmed live, distinct per section. */
+.insight-type--accent .insight-type-grid__date {
+	color: #e0deff;
+}

@@ -1,0 +1,137 @@
+/*
+ * Testimonial — see identity-global-block-spec.md. Built from
+ * cb-testimonial, checked against both cb-identity2025 and
+ * cb-identitygroup2026 plus live identityglobal.com/work/ case studies
+ * (2026-09-22) for the real 3 style variants (see edit.js's own note).
+ *
+ * Author/company size+weight use identity's real CURRENT values (fs-700/
+ * fw-book) — coda's own base default is fs-800/fw-regular, but identity's
+ * typography now follows idtravel's throughout (2026-07-14 decision,
+ * already confirmed this session on Feature Overlay's title) — matched
+ * here directly rather than the coda default.
+ */
+
+.testimonial {
+	padding-block: var(--space-5);
+}
+
+/* Real markup's id-container also carries its own py-5 — stacks with the
+   section's own padding-block above for a real total of 96px, not 48px
+   (confirmed live: both the section AND its inner .id-container each
+   compute 48px of top/bottom padding on identityglobal.com/services/). */
+.testimonial > .id-container {
+	padding-block: var(--space-5);
+	padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+	.testimonial > .id-container {
+		padding-inline: var(--space-5);
+	}
+}
+
+.testimonial__quote {
+	margin-bottom: 0.75em;
+	font-size: var(--fs-900);
+	font-weight: var(--fw-light);
+	line-height: 1.2; /* real --lh-600 */
+	letter-spacing: -0.04em; /* real --ls--40 */
+	text-wrap: balance;
+}
+
+/* Quotes over 130 characters (plain text, tags stripped — see render.php)
+   get a smaller size so they don't overrun the layout. */
+.testimonial__quote--long {
+	font-size: var(--fs-850);
+	letter-spacing: -0.015em; /* real --ls--15 */
+}
+
+.testimonial__author,
+.testimonial__company {
+	display: inline-block;
+	padding: 0.5em 0.6em 0.35em;
+	line-height: 1;
+	font-size: var(--fs-700);
+	font-weight: var(--fw-book);
+	letter-spacing: -0.015em; /* real --ls--15 */
+}
+
+.testimonial__author {
+	margin-bottom: 0.75rem;
+	text-transform: uppercase;
+}
+
+.testimonial__company {
+	display: table;
+}
+
+@media (max-width: 767.98px) {
+	.testimonial__quote,
+	.testimonial__quote--long {
+		font-size: var(--fs-700);
+	}
+}
+
+/* Style variants — a closed set of 3 real, confirmed choices, each driving
+   a full coordinated quote/author/company colour scheme, not just a
+   background swap. */
+
+.testimonial.has-neutral-100-background-color {
+	background-color: var(--col-neutral-100);
+}
+
+.testimonial.has-neutral-100-background-color .testimonial__quote {
+	color: var(--col-purple-900);
+}
+
+.testimonial.has-neutral-100-background-color .testimonial__author {
+	color: var(--col-white);
+	background-color: var(--col-purple-900);
+}
+
+.testimonial.has-neutral-100-background-color .testimonial__company {
+	color: var(--col-purple-900);
+	background-color: var(--col-purple-200);
+}
+
+.testimonial.has-purple-900-background-color {
+	background-color: var(--col-purple-900);
+}
+
+.testimonial.has-purple-900-background-color .testimonial__quote {
+	color: var(--col-green-400);
+}
+
+.testimonial.has-purple-900-background-color .testimonial__author {
+	color: var(--col-purple-900);
+	background-color: var(--col-green-400);
+}
+
+.testimonial.has-purple-900-background-color .testimonial__company {
+	color: var(--col-purple-900);
+	/* real --col-lime-200 (this project's --col-green-200, same hex) — the
+	   Purple source SCSS this was copied from literally has
+	   var(--col-purple-200) here, a stale bug in that file; confirmed live
+	   (2026-09-22): the Purple variant's real company pill is #ddfbb2
+	   (green-200), not purple-200 — cb-identitygroup2026's corrected copy
+	   already uses the right token, this file just hadn't been re-checked. */
+	background-color: var(--col-green-200);
+}
+
+.testimonial.has-primary-black-background-color {
+	background-color: var(--col-primary-black);
+}
+
+.testimonial.has-primary-black-background-color .testimonial__quote {
+	color: var(--col-green-400);
+}
+
+.testimonial.has-primary-black-background-color .testimonial__author {
+	color: var(--col-primary-black);
+	background-color: var(--col-green-400);
+}
+
+.testimonial.has-primary-black-background-color .testimonial__company {
+	color: var(--col-green-400);
+	background-color: var(--col-neutral-900);
+}

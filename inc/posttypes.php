@@ -13,11 +13,17 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Register custom post types for the theme.
  *
+ * `case_study` matches cb-identitygroup2026's own real registration
+ * (inc/cb-posttypes.php) exactly, including its `work` rewrite slug — not
+ * this file's own previous placeholder `case-studies` slug. The `theme` /
+ * `service` / `region` taxonomies below (see taxonomies.php) attach to this
+ * post type as well as to `post`, so the slug and `supports` list need to
+ * match production, not be reinvented.
+ *
  * @return void
  */
 function cb_identityjs2026_register_post_types() {
 
-	/*
 	register_post_type(
 		'case_study',
 		array(
@@ -39,16 +45,15 @@ function cb_identityjs2026_register_post_types() {
 			'show_in_rest'    => true,
 			'menu_position'   => 26,
 			'menu_icon'       => 'dashicons-portfolio',
-			'supports'        => array( 'title', 'editor', 'thumbnail' ),
+			'supports'        => array( 'title', 'editor', 'thumbnail', 'revisions' ),
 			'capability_type' => 'post',
 			'map_meta_cap'    => true,
 			'rewrite'         => array(
-				'slug'       => 'case-studies',
+				'slug'       => 'work',
 				'with_front' => false,
 			),
 		)
 	);
-	*/
 
 }
 add_action( 'init', 'cb_identityjs2026_register_post_types' );

@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cb-identityjs2026/testimonial",
+	"title": "CB Testimonial",
+	"category": "cb-identityjs2026",
+	"icon": "format-quote",
+	"attributes": {
+		"quote": { "type": "string", "default": "" },
+		"author": { "type": "string", "default": "" },
+		"company": { "type": "string", "default": "" },
+		"style": { "type": "string", "default": "has-neutral-100-background-color" }
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"align": true
+	},
+	"editorScript": "file:./build/index.js",
+	"render": "file:./render.php"
+}

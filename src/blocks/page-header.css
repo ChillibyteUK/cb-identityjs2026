@@ -52,6 +52,27 @@
 	.page-header__panel > .id-container {
 		padding-inline: var(--space-5);
 	}
+
+	/* The real column widths below (col-md-8/col-md-9) are Bootstrap grid
+	 * columns, not bare percentages of the container — so this uses the
+	 * theme's own equivalent, a real 12-column grid with its own
+	 * --grid-gutter, and gives each child an explicit span. Letting the
+	 * grid do the column math is simpler and self-documenting vs.
+	 * reverse-engineering Bootstrap's row/col gutter arithmetic into a
+	 * one-off calc() percentage. */
+	.page-header__top > .id-container,
+	.page-header__panel > .id-container {
+		display: grid;
+		grid-template-columns: repeat(12, 1fr);
+		gap: var(--grid-gutter);
+	}
+
+	/* The H1 is the only child here with no narrower span of its own — the
+	 * others (.page-header__animated-title/__intro, .page-header__panel-text
+	 * further down) each set their own explicit span. */
+	.page-header__title {
+		grid-column: 1 / -1;
+	}
 }
 
 .page-header--has-background .page-header__top::before {
@@ -73,6 +94,102 @@
 	color: var(--col-text);
 }
 
+/* Region Page Header's real H1 differs from About's — confirmed against
+ * both real SCSS sources directly: --fs-900/fw-semi/padding-bottom 0.5rem
+ * here vs the default above's --fs-950/fw-light/padding-bottom var(--space-5)
+ * there. animatedTitle's presence is the only signal this instance is the
+ * Region variant (see render.php), so it drives this override rather than
+ * a separate field. */
+.page-header--has-animated-title .page-header__title {
+	padding-block-end: 0.5rem;
+	font-size: var(--fs-900);
+	font-weight: var(--fw-semi);
+}
+
+/* The animated split-line title (Region Page Header's real treatment) sits
+ * BELOW the plain H1 above, not instead of it — confirmed live on
+ * identityglobal.com/sport/: both the H1 ("Identity Sport") and this
+ * ("Experience"/"Changes"/"Everything") render together. Its own real
+ * source is also its own col-md-9 on desktop, same as __intro/__panel-text
+ * below — the grid-column: span 9 override further down is the same
+ * treatment (see .page-header__top > .id-container's grid rule above).
+ * Same .line/.bar/.text structure and animation as Home Intro's own title
+ * (title-bar-reveal-animate.js drives both), sized down from Home Intro's
+ * --fs-hero-title since this sits alongside intro text in a header, not
+ * alone as the page's sole hero. */
+.page-header__animated-title {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	margin: 0 0 3rem;
+	padding-inline-start: 5rem;
+	line-height: 1;
+	overflow: visible;
+}
+
+@media (min-width: 768px) {
+	.page-header__animated-title {
+		grid-column: span 9;
+	}
+}
+
+.page-header__animated-title .line {
+	position: relative;
+	display: inline-block;
+	margin-block: 0.1em;
+	transform-origin: 25% center;
+}
+
+.page-header__animated-title .line:nth-child(2) {
+	transform-origin: 35% center;
+	margin-inline-start: -3.6em;
+	margin-block-start: 0.1em;
+}
+
+.page-header__animated-title .line:nth-child(3) {
+	margin-inline-start: 1.8em;
+	margin-block-start: -0.25em;
+}
+
+.page-header__animated-title .bar {
+	position: absolute;
+	inset: -0.1em -0.6em;
+	z-index: 1;
+	background: var(--col-accent);
+	opacity: 0;
+}
+
+.page-header__animated-title .text {
+	position: relative;
+	z-index: 2;
+	color: var(--col-accent-text);
+	font-family: var(--ff-heading);
+	font-size: clamp(3rem, 8vw, 5.5rem);
+	font-weight: var(--fw-semibold);
+	text-align: start;
+	opacity: 0;
+}
+
+.page-header__animated-title .text1 {
+	transform: rotate(-3deg);
+}
+
+.page-header__animated-title .text2 {
+	transform: rotate(5deg);
+}
+
+.page-header__animated-title .text3 {
+	transform: rotate(-6deg);
+}
+
+/* No font-size here, deliberately — same convention as Content Builder's
+ * own __text (see content-builder.css): the editor's fs-* choice on
+ * introTextFontSize is the only source of size, so it isn't fighting a
+ * same-specificity block rule for the win. Confirmed why this matters
+ * live on identityglobal.com/sport/: real content sets fs-500 explicitly,
+ * a fixed fallback here would just get overridden or, at equal
+ * specificity, silently win over it depending on source order. */
 .page-header__intro {
 	font-family: var(--ff-body);
 	font-weight: var(--fw-light);
@@ -83,22 +200,20 @@
 
 @media (min-width: 768px) {
 	.page-header__intro {
-		/* Real source's column is Bootstrap's col-md-8 (66.67% of its row) —
-		   not a ch-based measure — full width below md, confirmed live at
-		   both 1024px and 375px viewports. */
-		max-width: 66.6667%;
+		/* Real source's column is Bootstrap's col-md-8 — the theme's own
+		   12-column grid (see .page-header__top > .id-container's grid
+		   rule above) is the equivalent here, so this just takes 8 of 12
+		   tracks rather than reverse-engineering Bootstrap's row/col gutter
+		   math into a percentage. */
+		grid-column: span 8;
 	}
-}
 
-/* Confirmed live (both desktop and mobile): only the first paragraph gets
-   the larger "lede" size — every paragraph after it drops to the smaller
-   rung, regardless of how many there are. */
-.page-header__intro p:first-child {
-	font-size: var(--fs-page-header-lede);
-}
-
-.page-header__intro p:not(:first-child) {
-	font-size: var(--fs-page-header-intro);
+	/* Region's own intro-text column is col-md-9, not About's col-md-8 —
+	   confirmed against the real markup on identityglobal.com/sport/
+	   directly. */
+	.page-header--has-animated-title .page-header__intro {
+		grid-column: span 9;
+	}
 }
 
 .page-header__intro a {
@@ -125,10 +240,10 @@
 	background-color: var(--col-overlay-colour);
 }
 
+/* No font-size here either — see __intro above for why. */
 .page-header__panel-text {
 	margin-block-end: 0.5em;
 	font-family: var(--ff-body);
-	font-size: var(--fs-page-header-intro);
 	font-weight: var(--fw-light);
 	line-height: var(--lh-page-header-intro);
 	color: var(--col-text);
@@ -137,9 +252,10 @@
 
 @media (min-width: 768px) {
 	.page-header__panel-text {
-		/* Real source's column is col-md-9 (75% of its row) — confirmed
-		   live, same as __intro's col-md-8 above. */
-		max-width: 75%;
+		/* Real source's column is col-md-9 — same 12-column grid as
+		   .page-header__top's own container (see .page-header__panel >
+		   .id-container's grid rule above). */
+		grid-column: span 9;
 	}
 }
 
@@ -156,4 +272,14 @@
 	font-size: var(--fs-small);
 	font-weight: var(--fw-body);
 	color: var(--col-text-muted);
+}
+
+@media (min-width: 768px) {
+	/* No narrower column in the real source for these — full width, same
+	   as before .page-header__panel > .id-container became a grid. */
+	.page-header__quote,
+	.page-header__quote-author,
+	.page-header__quote-company {
+		grid-column: 1 / -1;
+	}
 }

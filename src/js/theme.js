@@ -5,9 +5,11 @@ import { initLogoClipAnimate } from './logo-clip-animate';
 import { initFooterLogoAnimate } from './footer-logo-animate';
 import { initNavScrollBackground } from './nav-scroll-background';
 import { initHomeIntroAnimate } from './home-intro-animate';
+import { initTitleBarRevealAnimate } from './title-bar-reveal-animate';
 import { initScrollAnimate } from './scroll-animate';
 import { initLenis } from './lenis-init';
 import { initFeatureOverlayParallax } from './feature-overlay-parallax';
+import { initContentBuilderParallax, initContentBuilderImageHeights } from './content-builder';
 
 document.addEventListener('DOMContentLoaded', () => {
 	initLenis();
@@ -18,6 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	initFooterLogoAnimate();
 	initNavScrollBackground();
 	initHomeIntroAnimate();
+	initTitleBarRevealAnimate('.page-header__animated-title', '.page-header');
 	initScrollAnimate();
 	initFeatureOverlayParallax();
+	initContentBuilderParallax();
+	initContentBuilderImageHeights();
 });

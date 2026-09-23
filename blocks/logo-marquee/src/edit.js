@@ -33,10 +33,15 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 				<div className="cb-identityjs2026-editor-field">
 					<label className="cb-identityjs2026-editor-field__label">{ __( 'Logos', 'cb-identityjs2026' ) }</label>
 					<MediaUploadCheck>
+						{ /* No addToGallery — confirmed live (reproduced, not just read about): with it set,
+						     opening the picker on an empty/short logoGallery seeds WordPress's own gallery
+						     frame from its "add to gallery" state, which pulls in every other image already
+						     grouped into a WP gallery elsewhere on the site (here, the Site-Wide Settings
+						     Logos gallery) rather than starting from just this block's own selection. Without
+						     it, `gallery` alone opens a plain checkbox-selection view scoped to `value`. */ }
 						<MediaUpload
 							multiple
 							gallery
-							addToGallery
 							onSelect={ ( media ) => setAttributes( { logoGallery: media.map( ( item ) => item.id ) } ) }
 							allowedTypes={ [ 'image' ] }
 							value={ logoGallery }

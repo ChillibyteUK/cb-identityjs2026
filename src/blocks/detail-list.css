@@ -35,6 +35,13 @@
 	border-block: 1px solid var(--col-border);
 }
 
+/* Not a real source toggle — the real block always has both borders.
+   Added so an editor can drop the top border when this block needs to sit
+   flush against a preceding block. */
+.detail-list--no-top-border {
+	border-block-start: none;
+}
+
 .detail-list > .id-container {
 	padding-inline: var(--space-4);
 }

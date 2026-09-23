@@ -1,0 +1,23 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cb-identityjs2026/innovation-header",
+	"title": "CB Innovation Header",
+	"category": "cb-identityjs2026",
+	"icon": "cover-image",
+	"attributes": {
+		"title": { "type": "string", "default": "" },
+		"introText": { "type": "string", "default": "" },
+		"backgroundId": { "type": "number", "default": 0 },
+		"quote": { "type": "string", "default": "" },
+		"author": { "type": "string", "default": "" },
+		"company": { "type": "string", "default": "" }
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"align": true
+	},
+	"editorScript": "file:./build/index.js",
+	"render": "file:./render.php"
+}

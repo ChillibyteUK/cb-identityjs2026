@@ -41,7 +41,7 @@ import RepeaterField from '../../_shared/RepeaterField';
  * exact selected text.
  */
 export default function Edit( { attributes, setAttributes, clientId } ) {
-	const { renderStyle, introRow, details } = attributes;
+	const { renderStyle, introRow, hasTopBorder, details } = attributes;
 	const blockProps = useBlockProps( { className: 'container cb-identityjs2026-editor-block' } );
 	const isPaired = 'paired' === renderStyle;
 
@@ -59,6 +59,13 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					'cb-identityjs2026'
 				) }
 				onChange={ ( value ) => setAttributes( { renderStyle: value } ) }
+			/>
+
+			<ToggleControl
+				label={ __( 'Top Border', 'cb-identityjs2026' ) }
+				checked={ hasTopBorder }
+				help={ __( 'Not a real source field — added so this block can sit flush against a preceding block when needed.', 'cb-identityjs2026' ) }
+				onChange={ ( value ) => setAttributes( { hasTopBorder: value } ) }
 			/>
 
 			{ isPaired && (

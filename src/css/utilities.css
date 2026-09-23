@@ -24,6 +24,7 @@
 .fw-regular { font-weight: var(--fw-regular); }
 .fw-book { font-weight: var(--fw-book); }
 .fw-semibold { font-weight: var(--fw-semibold); }
+.fw-semi { font-weight: var(--fw-semi); }
 .fw-heading { font-weight: var(--fw-heading); }
 .fw-heading-h1 { font-weight: var(--fw-heading-h1); }
 .fw-body { font-weight: var(--fw-body); }

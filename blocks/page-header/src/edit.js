@@ -1,6 +1,27 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, RichText, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
 import { TextControl, TextareaControl, SelectControl, Button } from '@wordpress/components';
+
+/**
+ * Same real, confirmed rung set as Content Builder's own TEXT_FS_OPTIONS
+ * (see content-builder/src/constants.js) — mirrored here rather than
+ * imported since there's no cross-block shared constants module yet.
+ * Confirmed live on identityglobal.com/sport/: the real Intro
+ * Text/Secondary Text paragraphs carry manually-applied fs-500/fs-400
+ * classes, not a fixed per-block size — this is real editorial choice,
+ * not a default this block can compute on its own. Includes a blank
+ * "Default" option so existing content (created before this field
+ * existed) keeps rendering at the block's own CSS fallback size.
+ */
+const TEXT_FS_OPTIONS = [
+	{ label: 'Default', value: '' },
+	{ label: 'fs-100', value: 'fs-100' },
+	{ label: 'fs-200', value: 'fs-200' },
+	{ label: 'fs-400', value: 'fs-400' },
+	{ label: 'fs-500', value: 'fs-500' },
+	{ label: 'fs-600', value: 'fs-600' },
+	{ label: 'fs-700', value: 'fs-700' },
+];
 import { useSelect } from '@wordpress/data';
 import { store as coreStore } from '@wordpress/core-data';
 import EditorBlockShell from '../../_shared/EditorBlockShell';
@@ -21,9 +42,11 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 	const {
 		title,
 		introText,
+		introTextFontSize,
 		animatedTitle,
 		secondaryPanelType,
 		secondaryText,
+		secondaryTextFontSize,
 		quote,
 		quoteAuthor,
 		quoteCompany,
@@ -36,23 +59,29 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 		<EditorBlockShell blockProps={ blockProps } clientId={ clientId } title="CB Page Header" textDomain="cb-identityjs2026">
 			<SectionHeading>{ __( 'Header', 'cb-identityjs2026' ) }</SectionHeading>
 
-			<TextareaControl
-				label={ __( 'Title', 'cb-identityjs2026' ) }
-				value={ title }
-				help={ __( 'Renders as the page\'s plain <h1> — one line per row. Ignored if Animated Title below is set.', 'cb-identityjs2026' ) }
-				onChange={ ( value ) => setAttributes( { title: value } ) }
-			/>
-
-			<TextControl
-				label={ __( 'Animated Title', 'cb-identityjs2026' ) }
-				value={ animatedTitle }
-				help={ __( 'Optional — takes over from Title above with a split-line animated treatment instead of plain text.', 'cb-identityjs2026' ) }
-				onChange={ ( value ) => setAttributes( { animatedTitle: value } ) }
-			/>
+			<div style={ { display: 'flex', flexWrap: 'wrap', gap: '12px' } }>
+				<div style={ { flex: '50 1 0%' } }>
+					<TextareaControl
+						label={ __( 'Title', 'cb-identityjs2026' ) }
+						value={ title }
+						help={ __( 'Renders as the page\'s plain <h1> — one line per row.', 'cb-identityjs2026' ) }
+						onChange={ ( value ) => setAttributes( { title: value } ) }
+					/>
+				</div>
+				<div style={ { flex: '50 1 0%' } }>
+					<TextareaControl
+						label={ __( 'Animated Title', 'cb-identityjs2026' ) }
+						value={ animatedTitle }
+						help={ __( 'Optional — renders below Title with a split-line animated treatment, not instead of it. One line per row, up to 3 lines (the reveal animation only has bar/rotation sets for 3).', 'cb-identityjs2026' ) }
+						onChange={ ( value ) => setAttributes( { animatedTitle: value } ) }
+					/>
+				</div>
+			</div>
 
 			<div className="cb-identityjs2026-editor-field">
 				<label className="cb-identityjs2026-editor-field__label">{ __( 'Intro Text', 'cb-identityjs2026' ) }</label>
 				<RichText
+					identifier="introText"
 					tagName="div"
 					multiline="p"
 					className="cb-identityjs2026-editor-field__control"
@@ -63,6 +92,14 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 				/>
 				<p className="cb-identityjs2026-editor-field__help">{ __( 'Paragraph(s) shown under the title.', 'cb-identityjs2026' ) }</p>
 			</div>
+
+			<SelectControl
+				label={ __( 'Intro Text Font Size', 'cb-identityjs2026' ) }
+				value={ introTextFontSize }
+				options={ TEXT_FS_OPTIONS }
+				help={ __( 'Real content sets this per page (e.g. fs-500) rather than relying on one fixed size — pick to match.', 'cb-identityjs2026' ) }
+				onChange={ ( value ) => setAttributes( { introTextFontSize: value } ) }
+			/>
 
 			<div className="cb-identityjs2026-editor-field">
 				<label className="cb-identityjs2026-editor-field__label">{ __( 'Background', 'cb-identityjs2026' ) }</label>
@@ -105,18 +142,28 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 			/>
 
 			{ secondaryPanelType === 'text' && (
-				<div className="cb-identityjs2026-editor-field">
-					<label className="cb-identityjs2026-editor-field__label">{ __( 'Secondary Text', 'cb-identityjs2026' ) }</label>
-					<RichText
-						tagName="div"
-						multiline="p"
-						className="cb-identityjs2026-editor-field__control"
-						aria-label={ __( 'Secondary Text', 'cb-identityjs2026' ) }
-						placeholder={ __( 'Secondary Text', 'cb-identityjs2026' ) }
-						value={ secondaryText }
-						onChange={ ( value ) => setAttributes( { secondaryText: value } ) }
+				<>
+					<div className="cb-identityjs2026-editor-field">
+						<label className="cb-identityjs2026-editor-field__label">{ __( 'Secondary Text', 'cb-identityjs2026' ) }</label>
+						<RichText
+							identifier="secondaryText"
+							tagName="div"
+							multiline="p"
+							className="cb-identityjs2026-editor-field__control"
+							aria-label={ __( 'Secondary Text', 'cb-identityjs2026' ) }
+							placeholder={ __( 'Secondary Text', 'cb-identityjs2026' ) }
+							value={ secondaryText }
+							onChange={ ( value ) => setAttributes( { secondaryText: value } ) }
+						/>
+					</div>
+					<SelectControl
+						label={ __( 'Secondary Text Font Size', 'cb-identityjs2026' ) }
+						value={ secondaryTextFontSize }
+						options={ TEXT_FS_OPTIONS }
+						help={ __( 'Real content sets this per page (e.g. fs-400) rather than relying on one fixed size — pick to match.', 'cb-identityjs2026' ) }
+						onChange={ ( value ) => setAttributes( { secondaryTextFontSize: value } ) }
 					/>
-				</div>
+				</>
 			) }
 
 			{ secondaryPanelType === 'quote' && (

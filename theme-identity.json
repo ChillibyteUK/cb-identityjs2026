@@ -358,6 +358,11 @@
     "typography": {
       "fontSizes": [
         {
+          "name": "800",
+          "slug": "800",
+          "size": "clamp(1.5rem, 0.9rem + 1.6vw, 2.5rem)"
+        },
+        {
           "name": "h1",
           "slug": "h1",
           "size": "clamp(1.4375rem, 0.9rem + 1.4vw, 2.25rem)"

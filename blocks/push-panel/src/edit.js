@@ -80,6 +80,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					<div className="cb-identityjs2026-editor-field">
 						<label className="cb-identityjs2026-editor-field__label">{ __( 'Left Content', 'cb-identityjs2026' ) }</label>
 						<RichText
+							identifier="leftContent"
 							tagName="div"
 							multiline="p"
 							className="cb-identityjs2026-editor-field__control"
@@ -117,6 +118,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 			<div className="cb-identityjs2026-editor-field">
 				<label className="cb-identityjs2026-editor-field__label">{ __( 'Description', 'cb-identityjs2026' ) }</label>
 				<RichText
+					identifier="description"
 					tagName="div"
 					multiline="p"
 					className="cb-identityjs2026-editor-field__control"

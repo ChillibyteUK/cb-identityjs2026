@@ -1,0 +1,134 @@
+/*
+ * Innovation Header — see identity-global-block-spec.md (Page Header
+ * entry's own note) and this block's edit.js for why it's a dedicated
+ * block rather than folded into Page Header. Confirmed against both
+ * cb-identity2025 and cb-identitygroup2026 plus live
+ * identityglobal.com/innovation/ (2026-09-22).
+ */
+
+.innovation-header {
+	position: relative;
+	background-color: var(--col-primary-black);
+	background-image: var(--_bg-url);
+	background-position: center;
+	background-size: cover;
+	background-attachment: fixed;
+	color: var(--col-white);
+}
+
+/* Real source has this fallback for iOS, which doesn't support
+   background-attachment: fixed reliably. */
+@supports (-webkit-touch-callout: none) {
+	.innovation-header {
+		background-attachment: scroll;
+	}
+}
+
+/* .id-container isn't a direct child of .innovation-header — it's nested
+   inside __top/__quote-wrapper (same selector-nesting mistake already made
+   once this session on Feature Overlay). */
+.innovation-header__top > .id-container,
+.innovation-header__quote-wrapper > .id-container {
+	padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+	.innovation-header__top > .id-container,
+	.innovation-header__quote-wrapper > .id-container {
+		padding-inline: var(--space-5);
+	}
+}
+
+.innovation-header__top {
+	position: relative;
+	isolation: isolate;
+	padding-block: 8rem 6rem;
+}
+
+.innovation-header__overlay {
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background-color: rgba(0, 0, 0, 0.6);
+}
+
+.innovation-header__title {
+	/* base.css's global h1..h6 { color: var(--col-heading) } rule otherwise
+	   wins over the inherited white — same collision already found and
+	   fixed on Detail List/Section Title's own headings this session. */
+	color: inherit;
+	margin-bottom: 2rem;
+	padding-top: 0.25rem;
+	border-block: 1px solid rgba(255, 255, 255, 0.4);
+	font-size: var(--fs-850);
+	font-weight: var(--fw-book); /* real SCSS says --fw-semi (500), live confirmed 450 — see render.php's own note */
+	line-height: 1;
+}
+
+.innovation-header__intro-text {
+	max-width: 75%; /* real source's col-md-9 (9 of 12 columns) */
+	font-size: var(--fs-700);
+	font-weight: var(--fw-light);
+	line-height: 1.5;
+	text-wrap: balance;
+}
+
+.innovation-header__intro-text p:not(:first-of-type) {
+	font-size: var(--fs-500);
+}
+
+@media (max-width: 767.98px) {
+	.innovation-header__intro-text {
+		max-width: 100%;
+	}
+}
+
+.innovation-header__quote-wrapper {
+	position: relative;
+	isolation: isolate;
+	padding-block: 4rem;
+	border-block-start: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.innovation-header__quote-overlay {
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background-color: rgba(0, 0, 0, 0.8);
+}
+
+.innovation-header__quote {
+	margin-bottom: 0.75em;
+	font-size: var(--fs-900);
+	font-weight: var(--fw-light);
+	line-height: 1.2; /* real --lh-600 */
+	letter-spacing: -0.04em; /* real --ls--40 */
+	text-wrap: balance;
+	color: var(--col-purple-400);
+}
+
+.innovation-header__author,
+.innovation-header__company {
+	display: inline-block;
+	padding: 0.5em 0.5em 0.25em;
+	line-height: 1;
+	font-size: var(--fs-800);
+	font-weight: var(--fw-regular);
+}
+
+.innovation-header__author {
+	margin-bottom: 0.5rem;
+	text-transform: uppercase;
+	background-color: var(--col-purple-500);
+	color: var(--col-primary-black);
+}
+
+/* Real markup stacks author/company via a literal <br> between them
+   (both plain display:inline-block there); display:table achieves the same
+   block-level stacking without presentational markup — same fix already
+   used for Testimonial's own author/company pair. */
+.innovation-header__company {
+	display: table;
+	background-color: var(--col-purple-900);
+	color: var(--col-white);
+}

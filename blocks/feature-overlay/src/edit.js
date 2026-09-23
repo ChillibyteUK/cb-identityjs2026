@@ -50,80 +50,97 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 				onChange={ ( value ) => setAttributes( { presentation: value } ) }
 			/>
 
-			<div className="cb-identityjs2026-editor-field">
-				<label className="cb-identityjs2026-editor-field__label">{ __( 'Background Image', 'cb-identityjs2026' ) }</label>
-				<MediaUploadCheck>
-					<MediaUpload
-						onSelect={ ( media ) => setAttributes( { imageId: media.id } ) }
-						allowedTypes={ [ 'image' ] }
-						value={ imageId }
-						render={ ( { open } ) => (
-							<div className="cb-identityjs2026-editor-field__control">
-								{ imageUrl && (
-									<img src={ imageUrl } alt="" style={ { maxWidth: '200px', display: 'block', marginBottom: '8px' } } />
+			<div style={ { display: 'flex', flexWrap: 'wrap', gap: '12px' } }>
+				<div style={ { flex: '1 1 0%' } }>
+					<div className="cb-identityjs2026-editor-field">
+						<label className="cb-identityjs2026-editor-field__label">{ __( 'Background Image', 'cb-identityjs2026' ) }</label>
+						<MediaUploadCheck>
+							<MediaUpload
+								onSelect={ ( media ) => setAttributes( { imageId: media.id } ) }
+								allowedTypes={ [ 'image' ] }
+								value={ imageId }
+								render={ ( { open } ) => (
+									<div className="cb-identityjs2026-editor-field__control">
+										{ imageUrl && (
+											<img src={ imageUrl } alt="" style={ { maxWidth: '200px', display: 'block', marginBottom: '8px' } } />
+										) }
+										<Button variant="secondary" onClick={ open }>
+											{ imageUrl ? __( 'Replace Background Image', 'cb-identityjs2026' ) : __( 'Select Background Image', 'cb-identityjs2026' ) }
+										</Button>
+									</div>
 								) }
-								<Button variant="secondary" onClick={ open }>
-									{ imageUrl ? __( 'Replace Background Image', 'cb-identityjs2026' ) : __( 'Select Background Image', 'cb-identityjs2026' ) }
-								</Button>
-							</div>
-						) }
-					/>
-				</MediaUploadCheck>
-			</div>
-
-			<div className="cb-identityjs2026-editor-field">
-				<label className="cb-identityjs2026-editor-field__label">{ __( 'Overlay Image', 'cb-identityjs2026' ) }</label>
-				<MediaUploadCheck>
-					<MediaUpload
-						onSelect={ ( media ) => setAttributes( { overlayImageId: media.id } ) }
-						allowedTypes={ [ 'image' ] }
-						value={ overlayImageId }
-						render={ ( { open } ) => (
-							<div className="cb-identityjs2026-editor-field__control">
-								{ overlayImageUrl && (
-									<img src={ overlayImageUrl } alt="" style={ { maxWidth: '200px', display: 'block', marginBottom: '8px' } } />
+							/>
+						</MediaUploadCheck>
+					</div>
+				</div>
+				<div style={ { flex: '1 1 0%' } }>
+					<div className="cb-identityjs2026-editor-field">
+						<label className="cb-identityjs2026-editor-field__label">{ __( 'Overlay Image', 'cb-identityjs2026' ) }</label>
+						<MediaUploadCheck>
+							<MediaUpload
+								onSelect={ ( media ) => setAttributes( { overlayImageId: media.id } ) }
+								allowedTypes={ [ 'image' ] }
+								value={ overlayImageId }
+								render={ ( { open } ) => (
+									<div className="cb-identityjs2026-editor-field__control">
+										{ overlayImageUrl && (
+											<img src={ overlayImageUrl } alt="" style={ { maxWidth: '200px', display: 'block', marginBottom: '8px' } } />
+										) }
+										<Button variant="secondary" onClick={ open }>
+											{ overlayImageUrl ? __( 'Replace Overlay Image', 'cb-identityjs2026' ) : __( 'Select Overlay Image', 'cb-identityjs2026' ) }
+										</Button>
+									</div>
 								) }
-								<Button variant="secondary" onClick={ open }>
-									{ overlayImageUrl ? __( 'Replace Overlay Image', 'cb-identityjs2026' ) : __( 'Select Overlay Image', 'cb-identityjs2026' ) }
-								</Button>
-							</div>
-						) }
-					/>
-				</MediaUploadCheck>
-				<p className="cb-identityjs2026-editor-field__help">
-					{ __( 'Optional — a soft blur texture is used automatically when this is left empty.', 'cb-identityjs2026' ) }
-				</p>
+							/>
+						</MediaUploadCheck>
+						<p className="cb-identityjs2026-editor-field__help">
+							{ __( 'Optional — a soft blur texture is used automatically when this is left empty.', 'cb-identityjs2026' ) }
+						</p>
+					</div>
+				</div>
 			</div>
 
 			{ isHero ? (
 				<>
-					<TextControl
-						label={ __( 'Title', 'cb-identityjs2026' ) }
-						value={ title }
-						onChange={ ( value ) => setAttributes( { title: value } ) }
-					/>
-					<SelectControl
-						label={ __( 'Title Tag', 'cb-identityjs2026' ) }
-						value={ titleTag }
-						options={ [
-							{ label: 'H1', value: 'h1' },
-							{ label: 'H2', value: 'h2' },
-							{ label: 'H3', value: 'h3' },
-						] }
-						onChange={ ( value ) => setAttributes( { titleTag: value } ) }
-						help={ __( 'Font size/weight come from the block’s own Typography panel in Settings, not from here.', 'cb-identityjs2026' ) }
-					/>
-					<TextControl
-						label={ __( 'CTA Link Text', 'cb-identityjs2026' ) }
-						value={ ctaLinkText }
-						onChange={ ( value ) => setAttributes( { ctaLinkText: value } ) }
-					/>
-					<TextControl
-						type="url"
-						label={ __( 'CTA Link URL', 'cb-identityjs2026' ) }
-						value={ ctaLinkUrl }
-						onChange={ ( value ) => setAttributes( { ctaLinkUrl: value } ) }
-					/>
+					<div style={ { display: 'flex', flexWrap: 'wrap', gap: '12px' } }>
+						<div style={ { flex: '3 1 0%' } }>
+							<TextControl
+								label={ __( 'Title', 'cb-identityjs2026' ) }
+								value={ title }
+								onChange={ ( value ) => setAttributes( { title: value } ) }
+							/>
+						</div>
+						<div style={ { flex: '1 1 0%' } }>
+							<SelectControl
+								label={ __( 'Title Tag', 'cb-identityjs2026' ) }
+								value={ titleTag }
+								options={ [
+									{ label: 'H1', value: 'h1' },
+									{ label: 'H2', value: 'h2' },
+									{ label: 'H3', value: 'h3' },
+								] }
+								onChange={ ( value ) => setAttributes( { titleTag: value } ) }
+								help={ __( 'Font size/weight come from the block’s own Typography panel in Settings, not from here.', 'cb-identityjs2026' ) }
+							/>
+						</div>
+					</div>
+					<div style={ { display: 'flex', flexWrap: 'wrap', gap: '12px' } }>
+						<div style={ { flex: '1 1 0%' } }>
+							<TextControl
+								label={ __( 'CTA Link Text', 'cb-identityjs2026' ) }
+								value={ ctaLinkText }
+								onChange={ ( value ) => setAttributes( { ctaLinkText: value } ) }
+							/>
+						</div>
+						<div style={ { flex: '1 1 0%' } }>
+							<TextControl
+								type="url"
+								label={ __( 'CTA Link URL', 'cb-identityjs2026' ) }
+								value={ ctaLinkUrl }
+								onChange={ ( value ) => setAttributes( { ctaLinkUrl: value } ) }
+							/>
+						</div>
+					</div>
 					<ToggleControl
 						label={ __( 'Open CTA link in a new tab', 'cb-identityjs2026' ) }
 						checked={ ctaLinkTarget }
