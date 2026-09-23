@@ -25,87 +25,9 @@
 defined( 'ABSPATH' ) || exit;
 
 get_header( cb_identityjs2026_get_site() );
-
-/**
- * Renders one post-card grid: up to 3 posts from the given category
- * slug(s), with a fixed 3/6/3 (or 6/3/3) column-span pattern matching the
- * real source's own card sizing.
- *
- * @param string   $category_slugs Comma-separated category slug(s) for
- *                                 `category_name` (WP_Query OR-matches these).
- * @param int[]    $spans          Three grid-column spans (out of 12), one
- *                                 per card, in display order.
- * @return void
- */
-if ( ! function_exists( 'cb_identityjs2026_render_insight_cards' ) ) :
-function cb_identityjs2026_render_insight_cards( $category_slugs, $spans ) {
-	$query = new WP_Query(
-		array(
-			'post_type'      => 'post',
-			'post_status'    => 'publish',
-			'orderby'        => 'date',
-			'order'          => 'DESC',
-			'posts_per_page' => 3,
-			'category_name'  => $category_slugs,
-		)
-	);
-
-	if ( ! $query->have_posts() ) {
-		return;
-	}
-
-	$index = 0;
-	while ( $query->have_posts() ) {
-		$query->the_post();
-		$span       = $spans[ $index ] ?? 6;
-		$categories = get_the_category();
-		++$index;
-		?>
-		<a href="<?php echo esc_url( get_permalink() ); ?>" class="insight-type-grid__card" style="--insight-card-span: <?php echo (int) $span; ?>;">
-			<?php if ( has_post_thumbnail() ) : ?>
-				<div class="insight-type-grid__image-wrapper">
-					<?php
-					the_post_thumbnail(
-						'full',
-						array(
-							'class' => 'insight-type-grid__image',
-							'alt'   => get_post_meta( get_post_thumbnail_id(), '_wp_attachment_image_alt', true ),
-						)
-					);
-					?>
-				</div>
-			<?php endif; ?>
-			<div class="insight-type-grid__content">
-				<?php if ( ! empty( $categories ) ) : ?>
-					<div class="insight-type-grid__category"><?php echo esc_html( $categories[0]->name ); ?></div>
-				<?php endif; ?>
-				<h3 class="insight-type-grid__title"><?php the_title(); ?></h3>
-				<div class="insight-type-grid__date">
-					<?php echo esc_html( get_the_date( 'j F Y' ) ); ?>
-					<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/img/arrow-n600-solid.svg' ); ?>" width="14" height="13" alt="" />
-				</div>
-			</div>
-		</a>
-		<?php
-	}
-	wp_reset_postdata();
-}
-endif;
-
-/**
- * Category archive link by slug, or '#' if the category doesn't exist —
- * avoids a get_category_link( false ) warning if a site is missing one of
- * the three categories this page expects.
- *
- * @param string $slug Category slug.
- * @return string
- */
-if ( ! function_exists( 'cb_identityjs2026_category_link_by_slug' ) ) :
-function cb_identityjs2026_category_link_by_slug( $slug ) {
-	$term = get_category_by_slug( $slug );
-	return $term ? get_category_link( $term ) : '#';
-}
-endif;
+// cb_identityjs2026_render_insight_cards() / cb_identityjs2026_category_link_by_slug()
+// now live in inc/news-templates.php, shared with category-insights.php /
+// category-press.php.
 ?>
 
 <div class="news-insights">

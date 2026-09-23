@@ -1,0 +1,33 @@
+/*
+ * Post Grid — see identity-global-block-spec.md. Card markup/classes
+ * (.insight-type-grid, .insight-type-grid__*) are already built and styled
+ * in src/css/site/identity.css (index.php's own card grid) — this file
+ * only adds the one thing genuinely new to this block: the pretitle bar.
+ *
+ * Confirmed against cb-recent-news-identity's own real
+ * .cb-latest-insights__pre-title override: border-bottom
+ * rgba(255,255,255,0.4) (--col-border), 1rem block padding, accent-lime
+ * text, regular weight. Real source's own two-shade background split
+ * (darker pretitle bar vs lighter section body) is simplified to one
+ * shade here — see render.php's own comment.
+ */
+
+.post-grid__pre-title {
+	border-block-end: 1px solid var(--col-border);
+	padding-block: var(--space-3);
+	font-family: var(--ff-heading);
+	font-size: var(--fs-small);
+	font-weight: var(--fw-regular);
+	line-height: 1;
+	color: var(--col-accent);
+}
+
+.post-grid__pre-title-inner {
+	padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+	.post-grid__pre-title-inner {
+		padding-inline: var(--space-5);
+	}
+}

@@ -358,164 +358,59 @@
     "typography": {
       "fontSizes": [
         {
+          "name": "50",
+          "slug": "50",
+          "size": "0.8889rem"
+        },
+        {
+          "name": "100",
+          "slug": "100",
+          "size": "1rem"
+        },
+        {
+          "name": "200",
+          "slug": "200",
+          "size": "1.1111rem"
+        },
+        {
+          "name": "400",
+          "slug": "400",
+          "size": "clamp(1.2222rem, 1.1rem + 0.6vw, 1.375rem)"
+        },
+        {
+          "name": "500",
+          "slug": "500",
+          "size": "clamp(1.4444rem, 1.25rem + 0.9vw, 1.75rem)"
+        },
+        {
+          "name": "600",
+          "slug": "600",
+          "size": "clamp(1.6667rem, 1.4rem + 1.2vw, 2rem)"
+        },
+        {
+          "name": "700",
+          "slug": "700",
+          "size": "clamp(1.9444rem, 1.6rem + 1.4vw, 2.25rem)"
+        },
+        {
           "name": "800",
           "slug": "800",
           "size": "clamp(1.5rem, 0.9rem + 1.6vw, 2.5rem)"
         },
         {
-          "name": "h1",
-          "slug": "h1",
-          "size": "clamp(1.4375rem, 0.9rem + 1.4vw, 2.25rem)"
+          "name": "850",
+          "slug": "850",
+          "size": "clamp(2.3333rem, 1.9rem + 2vw, 3.125rem)"
         },
         {
-          "name": "h2",
-          "slug": "h2",
-          "size": "clamp(1.1875rem, 0.9rem + 1vw, 1.751rem)"
+          "name": "875",
+          "slug": "875",
+          "size": "clamp(2.7778rem, 2.2rem + 2.5vw, 3.5rem)"
         },
         {
-          "name": "h3",
-          "slug": "h3",
-          "size": "clamp(1.3125rem, 0.9rem + 1.2vw, 1.999rem)"
-        },
-        {
-          "name": "subtitle",
-          "slug": "subtitle",
-          "size": "clamp(1.4444rem, 1.25rem + 0.9vw, 1.75rem)"
-        },
-        {
-          "name": "body",
-          "slug": "body",
-          "size": "1.125rem"
-        },
-        {
-          "name": "small",
-          "slug": "small",
-          "size": "0.8889rem"
-        },
-        {
-          "name": "content-heading",
-          "slug": "content-heading",
-          "size": "clamp(1.5rem, 0.9rem + 1.6vw, 2.5rem)"
-        },
-        {
-          "name": "hero-title",
-          "slug": "hero-title",
-          "size": "min(7vw, 7rem)"
-        },
-        {
-          "name": "child-page-nav-item",
-          "slug": "child-page-nav-item",
-          "size": "clamp(1.875rem, 0.95rem + 1.9vw, 3.125rem)"
-        },
-        {
-          "name": "child-page-nav-header",
-          "slug": "child-page-nav-header",
-          "size": "clamp(1rem, 0.95rem + 0.5vw, 1.25rem)"
-        },
-        {
-          "name": "cta-title",
-          "slug": "cta-title",
-          "size": "clamp(1.875rem, 0.95rem + 1.9vw, 3.125rem)"
-        },
-        {
-          "name": "cta-content",
-          "slug": "cta-content",
-          "size": "clamp(1.3125rem, 0.9rem + 1.2vw, 1.999rem)"
-        },
-        {
-          "name": "page-header-title",
-          "slug": "page-header-title",
-          "size": "clamp(3.4375rem, 1rem + 4vw, 6.25rem)"
-        },
-        {
-          "name": "page-header-lede",
-          "slug": "page-header-lede",
-          "size": "clamp(1.4375rem, 0.9rem + 1.4vw, 2.25rem)"
-        },
-        {
-          "name": "page-header-intro",
-          "slug": "page-header-intro",
-          "size": "clamp(1.1875rem, 0.9rem + 1vw, 1.751rem)"
-        },
-        {
-          "name": "section-title",
-          "slug": "section-title",
-          "size": "clamp(1rem, 0.95rem + 0.5vw, 1.25rem)"
-        },
-        {
-          "name": "detail-list-title",
-          "slug": "detail-list-title",
-          "size": "clamp(1.4375rem, 0.9rem + 1.4vw, 2.25rem)"
-        },
-        {
-          "name": "detail-list-intro-title",
-          "slug": "detail-list-intro-title",
-          "size": "clamp(1.5rem, 0.9rem + 1.6vw, 2.5rem)"
-        },
-        {
-          "name": "detail-list-description",
-          "slug": "detail-list-description",
-          "size": "clamp(1.0625rem, 0.9rem + 0.6vw, 1.375rem)"
-        },
-        {
-          "name": "detail-list-bullet",
-          "slug": "detail-list-bullet",
-          "size": "clamp(1.1875rem, 0.9rem + 1vw, 1.751rem)"
-        },
-        {
-          "name": "push-panel-title",
-          "slug": "push-panel-title",
-          "size": "clamp(1.875rem, 0.95rem + 1.9vw, 3.125rem)"
-        },
-        {
-          "name": "push-panel-desc",
-          "slug": "push-panel-desc",
-          "size": "clamp(1.0625rem, 0.9rem + 0.6vw, 1.375rem)"
-        },
-        {
-          "name": "push-panel-left-content",
-          "slug": "push-panel-left-content",
-          "size": "clamp(1.1875rem, 0.9rem + 1vw, 1.751rem)"
-        },
-        {
-          "name": "push-panel-link",
-          "slug": "push-panel-link",
-          "size": "clamp(1.1875rem, 0.9rem + 1vw, 1.751rem)"
-        },
-        {
-          "name": "brand-grid-intro",
-          "slug": "brand-grid-intro",
-          "size": "clamp(1.875rem, 0.95rem + 1.9vw, 3.125rem)"
-        },
-        {
-          "name": "brand-grid-name",
-          "slug": "brand-grid-name",
-          "size": "0.8889rem"
-        },
-        {
-          "name": "brand-grid-strap",
-          "slug": "brand-grid-strap",
-          "size": "clamp(1rem, 0.95rem + 0.5vw, 1.25rem)"
-        },
-        {
-          "name": "brand-grid-last",
-          "slug": "brand-grid-last",
-          "size": "clamp(1.1875rem, 0.9rem + 1vw, 1.751rem)"
-        },
-        {
-          "name": "feature-overlay-title",
-          "slug": "feature-overlay-title",
+          "name": "900",
+          "slug": "900",
           "size": "clamp(3.3333rem, 2.6rem + 3vw, 5rem)"
-        },
-        {
-          "name": "feature-overlay-content",
-          "slug": "feature-overlay-content",
-          "size": "clamp(1.4444rem, 1.25rem + 0.9vw, 1.75rem)"
-        },
-        {
-          "name": "feature-overlay-cta-intro",
-          "slug": "feature-overlay-cta-intro",
-          "size": "clamp(1.2222rem, 1.1rem + 0.6vw, 1.375rem)"
         }
       ]
     }

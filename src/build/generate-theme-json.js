@@ -28,6 +28,7 @@ const { readTokensFromFile } = require('./read-tokens');
 
 const tokensDir = path.join(__dirname, '../css/tokens');
 const themeRoot = path.join(__dirname, '../..');
+const baseTokensFile = path.join(__dirname, '../css/tokens.css');
 const DEFAULT_BRAND = 'identity';
 
 // WordPress core always adds a generic `has-text-color` marker class to any
@@ -44,9 +45,13 @@ const DEFAULT_BRAND = 'identity';
 // --col-text custom property itself (used throughout block/site CSS).
 const RESERVED_SLUGS = { text: 'body-text' };
 
-function buildThemeJson(tokens) {
+function buildThemeJson(tokens, baseTokens) {
 	// Palette colors: --col-{slug} whose value is a literal color, not a
-	// var() alias (aliases would just be a duplicate palette entry).
+	// var() alias (aliases would just be a duplicate palette entry). Brand
+	// file only (not merged with the base tokens) — the base scale's own
+	// generic --col-* placeholders aren't real brand colours and shouldn't
+	// show up as extra palette entries just because a font-size fix started
+	// reading tokens.css too.
 	const colors = Object.entries(tokens)
 		.filter(([key, value]) => key.startsWith('col-') && !value.startsWith('var('))
 		.map(([key, value]) => {
@@ -55,12 +60,26 @@ function buildThemeJson(tokens) {
 			return { name: slug, slug, color: value };
 		});
 
-	const fontSizes = Object.entries(tokens)
-		.filter(([key]) => key.startsWith('fs-'))
+	// Only the plain numeric rung scale (--fs-50, --fs-100, ... --fs-900) —
+	// not every --fs-* custom property. Most of those are semantic,
+	// block-specific tokens (--fs-page-header-title, --fs-detail-list-bullet,
+	// ...), one per block that needs its own size; listing all of them in
+	// the editor's Font Size picker buried the handful of real, pickable
+	// rungs under dozens of single-purpose names no one should be choosing
+	// from directly. Also drops --fs-800 (a plain var(--fs-700) alias, not
+	// its own value) the same way the colour palette above already drops
+	// alias custom properties. Merged with the base scale (tokens.css) —
+	// unlike colours, most brands never redefine most of the numeric rungs
+	// at all (tokens/identity.css only overrides --fs-800), so reading the
+	// brand file alone would drop nearly the whole scale.
+	const mergedForFontSizes = { ...baseTokens, ...tokens };
+	const fontSizes = Object.entries(mergedForFontSizes)
+		.filter(([key, value]) => /^fs-\d+$/.test(key) && !value.startsWith('var('))
 		.map(([key, value]) => {
 			const slug = key.replace('fs-', '');
 			return { name: slug, slug, size: value };
-		});
+		})
+		.sort((a, b) => Number(a.slug) - Number(b.slug));
 
 	return {
 		version: 2,
@@ -93,10 +112,17 @@ function main() {
 
 	let defaultJson = null;
 
+	// tokens/{brand}.css only ever holds deltas from tokens.css's generic
+	// scale (see its own header comment) — a brand file that never
+	// redefines --fs-500 still needs --fs-500 to exist for the numeric
+	// rung list (see buildThemeJson), so the base file is read once here
+	// and passed through alongside each brand's own (unmerged) tokens.
+	const baseTokens = readTokensFromFile(baseTokensFile);
+
 	for (const file of brandFiles) {
 		const brand = path.basename(file, '.css');
 		const tokens = readTokensFromFile(path.join(tokensDir, file));
-		const themeJson = buildThemeJson(tokens);
+		const themeJson = buildThemeJson(tokens, baseTokens);
 		fs.writeFileSync(path.join(themeRoot, `theme-${brand}.json`), JSON.stringify(themeJson, null, 2));
 		console.log(`Generated theme-${brand}.json`);
 		if (brand === DEFAULT_BRAND) {

@@ -501,6 +501,34 @@
 	aspect-ratio: 1 / 1;
 }
 
+/*
+ * category-insights.php / category-press.php's own unbounded lists cycle
+ * through 7 positions (see cb_identityjs2026_render_insight_cards_full() in
+ * inc/news-templates.php), not 3 — confirmed live, same real source
+ * pattern repeated per site (card-1..card-7): 4:3 / 16:9 / 5:4 / 16:9 /
+ * 4:3 / 1:1 / 16:9, then it starts over. Unlike the capped 3-card grid
+ * above, this isn't section-scoped (Insights and Press use the identical
+ * cycle) — hence the explicit position classes rather than :nth-child.
+ */
+.insight-type-grid__card--1 .insight-type-grid__image-wrapper,
+.insight-type-grid__card--5 .insight-type-grid__image-wrapper {
+	aspect-ratio: 4 / 3;
+}
+
+.insight-type-grid__card--2 .insight-type-grid__image-wrapper,
+.insight-type-grid__card--4 .insight-type-grid__image-wrapper,
+.insight-type-grid__card--7 .insight-type-grid__image-wrapper {
+	aspect-ratio: 16 / 9;
+}
+
+.insight-type-grid__card--3 .insight-type-grid__image-wrapper {
+	aspect-ratio: 5 / 4;
+}
+
+.insight-type-grid__card--6 .insight-type-grid__image-wrapper {
+	aspect-ratio: 1 / 1;
+}
+
 .insight-type-grid__category {
 	margin-block-end: var(--space-3);
 	/* neutral-100, confirmed live — not otherwise tokenised in this theme. */

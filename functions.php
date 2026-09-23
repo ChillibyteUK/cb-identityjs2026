@@ -26,3 +26,4 @@ require_once CB_IDENTITYJS2026_DIR . '/inc/block-usage.php';
 require_once CB_IDENTITYJS2026_DIR . '/inc/utilities.php';
 require_once CB_IDENTITYJS2026_DIR . '/inc/posttypes.php';
 require_once CB_IDENTITYJS2026_DIR . '/inc/taxonomies.php';
+require_once CB_IDENTITYJS2026_DIR . '/inc/news-templates.php';

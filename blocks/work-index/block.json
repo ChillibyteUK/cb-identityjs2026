@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cb-identityjs2026/work-index",
+	"title": "CB Work Index",
+	"category": "cb-identityjs2026",
+	"icon": "grid-view",
+	"attributes": {
+		"heroCaseStudy": { "type": "number", "default": 0 },
+		"showFilterBar": { "type": "boolean", "default": true }
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"align": true
+	},
+	"editorScript": "file:./build/index.js",
+	"render": "file:./render.php"
+}
