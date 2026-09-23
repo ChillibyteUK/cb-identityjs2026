@@ -68,11 +68,27 @@
 		linear-gradient(rgba(13, 13, 12, 0), rgba(13, 13, 12, 0.5) 60%, rgba(13, 13, 12, 0.8));
 }
 
+/*
+ * Also carries .id-container on its own element (see render.php) rather
+ * than wrapping a nested one — this class supplies the padding-inline
+ * .id-container itself doesn't set by default (every other block adds it
+ * per-usage the same way, e.g. .work-index-hero__pretitle .id-container
+ * below). Confirmed live: without it, the title/desc sat flush against the
+ * card's own edges instead of matching the rest of the page's
+ * containerisation.
+ */
 .work-index-hero__content {
 	position: absolute;
 	inset-block-end: 0;
 	inset-inline: 0;
 	padding-block: var(--space-5) var(--space-4);
+	padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+	.work-index-hero__content {
+		padding-inline: var(--space-5);
+	}
 }
 
 .work-index-hero__title {
@@ -81,7 +97,7 @@
 	gap: var(--space-3);
 	font-family: var(--ff-heading);
 	font-size: var(--fs-700);
-	font-weight: 500;
+	font-weight: var(--fw-semibold);
 	color: var(--col-text);
 }
 
@@ -93,12 +109,34 @@
 	color: #aeada1;
 }
 
+/*
+ * Full-bleed background image — confirmed live against
+ * https://identityglobal.com/work/ and cb-identitygroup2026's own
+ * .cb-work-index__filter-bar (child-theme.css): background-image lives on
+ * this outer, full-width element, not on .work-index__filter-bar-inner
+ * (the .id-container-constrained one) — the image runs edge to edge behind
+ * the containerised filter controls, not clipped to their max-width.
+ */
 .work-index__filter-bar {
 	position: relative;
 	background-color: var(--col-bg);
-	border-block: 1px solid var(--col-border);
+	background-image: url("../img/work-index-bg.jpg");
+	background-size: cover;
+	background-position: center;
+	background-attachment: fixed;
+	border-block-start: 1px solid rgba(255, 255, 255, 0.1);
+	border-block-end: 1px solid rgba(255, 255, 255, 0.4);
 	isolation: isolate;
 	overflow: hidden;
+}
+
+/* iOS Safari doesn't support background-attachment: fixed inside a normal
+   scrolling container — confirmed live behaviour, matches production's own
+   @supports fallback exactly. */
+@supports ( -webkit-touch-callout: none ) {
+	.work-index__filter-bar {
+		background-attachment: scroll;
+	}
 }
 
 .work-index__filter-bar-inner {
@@ -108,7 +146,6 @@
 	gap: var(--space-3);
 	padding-block: var(--space-4);
 	padding-inline: var(--space-4);
-	background-color: rgba(255, 255, 255, 0.1);
 }
 
 @media (min-width: 768px) {
@@ -126,12 +163,51 @@
 }
 
 .work-index__filter-select {
+	/* forms.css's global `select { display: block; width: 100% }` reset
+	   otherwise fills this flex row on its own — confirmed live, that 100%
+	   width is exactly what was forcing the label/select/reset button to
+	   stack instead of sitting in one line like the real source's
+	   Bootstrap `.col-md-6` (see cb-work-index.php). */
+	display: inline-block;
+	width: auto;
+	flex: 1 1 320px;
+	max-width: 480px;
 	padding: var(--space-2) var(--space-3);
 	background-color: var(--col-bg);
 	color: var(--col-text);
 	border: 1px solid var(--col-border);
 	font-family: var(--ff-body);
 	font-size: var(--fs-body);
+	transition: color var(--transition), background-color var(--transition), border-color var(--transition);
+}
+
+.work-index__filter-select:hover {
+	background-color: var(--col-accent);
+	color: var(--col-accent-text);
+	border-color: var(--col-accent);
+}
+
+/*
+ * Confirmed live: without its own explicit colours, Chrome's native open
+ * listbox renders every <option> row using the *closed* select's current
+ * background/colour, so :hover above was bleeding into the popup — opening
+ * the dropdown while the mouse was still over the closed box turned the
+ * entire list lime instead of just the closed box. Giving every option its
+ * own dark styling stops that inheritance. `:checked` targets the
+ * currently-selected row, replacing Chrome's own default blue selection
+ * highlight with the same accent treatment as the closed box's hover state
+ * — the in-list hover highlight on an unselected row is OS-rendered native
+ * UI, not stylable via CSS in Chromium, so it's left as-is rather than
+ * pretending it can be forced to match.
+ */
+.work-index__filter-select option {
+	background-color: var(--col-bg);
+	color: var(--col-text);
+}
+
+.work-index__filter-select option:checked {
+	background-color: var(--col-accent);
+	color: var(--col-accent-text);
 }
 
 .work-index__filter-reset {
@@ -154,7 +230,7 @@
 	display: grid;
 	grid-template-columns: 1fr;
 	gap: var(--space-3);
-	padding-block: var(--space-5);
+	padding-block-end: var(--space-5);
 }
 
 @media (min-width: 768px) {
@@ -163,10 +239,25 @@
 	}
 }
 
+/*
+ * Confirmed live: this used to be a `display: grid; grid-template-areas:
+ * "stack"` layout, with each layer placed via `grid-area: stack`. That
+ * breaks the moment a card's image isn't exactly 16:9 — with no explicit
+ * `grid-template-rows`, the implicit row sizes to fit its tallest content,
+ * and `height: 100%` on an `object-fit: cover` image inside an `auto`-sized
+ * row is circular, so a 4:3 source image (e.g. the Vodafone/Wimbledon
+ * card) inflated the row well past the card's own 16:9 box. The card's own
+ * `overflow: hidden` only clips what's visually outside the box — it
+ * doesn't stop `.work-index__content`'s `align-self: end` from resolving
+ * against that oversized row instead of the visible card, so the title/
+ * desc/gradient rendered entirely below the clipped, visible area: fully
+ * present in the DOM, fully invisible. Plain `position: absolute; inset: 0`
+ * layers (already the working pattern in .work-index-hero__background)
+ * always fill exactly the card's own box regardless of any child's
+ * intrinsic size, so this can't recur.
+ */
 .work-index__card {
 	position: relative;
-	display: grid;
-	grid-template-areas: "stack";
 	aspect-ratio: 16 / 9;
 	overflow: hidden;
 	text-decoration: none;
@@ -174,9 +265,8 @@
 }
 
 .work-index__image-wrapper {
-	grid-area: stack;
-	width: 100%;
-	height: 100%;
+	position: absolute;
+	inset: 0;
 }
 
 .work-index__image {
@@ -192,7 +282,8 @@
 }
 
 .work-index__video {
-	grid-area: stack;
+	position: absolute;
+	inset: 0;
 	overflow: hidden;
 	pointer-events: none;
 }
@@ -201,12 +292,21 @@
 	display: block;
 	width: 100%;
 	height: 100%;
+	object-fit: cover;
 	pointer-events: none;
 }
 
+/*
+ * Sits after .work-index__video in DOM order (see render.php) so the
+ * gradient/title/desc always paint on top of a hover-mounted video iframe,
+ * not the other way round — confirmed live this was the actual ask: the
+ * overlay must stay visible through a hover, not disappear when the video
+ * mounts.
+ */
 .work-index__content {
-	grid-area: stack;
-	align-self: end;
+	position: absolute;
+	inset-inline: 0;
+	inset-block-end: 0;
 	padding: var(--space-5) var(--space-4) var(--space-4);
 	background: linear-gradient(rgba(13, 13, 12, 0), rgba(13, 13, 12, 0.5) 10%, rgba(13, 13, 12, 0.8));
 }
@@ -216,7 +316,7 @@
 	align-items: center;
 	gap: var(--space-2);
 	font-family: var(--ff-heading);
-	font-weight: 500;
+	font-weight: var(--fw-semibold);
 	color: var(--col-text);
 }
 

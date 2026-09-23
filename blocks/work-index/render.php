@@ -41,6 +41,38 @@ if ( ! $hero_id ) {
 	wp_reset_postdata();
 }
 
+// Same fixed Vimeo app/account registration as Media Panel/Case Study Hero
+// — see those blocks' own render.php comments.
+$vimeo_app_id = 58479;
+
+/**
+ * Builds a hover-preview-ready Vimeo embed src from a card's meta, or ''
+ * when it has no video.
+ *
+ * @param array $card_meta cb_identityjs2026_get_case_study_card_meta() result.
+ * @return string
+ */
+if ( ! function_exists( 'cb_identityjs2026_work_index_video_src' ) ) {
+	function cb_identityjs2026_work_index_video_src( $card_meta, $vimeo_app_id ) {
+		if ( ! $card_meta['vimeoId'] ) {
+			return '';
+		}
+
+		return add_query_arg(
+			array(
+				'h'          => $card_meta['vimeoHash'],
+				'dnt'        => '1',
+				'badge'      => '0',
+				'player_id'  => '0',
+				'app_id'     => $vimeo_app_id,
+				'background' => '1',
+				'autoplay'   => '1',
+			),
+			'https://player.vimeo.com/video/' . rawurlencode( $card_meta['vimeoId'] )
+		);
+	}
+}
+
 $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'work-index' ) );
 ?>
 <div <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?>>
@@ -52,6 +84,13 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'work-inde
 			<div class="id-container">Where experience changes everything</div>
 		</h2>
 		<?php if ( $hero_id ) : ?>
+			<?php
+			// No hover-video on the hero card — confirmed live it didn't
+			// actually cover the (21:9) hero box cleanly, unlike the grid
+			// cards' own smaller/more uniform 16:9 boxes. Reverted rather
+			// than shipping a broken fill.
+			$hero_card_meta = cb_identityjs2026_get_case_study_card_meta( $hero_id );
+			?>
 			<a href="<?php echo esc_url( get_permalink( $hero_id ) ); ?>" class="work-index-hero__background">
 				<?php
 				$bg_image_id = get_post_thumbnail_id( $hero_id );
@@ -65,7 +104,7 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'work-inde
 						<?php echo esc_html( get_the_title( $hero_id ) ); ?>
 						<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/img/arrow-wh.svg' ); ?>" width="23" height="21" alt="" />
 					</div>
-					<div class="work-index-hero__desc"><?php echo esc_html( cb_identityjs2026_get_case_study_card_meta( $hero_id )['desc'] ); ?></div>
+					<div class="work-index-hero__desc"><?php echo esc_html( $hero_card_meta['desc'] ); ?></div>
 				</div>
 			</a>
 		<?php endif; ?>
@@ -110,8 +149,6 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'work-inde
 				)
 			);
 
-			$vimeo_app_id = 58479; // Same fixed Vimeo app/account registration as Media Panel/Case Study Hero.
-
 			while ( $query->have_posts() ) :
 				$query->the_post();
 				$post_id       = get_the_ID();
@@ -130,22 +167,8 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'work-inde
 					$service_slugs = array_unique( $service_slugs );
 				}
 
-				$card_meta  = cb_identityjs2026_get_case_study_card_meta( $post_id );
-				$video_src  = '';
-				if ( $card_meta['vimeoId'] ) {
-					$video_src = add_query_arg(
-						array(
-							'h'          => $card_meta['vimeoHash'],
-							'dnt'        => '1',
-							'badge'      => '0',
-							'player_id'  => '0',
-							'app_id'     => $vimeo_app_id,
-							'background' => '1',
-							'autoplay'   => '1',
-						),
-						'https://player.vimeo.com/video/' . rawurlencode( $card_meta['vimeoId'] )
-					);
-				}
+				$card_meta = cb_identityjs2026_get_case_study_card_meta( $post_id );
+				$video_src = cb_identityjs2026_work_index_video_src( $card_meta, $vimeo_app_id );
 				?>
 				<a href="<?php echo esc_url( get_permalink() ); ?>" class="work-index__card" data-service-terms="<?php echo esc_attr( implode( ' ', $service_slugs ) ); ?>">
 					<?php if ( has_post_thumbnail() ) : ?>
@@ -195,10 +218,12 @@ document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener('DOMContentLoaded', function () {
 	// Video hover preview: only mount the Vimeo iframe while the card is
 	// hovered/focused, so idle cards never hold a live player in memory —
-	// ported from cb-featured-work.php's own JS.
-	document.querySelectorAll('.work-index__card').forEach(function (card) {
-		var container = card.querySelector('.work-index__video');
-		if (!container) return;
+	// ported from cb-featured-work.php's own JS. Only the grid cards
+	// (.work-index__card) carry a [data-video-src] container — the hero
+	// card doesn't (see render.php's own comment on why).
+	document.querySelectorAll('[data-video-src]').forEach(function (container) {
+		var card = container.closest('a');
+		if (!card) return;
 		var src = container.getAttribute('data-video-src');
 
 		function mountVideo() {

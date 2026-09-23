@@ -124,8 +124,8 @@ function cb_identityjs2026_render_insight_card( $span, $position = null, $show_c
 	$position_class  = $position ? ' insight-type-grid__card--' . (int) $position : '';
 	?>
 	<a href="<?php echo esc_url( get_permalink() ); ?>" class="insight-type-grid__card<?php echo esc_attr( $position_class ); ?>" style="--insight-card-span: <?php echo (int) $span; ?>;">
-		<?php if ( has_post_thumbnail() ) : ?>
-			<div class="insight-type-grid__image-wrapper">
+		<div class="insight-type-grid__image-wrapper">
+			<?php if ( has_post_thumbnail() ) : ?>
 				<?php
 				the_post_thumbnail(
 					'full',
@@ -135,8 +135,10 @@ function cb_identityjs2026_render_insight_card( $span, $position = null, $show_c
 					)
 				);
 				?>
-			</div>
-		<?php endif; ?>
+			<?php else : ?>
+				<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/img/default-post-image.png' ); ?>" class="insight-type-grid__image" alt="" />
+			<?php endif; ?>
+		</div>
 		<div class="insight-type-grid__content">
 			<?php if ( $show_category && ! empty( $categories ) ) : ?>
 				<div class="insight-type-grid__category"><?php echo esc_html( $categories[0]->name ); ?></div>

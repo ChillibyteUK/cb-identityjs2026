@@ -24,10 +24,18 @@
 	}
 }
 
+/*
+ * position: absolute layers, not `display: grid; grid-template-areas:
+ * "stack"` — see work-index.css's own .work-index__card comment for the
+ * confirmed-live bug that pattern has with any non-16:9 image (an `auto`-
+ * sized grid row inflates past the card's own aspect-ratio box, and
+ * .case-study-grid__content's `align-self: end` then resolves off-screen,
+ * clipped invisible by `overflow: hidden` instead of just being hidden
+ * behind the image). Same fix here since this was copied from that exact
+ * pattern.
+ */
 .case-study-grid__card {
 	position: relative;
-	display: grid;
-	grid-template-areas: "stack";
 	aspect-ratio: 16 / 9;
 	overflow: hidden;
 	background-color: var(--col-bg-alt);
@@ -40,9 +48,8 @@
 }
 
 .case-study-grid__image-wrapper {
-	grid-area: stack;
-	width: 100%;
-	height: 100%;
+	position: absolute;
+	inset: 0;
 }
 
 .case-study-grid__image {
@@ -58,7 +65,8 @@
 }
 
 .case-study-grid__video {
-	grid-area: stack;
+	position: absolute;
+	inset: 0;
 	overflow: hidden;
 	pointer-events: none;
 }
@@ -70,9 +78,13 @@
 	pointer-events: none;
 }
 
+/* Sits after .case-study-grid__video in DOM order (see render.php) so the
+   gradient/title/desc stay on top of a hover-mounted video, not the
+   reverse. */
 .case-study-grid__content {
-	grid-area: stack;
-	align-self: end;
+	position: absolute;
+	inset-inline: 0;
+	inset-block-end: 0;
 	padding: var(--space-5) var(--space-4) var(--space-4);
 	background: linear-gradient(rgba(13, 13, 12, 0), rgba(13, 13, 12, 0.5) 10%, rgba(13, 13, 12, 0.8));
 }
