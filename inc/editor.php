@@ -81,6 +81,42 @@ function cb_identityjs2026_disable_block_directory_inserter() {
 add_action( 'after_setup_theme', 'cb_identityjs2026_disable_block_directory_inserter' );
 
 /**
+ * Register the "Lede" RichText format — a components-popover toolbar
+ * button (same selection popover as Bold/Italic/Link), not a block
+ * attribute. See blocks/_editor-formats/src/index.js's own header comment
+ * for why: a block-level Font Size control can't give just the first
+ * paragraph of a RichText field its own size, only the whole field.
+ * Registered globally (not per-block) since it's a RichText-wide utility,
+ * matching every other custom format WordPress ships (bold/italic/etc are
+ * global too) — not specific to Page Header even though that's what
+ * prompted it.
+ *
+ * Not auto-registered by inc/blocks.php's blocks/*\/block.json glob (this
+ * folder has no block.json — it's a format, not a block), so it needs its
+ * own explicit enqueue here.
+ *
+ * @return void
+ */
+function cb_identityjs2026_enqueue_lede_format() {
+	$asset_file = CB_IDENTITYJS2026_DIR . '/blocks/_editor-formats/build/index.asset.php';
+
+	if ( ! file_exists( $asset_file ) ) {
+		return;
+	}
+
+	$asset = require $asset_file;
+
+	wp_enqueue_script(
+		'cb-identityjs2026-editor-formats',
+		get_template_directory_uri() . '/blocks/_editor-formats/build/index.js',
+		$asset['dependencies'],
+		$asset['version'],
+		true
+	);
+}
+add_action( 'enqueue_block_editor_assets', 'cb_identityjs2026_enqueue_lede_format' );
+
+/**
  * Pass the site-wide CTAs list to the CTA block's editor script.
  *
  * There's no post type or REST-queryable entity behind Site-Wide Settings'

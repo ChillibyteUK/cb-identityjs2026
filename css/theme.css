@@ -323,6 +323,21 @@ ol {
 	opacity: 0;
 	transform: translateY(24px);
 }
+
+/*
+ * "Lede" RichText format (see blocks/_editor-formats/src/index.js) — an
+ * editor toggles this per-selection, typically a RichText field's first
+ * paragraph, to restore the "bigger intro sentence" treatment that used to
+ * be an automatic :first-child CSS rule before per-instance Font Size
+ * fields existed (see e.g. .page-header__intro's own history in
+ * identity.css). Global, not block-scoped: the format itself is
+ * registered globally, and this is genuinely reusable wherever a RichText
+ * field's own first line should read larger than the rest of it, not just
+ * Page Header.
+ */
+.cb-lede {
+	font-size: var(--fs-page-header-lede);
+}
 /*
  * Real self-hosted SuisseIntl font files — confirmed live on
  * identityglobal.com/about/ (2026-09-22): 4 weights declared
