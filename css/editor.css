@@ -457,6 +457,108 @@
 	margin-bottom: 1.5rem;
 }
 
+/*
+ * A block's own multi-field row (e.g. Post Grid's Count / Show Category /
+ * Show Date) — one grid item of .cb-identityjs2026-editor-block above, laid
+ * out internally as its own N-column grid so short, related fields sit
+ * side by side instead of each claiming a full-width row. Same 1px-gap +
+ * grey-background divider technique as the outer block grid (see its own
+ * comment above), just nested one level deeper.
+ */
+.cb-identityjs2026-editor-field-row {
+	display: grid;
+	gap: 1px;
+	background: #ccc;
+}
+
+.cb-identityjs2026-editor-field-row--3col {
+	grid-template-columns: repeat(3, 1fr);
+}
+
+.cb-identityjs2026-editor-field-row > * {
+	margin: 0;
+	background: #fff;
+}
+
+/*
+ * Post Grid's filter-group rows (blocks/post-grid/src/edit.js) — a
+ * purpose-built repeater, not blocks/_shared/RepeaterField.js, since each
+ * row needs its own live term fetch keyed off that row's own taxonomy
+ * pick, which RepeaterField's static per-row field list can't express.
+ * Same bordered-card visual language as .cb-identityjs2026-repeater-field__row
+ * for consistency, not the same component.
+ */
+.cb-identityjs2026-post-grid-filter-row {
+	margin-bottom: 0.75rem;
+	padding: 0.75rem;
+	background: #fff;
+	border: 1px solid #ccc;
+}
+
+.cb-identityjs2026-post-grid-filter-row__header {
+	display: flex;
+	align-items: flex-end;
+	gap: 0.5rem;
+	margin-bottom: 0.5rem;
+}
+
+.cb-identityjs2026-post-grid-filter-row__header > .components-base-control {
+		flex: 1 1 auto;
+	}
+
+.cb-identityjs2026-post-grid-filter-row__header > .components-button {
+		flex: none;
+		min-width: 24px;
+		width: 24px;
+		height: 24px;
+		border: 1px solid #ccc;
+		padding: 0;
+		justify-content: center;
+	}
+
+.cb-identityjs2026-post-grid-filter-row__terms {
+	max-height: 220px;
+	overflow-y: auto;
+	padding: 8px 12px;
+	background: #f9f9f9;
+	border: 1px solid #ddd;
+}
+
+/*
+ * Confirmed live (2026-09-23): this install's editor iframe registers
+ * `--wp-components-color-accent` globally but leaves it *empty* (not
+ * unset) — computed style reads `""` on every element, including the
+ * checkbox itself. WP core's own checked-state rule
+ * (.components-checkbox-control__input:not(:disabled):is(:checked,:indeterminate))
+ * reads `background: var(--wp-components-color-accent, var(--wp-admin-theme-color,#3858e9))`.
+ * Per the CSS custom-property spec, a var() whose referenced property is
+ * *defined but empty* does NOT fall through to its fallback argument — the
+ * declaration resolves to an invalid (empty) value instead, which for
+ * background-color computes to nothing at all. Every checkbox in this
+ * editor was checking correctly (confirmed via the block's own saved
+ * attribute data) with zero visible feedback — no fill, no checkmark —
+ * which reads as "the checkbox doesn't work". `--wp-admin-theme-color`
+ * itself resolves fine, so this bypasses the broken var chain by
+ * referencing it directly rather than trying to fix the empty custom
+ * property at its source (unknown, likely core/global-styles).
+ *
+ * `!important`: confirmed live that a plain same-specificity override isn't
+ * enough here — core's own equal-specificity rule keeps winning regardless
+ * of this stylesheet's position among the editor iframe's many dynamically
+ * injected per-block \3c style> tags (their relative order isn't guaranteed
+ * the way a normal enqueued stylesheet's would be), so only `!important`
+ * reliably wins the cascade.
+ */
+.components-checkbox-control__input[type='checkbox']:not(:disabled):is(:checked, :indeterminate) {
+	background: var(--wp-admin-theme-color, #3858e9) !important;
+	border-color: var(--wp-admin-theme-color, #3858e9) !important;
+}
+
+.components-radio-control__input:checked {
+	background: var(--wp-admin-theme-color, #3858e9) !important;
+	border-color: var(--wp-admin-theme-color, #3858e9) !important;
+}
+
 /* Content Builder's own row/module wrappers — plain bordered boxes to keep
    a many-row, many-module block scannable in the editor's fields-form UI. */
 .cb-identityjs2026-content-builder-row-wrap {

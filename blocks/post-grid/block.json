@@ -6,10 +6,17 @@
 	"category": "cb-identityjs2026",
 	"icon": "grid-view",
 	"attributes": {
-		"querySource": { "type": "string", "default": "category" },
-		"category": { "type": "number", "default": 0 },
-		"taxonomyName": { "type": "string", "default": "theme" },
-		"taxonomyTerm": { "type": "number", "default": 0 },
+		"filterGroups": {
+			"type": "array",
+			"default": [ { "taxonomy": "category", "terms": [] } ],
+			"items": {
+				"type": "object",
+				"properties": {
+					"taxonomy": { "type": "string" },
+					"terms": { "type": "array", "items": { "type": "number" } }
+				}
+			}
+		},
 		"count": { "type": "number", "default": 3 },
 		"showCategory": { "type": "boolean", "default": true },
 		"showDate": { "type": "boolean", "default": true }
