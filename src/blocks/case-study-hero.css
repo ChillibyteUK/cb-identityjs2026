@@ -1,15 +1,22 @@
 /*
- * Case Study Hero — see cb-case-study-hero.php. Always a solid near-black
- * band regardless of brand (real source's own hardcoded
- * has-primary-black-background-color) — #0d0d0c matches the literal value
- * already confirmed live for Work Index's own hero overlay gradient
- * (work-index.css), not otherwise tokenised in this theme.
+ * Case Study Hero — see cb-case-study-hero.php. Rewritten against real
+ * computed values read live from
+ * https://identityglobal.com/work/arm-everywhere/ (2026-09-23), not
+ * guessed: #0d0d0c bg (has-primary-black-background-color), h1 border-top
+ * only / h2 border-top+bottom (both rgba(255,255,255,0.4), 1px — the
+ * "full-bleed lines" run edge to edge on the h1/h2 itself, full section
+ * width, while the text inside is inset via the nested .id-container's own
+ * own padding — same "full-bleed line, containerised text" technique
+ * already used for Work Index's own .work-index-hero__pretitle).
  */
 
 .case-study-hero {
 	background-color: #0d0d0c;
 	color: #fff;
-	padding-block: var(--space-6) var(--space-5);
+	/* Confirmed live: Bootstrap's pt-5 = 3rem = --space-5, not --space-6 —
+	   this was the wrong token before, never checked against the real
+	   page. */
+	padding-block-start: var(--space-5);
 }
 
 .case-study-hero__title,
@@ -29,38 +36,55 @@
 	}
 }
 
+/*
+ * mt-5 (3rem) real-source margin, not padding — kept as margin here too
+ * since border-block-start needs to sit above it, at the section's own
+ * edge-to-edge width, not inset with the title text.
+ */
 .case-study-hero__title {
-	padding-block-start: var(--space-3);
+	margin-block-start: var(--space-5);
+	border-block-start: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.case-study-hero__title .id-container {
+	padding-block-start: 0.25rem; /* real source's own pt-1 */
 	font-family: var(--ff-heading);
-	font-size: var(--fs-h1);
-	font-weight: var(--fw-heading-h1);
-	line-height: var(--lh-heading-h1);
+	font-size: 3.125rem; /* 50px, confirmed live — fixed, not the fluid --fs-h1 clamp() */
+	font-weight: var(--fw-book);
+	line-height: 1.1;
 	color: #fff;
 }
 
 .case-study-hero__subtitle {
-	padding-block-start: var(--space-2);
+	border-block: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.case-study-hero__subtitle .id-container {
+	padding-block-start: 0.5rem; /* real source's own pt-2 */
 	font-family: var(--ff-heading);
-	font-size: var(--fs-600);
+	font-size: 2rem; /* 32px, confirmed live */
 	font-weight: var(--fw-regular);
-	/* neutral-500, matching the same literal already used for Work Index's
-	   own hero/card descriptions (work-index.css) — not otherwise
+	line-height: 1.15;
+	/* neutral-800, confirmed live (#5e5d55) — same literal already used for
+	   Work Index's own pretitle-sub (work-index.css), not otherwise
 	   tokenised in this theme. */
-	color: #aeada1;
+	color: #5e5d55;
 }
 
 .case-study-hero__video-container {
 	position: relative;
-	margin-block-start: var(--space-5);
 	aspect-ratio: 16 / 9;
 	overflow: hidden;
 }
 
+/* Same top-fade technique as .work-index-hero__overlay's own first layer —
+   blends the video's top edge into the section's own black background
+   instead of a hard cut at the subtitle's border line. */
 .case-study-hero__video-overlay {
 	position: absolute;
 	inset: 0;
 	pointer-events: none;
-	background: rgba(13, 13, 12, 0.1);
+	background: linear-gradient(180deg, var(--col-bg) 0%, rgba(13, 13, 12, 0.2) 20%, rgba(13, 13, 12, 0) 30%);
 }
 
 .case-study-hero__video {
