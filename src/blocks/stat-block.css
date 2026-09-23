@@ -1,0 +1,131 @@
+/*
+ * Stat Block — see identity-global-block-spec.md. Confirmed against
+ * cb-identitygroup2026's own _cb_case_study_key_stats.scss (colours,
+ * borders, grid columns, spacing, font sizes/weights).
+ *
+ * Structural simplification: real source uses a single shared
+ * `grid-template-columns: auto 1fr` across ALL stat rows at once (each
+ * row is `display: contents` so its value/descriptor become direct
+ * children of one big grid, keeping every row's descriptor column
+ * perfectly aligned regardless of how wide each row's own value text is).
+ * Replicating that here would need `display: contents` chained through
+ * .stat-block__item → .id-container → .stat-block__item-inner, which
+ * would also strip .id-container's own max-width/centring behaviour along
+ * the way. Each row gets its own value/descriptor grid instead — visually
+ * equivalent column proportions, just not perfectly cross-row aligned when
+ * value lengths vary a lot.
+ */
+
+.stat-block {
+	position: relative;
+	background-color: var(--col-bg);
+	border-block-start: 1px solid rgba(255, 255, 255, 0.1);
+	border-block-end: 1px solid rgba(255, 255, 255, 0.4);
+	isolation: isolate;
+	overflow: hidden;
+}
+
+.stat-block::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background: var(--stat-block-bg-url) center / cover no-repeat fixed;
+}
+
+@supports ( -webkit-touch-callout: none ) {
+	.stat-block::before {
+		background-attachment: scroll;
+	}
+}
+
+.stat-block__hero-title {
+	margin: 0;
+	padding-block: var(--space-4);
+	border-block-end: 1px solid rgba(255, 255, 255, 0.4);
+	background-color: rgba(255, 255, 255, 0.1);
+	font-family: var(--ff-heading);
+	font-size: var(--fs-h1);
+	font-weight: var(--fw-heading);
+	line-height: 1.1;
+	color: var(--col-heading);
+}
+
+.stat-block__hero-title .id-container,
+.stat-block__item-inner,
+.stat-block__cta-row-inner {
+	padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+	.stat-block__hero-title .id-container,
+	.stat-block__item-inner,
+	.stat-block__cta-row-inner {
+		padding-inline: var(--space-5);
+	}
+}
+
+.stat-block__grid {
+	background-color: rgba(255, 255, 255, 0.1);
+}
+
+.stat-block__item {
+	border-block-end: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-block__item:last-child {
+	border-block-end: 0;
+}
+
+.stat-block__item-inner {
+	display: grid;
+	grid-template-columns: 1fr;
+	align-items: center;
+	gap: var(--space-1) var(--space-4);
+	padding-block: var(--space-3);
+}
+
+@media (min-width: 768px) {
+	.stat-block__item-inner {
+		grid-template-columns: auto 1fr;
+	}
+}
+
+.stat-block__intro {
+	font-size: var(--fs-small);
+	font-weight: var(--fw-regular);
+	color: var(--col-text-muted);
+}
+
+.stat-block__value {
+	font-family: var(--ff-heading);
+	font-size: var(--fs-h1);
+	font-weight: var(--fw-bold);
+	line-height: 1;
+	white-space: nowrap;
+	color: var(--col-accent);
+}
+
+.stat-block__descriptor {
+	font-size: var(--fs-small);
+	font-weight: var(--fw-body);
+	color: var(--col-text-muted);
+}
+
+.stat-block__cta-row-inner {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--space-3);
+	padding-block: var(--space-4);
+}
+
+.stat-block__cta-message {
+	font-size: var(--fs-body);
+	color: var(--col-text);
+}
+
+/* .id-button (forms.css) already supplies the --col-button-bg/-text
+   styling the spec's own token binding calls for — .stat-block__cta is
+   just the block-scoped hook, not a second source of truth for those
+   colours. */

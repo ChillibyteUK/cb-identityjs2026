@@ -1,0 +1,39 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cb-identityjs2026/stat-block",
+	"title": "CB Stat Block",
+	"category": "cb-identityjs2026",
+	"icon": "chart-bar",
+	"attributes": {
+		"showHero": { "type": "boolean", "default": false },
+		"heroTitle": { "type": "string", "default": "" },
+		"backgroundImageId": { "type": "number", "default": 0 },
+		"backgroundImageUrl": { "type": "string", "default": "" },
+		"stats": {
+			"type": "array",
+			"default": [],
+			"items": {
+				"type": "object",
+				"properties": {
+					"intro": { "type": "string" },
+					"prefix": { "type": "string" },
+					"value": { "type": "string" },
+					"suffix": { "type": "string" },
+					"descriptor": { "type": "string" }
+				}
+			}
+		},
+		"ctaMessage": { "type": "string", "default": "" },
+		"ctaLinkUrl": { "type": "string", "default": "" },
+		"ctaLinkText": { "type": "string", "default": "" },
+		"ctaLinkTarget": { "type": "boolean", "default": false }
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"align": true
+	},
+	"editorScript": "file:./build/index.js",
+	"render": "file:./render.php"
+}
