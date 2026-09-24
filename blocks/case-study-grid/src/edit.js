@@ -113,7 +113,10 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					<div className="cb-identityjs2026-editor-field">
 						<label className="cb-identityjs2026-editor-field__label">{ __( 'Services', 'cb-identityjs2026' ) }</label>
 						<p className="cb-identityjs2026-editor-field__help">
-							{ __( 'Optional. Leave all unchecked to show the latest case studies regardless of service.', 'cb-identityjs2026' ) }
+							{ __(
+								'Optional. On a case study page, leaving this unchecked auto-matches by the CURRENT case study’s own service (same as production’s Related Work) — picking a service here overrides that auto-match. On any other page, leaving this unchecked shows the latest case studies regardless of service.',
+								'cb-identityjs2026'
+							) }
 						</p>
 						{ ! hasResolvedServices ? (
 							<Spinner />
@@ -137,7 +140,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						<label className="cb-identityjs2026-editor-field__label">{ __( 'Themes', 'cb-identityjs2026' ) }</label>
 						<p className="cb-identityjs2026-editor-field__help">
 							{ __(
-								'Only has an effect on a case study page: leaving this unchecked auto-filters by the CURRENT case study’s own theme terms; picking a theme here overrides that auto-match. On any other page, this field is ignored entirely.',
+								'Only has an effect on a case study page. Cards are matched by the current case study’s own service (same as production’s Related Work) — picking a theme here just additionally narrows that match, it doesn’t replace it. On any other page, this field is ignored entirely.',
 								'cb-identityjs2026'
 							) }
 						</p>

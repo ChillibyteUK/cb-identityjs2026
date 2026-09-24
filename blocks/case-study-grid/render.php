@@ -265,80 +265,149 @@ if ( 'auto' === $mode ) {
 	$selected_services = array_filter( array_map( 'absint', $attributes['selectedServices'] ?? array() ) );
 	$selected_themes   = array_filter( array_map( 'absint', $attributes['selectedThemes'] ?? array() ) );
 
-	$tax_query = array();
+	// Real production algorithm (cb-identitygroup2026/blocks/cb-related-
+	// work.php), confirmed by direct comparison against
+	// identityglobal.com/work/arm-everywhere/'s actual "Related Work" set —
+	// an earlier version of this block auto-matched by the current post's
+	// own THEME terms, which produced a completely different card set.
+	// The real algorithm instead auto-matches by SERVICE (Yoast primary
+	// term first, else the post's first assigned service term — see
+	// cb_identityjs2026_get_primary_service_term_id()), via a two-pass
+	// query: (1) up to $count posts whose OWN Yoast primary service meta
+	// matches, (2) fill any remaining slots with a plain service tax_query
+	// match. `theme_filter` in the real source is a separate, optional,
+	// manually-set single term that only ever NARROWS that service match
+	// (AND) — it is never itself an auto-match against the current post's
+	// theme terms. $selected_themes here plays that same narrowing role.
+	if ( $is_case_study_page && ! $selected_services ) {
+		$auto_service_id = cb_identityjs2026_get_primary_service_term_id( get_the_ID() );
 
-	if ( $selected_services ) {
-		$tax_query[]        = array(
-			'taxonomy' => 'service',
-			'field'    => 'term_id',
-			'terms'    => $selected_services,
-		);
-		$rerank_by_service = $selected_services;
-	}
+		if ( $auto_service_id ) {
+			$theme_narrow = array();
+			if ( $selected_themes ) {
+				$theme_narrow[] = array(
+					'taxonomy' => 'theme',
+					'field'    => 'term_id',
+					'terms'    => $selected_themes,
+				);
+			}
 
-	// Theme filtering only applies on a case study page: manually selected
-	// themes override auto-matching by the CURRENT case study's own theme
-	// terms; off a case study page this field has no effect at all (the
-	// current, pre-existing behaviour — Services-only filtering, or none).
-	if ( $is_case_study_page ) {
-		if ( $selected_themes ) {
+			// Pass 1: Yoast primary-service meta match.
+			$primary_service_query_args = array(
+				'post_type'      => 'case_study',
+				'posts_per_page' => $count,
+				'orderby'        => 'date',
+				'order'          => 'DESC',
+				'post__not_in'   => array( get_the_ID() ),
+				'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+					array(
+						'key'     => '_yoast_wpseo_primary_service',
+						'value'   => $auto_service_id,
+						'compare' => '=',
+					),
+				),
+			);
+			if ( $theme_narrow ) {
+				$primary_service_query_args['tax_query'] = $theme_narrow; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+			}
+			$primary_query = new WP_Query( $primary_service_query_args );
+			$posts         = wp_list_pluck( $primary_query->posts, 'ID' );
+			wp_reset_postdata();
+
+			// Pass 2: fill remaining slots with a plain service (+ optional
+			// theme) tax_query match.
+			if ( count( $posts ) < $count ) {
+				$fill_tax_query = array(
+					array(
+						'taxonomy' => 'service',
+						'field'    => 'term_id',
+						'terms'    => $auto_service_id,
+					),
+				);
+				if ( $theme_narrow ) {
+					$fill_tax_query = array_merge( $fill_tax_query, $theme_narrow );
+					$fill_tax_query['relation'] = 'AND';
+				}
+				$fill_query = new WP_Query(
+					array(
+						'post_type'      => 'case_study',
+						'posts_per_page' => $count - count( $posts ),
+						'orderby'        => 'date',
+						'order'          => 'DESC',
+						'post__not_in'   => array_merge( array( get_the_ID() ), $posts ),
+						'tax_query'      => $fill_tax_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+					)
+				);
+				if ( $fill_query->have_posts() ) {
+					$posts = array_merge( $posts, wp_list_pluck( $fill_query->posts, 'ID' ) );
+				}
+				wp_reset_postdata();
+			}
+		}
+	} else {
+		// Off a case study page, or a manual Services override is set on
+		// one (services take precedence over the auto-match, same relation
+		// as before) — the existing, simpler single-pass behaviour.
+		$tax_query = array();
+
+		if ( $selected_services ) {
+			$tax_query[]        = array(
+				'taxonomy' => 'service',
+				'field'    => 'term_id',
+				'terms'    => $selected_services,
+			);
+			$rerank_by_service = $selected_services;
+		}
+
+		// $selected_themes only has an effect on a case study page (see
+		// the block's own editor help text) — off one, it's ignored
+		// entirely, same as before this change.
+		if ( $is_case_study_page && $selected_themes ) {
 			$tax_query[] = array(
 				'taxonomy' => 'theme',
 				'field'    => 'term_id',
 				'terms'    => $selected_themes,
 			);
-		} else {
-			$current_theme_terms = wp_get_post_terms( get_the_ID(), 'theme', array( 'fields' => 'ids' ) );
-			if ( ! is_wp_error( $current_theme_terms ) && $current_theme_terms ) {
-				$tax_query[] = array(
-					'taxonomy' => 'theme',
-					'field'    => 'term_id',
-					'terms'    => $current_theme_terms,
-				);
+		}
+
+		if ( $tax_query ) {
+			// Pull the full matching set first so priority ranking (below)
+			// is accurate before limiting to $count — matches Featured Work.
+			$query_args['posts_per_page'] = -1;
+			if ( count( $tax_query ) > 1 ) {
+				$tax_query['relation'] = 'AND';
 			}
+			$query_args['tax_query'] = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 		}
-	}
 
-	if ( $tax_query ) {
-		// Pull the full matching set first so priority ranking (below) is
-		// accurate before limiting to $count — matches Featured Work.
-		$query_args['posts_per_page'] = -1;
-		if ( count( $tax_query ) > 1 ) {
-			$tax_query['relation'] = 'AND';
-		}
-		$query_args['tax_query'] = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
-	}
+		$query = new WP_Query( $query_args );
+		$posts = wp_list_pluck( $query->posts, 'ID' );
+		wp_reset_postdata();
 
-	$query = new WP_Query( $query_args );
-	$posts = wp_list_pluck( $query->posts, 'ID' );
-	wp_reset_postdata();
+		if ( $rerank_by_service && $posts ) {
+			usort(
+				$posts,
+				static function ( $a, $b ) use ( $rerank_by_service ) {
+					$a_rank = array_search( cb_identityjs2026_get_primary_service_term_id( $a ), $rerank_by_service, true );
+					$b_rank = array_search( cb_identityjs2026_get_primary_service_term_id( $b ), $rerank_by_service, true );
+					$a_rank = false === $a_rank ? PHP_INT_MAX : $a_rank;
+					$b_rank = false === $b_rank ? PHP_INT_MAX : $b_rank;
 
-	if ( $rerank_by_service && $posts ) {
-		usort(
-			$posts,
-			static function ( $a, $b ) use ( $rerank_by_service ) {
-				$a_rank = array_search( cb_identityjs2026_get_primary_service_term_id( $a ), $rerank_by_service, true );
-				$b_rank = array_search( cb_identityjs2026_get_primary_service_term_id( $b ), $rerank_by_service, true );
-				$a_rank = false === $a_rank ? PHP_INT_MAX : $a_rank;
-				$b_rank = false === $b_rank ? PHP_INT_MAX : $b_rank;
+					if ( $a_rank !== $b_rank ) {
+						return $a_rank <=> $b_rank;
+					}
 
-				if ( $a_rank !== $b_rank ) {
-					return $a_rank <=> $b_rank;
+					return strcmp( get_post_field( 'post_date_gmt', $b ), get_post_field( 'post_date_gmt', $a ) );
 				}
+			);
+		}
 
-				return strcmp( get_post_field( 'post_date_gmt', $b ), get_post_field( 'post_date_gmt', $a ) );
-			}
-		);
-	}
-
-	// $query_args['posts_per_page'] is forced to -1 above whenever any
-	// tax_query applies (services and/or themes) so ranking/reranking sees
-	// the FULL matching set first — this re-applies $count afterward.
-	// Previously only happened inside the rerank branch above, so a
-	// themes-only filter (no services selected) silently ignored $count
-	// entirely and returned every matching post.
-	if ( $tax_query ) {
-		$posts = array_slice( $posts, 0, $count );
+		// posts_per_page is forced to -1 above whenever any tax_query
+		// applies (services and/or themes) so ranking/reranking sees the
+		// FULL matching set first — this re-applies $count afterward.
+		if ( $tax_query ) {
+			$posts = array_slice( $posts, 0, $count );
+		}
 	}
 }
 
