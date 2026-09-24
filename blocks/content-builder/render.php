@@ -131,7 +131,7 @@ if ( ! function_exists( 'cb_identityjs2026_content_builder_render_module' ) ) :
 				}
 				$fs_fw = cb_identityjs2026_content_builder_fs_fw_class( $module['textFontSize'] ?? '', $module['textFontWeight'] ?? '' );
 				?>
-				<div class="content-builder__text <?php echo esc_attr( $fs_fw ); ?>"><?php echo wp_kses_post( $content ); ?></div>
+				<div class="content-builder__text <?php echo esc_attr( $fs_fw ); ?>"><?php echo do_shortcode( wp_kses_post( $content ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_kses_post() sanitizes the stored content first; do_shortcode() only expands already-registered, trusted shortcodes against that sanitized result — e.g. [service_parents], so an editor can type a shortcode inline in a text module like any other post content. ?></div>
 				<?php
 				break;
 
@@ -426,7 +426,19 @@ endif;
 	<div class="id-container">
 		<?php foreach ( $rows as $row ) : ?>
 			<?php
-			$modules       = $row['modules'] ?? array();
+			// A column holds a LIST of stacked modules, not exactly one —
+			// confirmed live against production's own cb-content-grid-v2.php
+			// that a flat modules-list mapped 1:1 to columns by index can't
+			// express "Heading + Text + List all in one column, Image in the
+			// other" (production itself only ever avoids this by keeping such
+			// content in one big wysiwyg field, which this block's own
+			// RichText-based text module can't replicate — see this block's
+			// own git history/session notes). No legacy `modules`-shape
+			// fallback here — this theme has no real published content yet,
+			// so every row already saved on this install was migrated to
+			// `columns` directly (one-off wp-cli script, not part of the
+			// theme) rather than carrying a dual-shape reader indefinitely.
+			$columns       = is_array( $row['columns'] ?? null ) ? $row['columns'] : array();
 			$column_layout = $row['columnLayout'] ?? '12';
 
 			$row_variant_map = array(
@@ -451,27 +463,28 @@ endif;
 			}
 
 			$has_h2 = false;
-			foreach ( $modules as $module ) {
-				if ( 'h2' === ( $module['moduleType'] ?? '' ) && '' !== trim( (string) ( $module['headingText'] ?? '' ) ) ) {
-					$has_h2 = true;
-					break;
+			foreach ( $columns as $column ) {
+				foreach ( ( $column['modules'] ?? array() ) as $module ) {
+					if ( 'h2' === ( $module['moduleType'] ?? '' ) && '' !== trim( (string) ( $module['headingText'] ?? '' ) ) ) {
+						$has_h2 = true;
+						break 2;
+					}
 				}
 			}
 			if ( $has_h2 ) {
 				$row_classes[] = 'content-builder__row--has-h2';
 			}
 
-			// Column span (out of a 12-col grid) per module, keyed by index
-			// within the row — matches real confirmed behaviour exactly: no
-			// bounds-checking against the chosen layout, an out-of-range
-			// module just reuses the layout's last defined width (see
-			// content-builder-research.md §1 and §4.8 — this is real
-			// production behaviour, not a bug to silently "fix" by adding
-			// new validation here). Expressed as a CSS custom property
-			// (`grid-column: span N`) rather than literal col-md-* utility
-			// classes, per this project's own established convention (see
-			// Brand Grid/Push Panel) — same effective math, no Bootstrap
-			// class dependency.
+			// Column span (out of a 12-col grid), keyed by column index —
+			// matches real confirmed behaviour exactly: no bounds-checking
+			// against the chosen layout, an out-of-range column just reuses
+			// the layout's last defined width (see content-builder-research.md
+			// §1 and §4.8 — this is real production behaviour, not a bug to
+			// silently "fix" by adding new validation here). Expressed as a
+			// CSS custom property (`grid-column: span N`) rather than literal
+			// col-md-* utility classes, per this project's own established
+			// convention (see Brand Grid/Push Panel) — same effective math,
+			// no Bootstrap class dependency.
 			$col_span_by_index = function ( $layout, $index ) {
 				switch ( $layout ) {
 					case '6-6':
@@ -489,11 +502,18 @@ endif;
 						return 12;
 				}
 			};
+
+			// A single counter across every module in the row (not per-column)
+			// keeps the fade-up stagger reading as one continuous sequence
+			// left-to-right/top-to-bottom, same as the old flat renderer.
+			$module_counter = 0;
 			?>
 			<div class="<?php echo esc_attr( implode( ' ', $row_classes ) ); ?>">
-				<?php foreach ( $modules as $module_index => $module ) : ?>
-					<div class="content-builder__col" style="--content-builder-col-span: <?php echo esc_attr( $col_span_by_index( $column_layout, $module_index ) ); ?>;">
-						<?php cb_identityjs2026_content_builder_render_module( $module, $module_index ); ?>
+				<?php foreach ( $columns as $column_index => $column ) : ?>
+					<div class="content-builder__col" style="--content-builder-col-span: <?php echo esc_attr( $col_span_by_index( $column_layout, $column_index ) ); ?>;">
+						<?php foreach ( ( $column['modules'] ?? array() ) as $module ) : ?>
+							<?php cb_identityjs2026_content_builder_render_module( $module, $module_counter++ ); ?>
+						<?php endforeach; ?>
 					</div>
 				<?php endforeach; ?>
 			</div>

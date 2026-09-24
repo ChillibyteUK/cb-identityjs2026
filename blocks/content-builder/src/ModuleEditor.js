@@ -104,7 +104,19 @@ function TextFields( { module: mod, updateModule } ) {
 		<>
 			<div className="cb-identityjs2026-editor-field">
 				<label className="cb-identityjs2026-editor-field__label">{ __( 'Text', 'cb-identityjs2026' ) }</label>
+				{ /* identifier={mod.id}: confirmed live as a real bug without
+				   this — a block-attribute RichText auto-derives its identity
+				   from clientId+attribute name, but this one lives inside a
+				   nested rows→columns→modules structure with no attribute
+				   name of its own, so multiple "text" modules on the same
+				   block shared no identity at all. Gutenberg's own selection/
+				   focus tracking keys off that identifier, so without one,
+				   clicking into a second Text module's RichText reverted
+				   focus/the toolbar to whichever instance registered first —
+				   same root cause already fixed once this session for
+				   RepeaterField.js's own RichText fields. */ }
 				<RichText
+					identifier={ mod.id }
 					tagName="div"
 					multiline="p"
 					className="cb-identityjs2026-editor-field__control"

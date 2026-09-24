@@ -111,6 +111,13 @@ export function emptyModule() {
 	};
 }
 
+export function emptyColumn() {
+	return {
+		id: generateId(),
+		modules: [ emptyModule() ],
+	};
+}
+
 export function emptyRow() {
 	return {
 		id: generateId(),
@@ -118,6 +125,22 @@ export function emptyRow() {
 		hasLine: false,
 		hasPaddingTop: true,
 		hasPaddingBottom: true,
-		modules: [ emptyModule() ],
+		columns: [ emptyColumn() ],
 	};
+}
+
+/**
+ * A row's columns — each a list of stacked modules (see RowEditor.js's own
+ * header comment for why that grouping exists). Falls back to one empty
+ * column only for a genuinely new row with nothing saved yet; there's no
+ * legacy flat-`modules`-shape reader here — this theme has no real
+ * published content, so every row already saved on this install was
+ * migrated to `columns` directly (one-off wp-cli script) rather than this
+ * theme carrying a dual-shape reader indefinitely.
+ *
+ * @param {Object} row
+ * @return {Object[]} Array of `{ id, modules }` columns.
+ */
+export function normalizeRowColumns( row ) {
+	return Array.isArray( row.columns ) && row.columns.length ? row.columns : [ emptyColumn() ];
 }

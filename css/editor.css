@@ -582,6 +582,22 @@
 	font-weight: 600;
 }
 
+.cb-identityjs2026-content-builder-column-wrap {
+	margin-block: 0.75rem;
+	padding: 0.75rem;
+	border: 1px dashed #a7aaad;
+	border-radius: 2px;
+	background: #fcfcfd;
+}
+
+.cb-identityjs2026-content-builder-column-wrap__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 0.5rem;
+	font-weight: 600;
+}
+
 .cb-identityjs2026-content-builder-module-wrap {
 	margin-block: 0.75rem;
 	padding: 0.75rem;

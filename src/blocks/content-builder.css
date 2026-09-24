@@ -143,15 +143,21 @@
 	margin-bottom: 0;
 }
 
+/*
+ * Lined heading — matches the real live rule rendering "The challenge" on
+ * identityglobal.com/work/arm-everywhere/ (`.content-grid h2` in its
+ * compiled CSS, confirmed via document.styleSheets on the live page —
+ * this specific page's markup uses an older "content-grid" block, not
+ * cb-content-grid-v2, hence the SCSS source read earlier not showing it):
+ * `padding-top: 0.25rem; margin-bottom: 1rem; border-top/bottom: 1px solid
+ * rgba(255,255,255,.4)`, confirmed via getComputedStyle to be
+ * padding: 4px 0 0, margin: 0 0 16px exactly.
+ */
 .content-builder__h2 {
-	width: 50%;
+	margin-block: 0 var(--space-3);
+	padding-block: var(--space-1) 0;
+	border-block: 1px solid var(--content-builder-line-color);
 	text-wrap: balance;
-}
-
-@media (max-width: 575.98px) {
-	.content-builder__h2 {
-		width: 100%;
-	}
 }
 
 /* ---------------------------------------------------------------------
@@ -171,27 +177,81 @@
 	margin-bottom: 1.5rem;
 }
 
-.content-builder__text ul,
+.content-builder__text ul:not(.service-parents),
 .content-builder__list {
 	margin: 0;
 	padding-inline-start: 0;
 	list-style: none;
 }
 
-.content-builder__text ul li,
+.content-builder__text ul:not(.service-parents) li,
 .content-builder__list li {
 	margin-bottom: 0.75rem;
 }
 
-.content-builder__text ul li:not(:first-of-type),
+.content-builder__text ul:not(.service-parents) li:not(:first-of-type),
 .content-builder__list li:not(:first-of-type) {
 	padding-top: 0.75rem;
 	border-top: 1px solid var(--content-builder-line-color);
 }
 
-.content-builder__text ul li:last-child,
+.content-builder__text ul:not(.service-parents) li:last-child,
 .content-builder__list li:last-child {
 	margin-bottom: 0;
+}
+
+/*
+ * [service_parents] shortcode (inc/service-parents.php) — ported 1:1 from
+ * production's own .service-parents rule, read directly off
+ * document.styleSheets on the live identityglobal.com/work/arm-everywhere/
+ * page (not the SCSS source, which turned out to diverge from what's
+ * actually deployed): no padding/margin on li or a, width:fit-content +
+ * min-width:50% (not width:100%) so the divider lines only span the
+ * text's own width, not the full column. fs-body (18px/300) for
+ * size/weight and --col-accent-alt (#adf448) for the link colour both
+ * confirmed exact via live getComputedStyle(). The ":not(.service-parents)"
+ * on the ".content-builder__text ul..." rules above exists because this
+ * shortcode's <ul> normally sits inside a Text module's own <div
+ * class="content-builder__text">: without excluding it there,
+ * ".content-builder__text ul li" (specificity 0,1,2) was beating
+ * ".service-parents li" (0,1,1) and stacking its own margin-bottom/
+ * padding-top/border-top on top of these rules — the actual cause of the
+ * extra gap between items. Hover background is the real live value read
+ * from document.styleSheets (hsl(53 5% 35% / .8)) — this project has no
+ * matching --hsl-neutral-800 token, and that live value differs from the
+ * 251/21%/27% found in cb-identitygroup2026's own _tokens.scss, so the
+ * live-read value wins.
+ */
+.service-parents {
+	margin: 0;
+	padding-inline-start: 0;
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	width: fit-content;
+	min-width: 50%;
+}
+
+.service-parents li {
+	font-size: var(--fs-body);
+	font-weight: var(--fw-light);
+	border-top: 1px solid var(--col-border);
+}
+
+.service-parents li:last-child {
+	border-bottom: 1px solid var(--col-border);
+}
+
+.service-parents a {
+	display: block;
+	color: var(--col-accent-alt);
+	text-decoration: none;
+	transition: background-color 0.3s, color 0.3s;
+}
+
+.service-parents a:hover {
+	text-decoration: none;
+	background-color: hsl(53 5% 35% / 0.8);
 }
 
 /* ---------------------------------------------------------------------
