@@ -44,6 +44,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 		introText,
 		introTextFontSize,
 		animatedTitle,
+		headerVariant,
 		secondaryPanelType,
 		secondaryText,
 		secondaryTextFontSize,
@@ -58,6 +59,17 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 	return (
 		<EditorBlockShell blockProps={ blockProps } clientId={ clientId } title="CB Page Header" textDomain="cb-identityjs2026">
 			<SectionHeading>{ __( 'Header', 'cb-identityjs2026' ) }</SectionHeading>
+
+			<SelectControl
+				label={ __( 'Header Variant', 'cb-identityjs2026' ) }
+				value={ headerVariant }
+				options={ [
+					{ label: 'Default (About)', value: 'default' },
+					{ label: 'Service (e.g. FAQs)', value: 'service' },
+				] }
+				help={ __( 'Service is a distinctly smaller/tighter real treatment (identity\'s own Service Page Header) — confirmed live on identityglobal.com/faqs/.', 'cb-identityjs2026' ) }
+				onChange={ ( value ) => setAttributes( { headerVariant: value } ) }
+			/>
 
 			<div style={ { display: 'flex', flexWrap: 'wrap', gap: '12px' } }>
 				<div style={ { flex: '50 1 0%' } }>

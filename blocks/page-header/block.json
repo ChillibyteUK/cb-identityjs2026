@@ -10,6 +10,7 @@
 		"introText": { "type": "string", "default": "" },
 		"introTextFontSize": { "type": "string", "default": "" },
 		"animatedTitle": { "type": "string", "default": "" },
+		"headerVariant": { "type": "string", "default": "default" },
 		"secondaryPanelType": { "type": "string", "default": "none" },
 		"secondaryText": { "type": "string", "default": "" },
 		"secondaryTextFontSize": { "type": "string", "default": "" },

@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cb-identityjs2026/faq",
+	"title": "CB FAQ",
+	"category": "cb-identityjs2026",
+	"icon": "editor-help",
+	"attributes": {
+		"hasTopBorder": { "type": "boolean", "default": true },
+		"faqs": { "type": "array", "default": [] }
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"align": true
+	},
+	"editorScript": "file:./build/index.js",
+	"render": "file:./render.php"
+}

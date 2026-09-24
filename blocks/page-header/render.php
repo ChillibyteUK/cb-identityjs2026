@@ -20,6 +20,20 @@
  * confirmed live that Region's H1 differs from About's default
  * (--fs-900/fw-semi here vs --fs-950/fw-light there).
  *
+ * `headerVariant: 'service'` is the third real sibling this block was
+ * built from (identity's own Service Page Header, real class
+ * `cb-service-page-header`) — confirmed live on identityglobal.com/faqs/:
+ * H1 is --fs-850/effectively-450-weight (its real `--fw-semi` token
+ * resolves to 450 in production, same value as `--fw-book` — this
+ * project's own `--fw-semi` is a distinct 500, so `--fw-book` is used
+ * directly instead of changing that global token), border-block colour
+ * hsl(53 36% 96% / .5) (production's real `--hsl-neutral-050`, not this
+ * project's generic --col-border), padding-block 0.25rem 0 (top only) and
+ * margin-bottom 2rem — a distinctly tighter, smaller treatment than
+ * About's default. Unlike Region, there's no independent real-world
+ * signal (like `animatedTitle`'s presence) to infer this from, so it's an
+ * explicit editor choice.
+ *
  * `introTextFontSize`/`secondaryTextFontSize`: confirmed live on
  * identityglobal.com/sport/ that these AREN'T fixed per-block sizing —
  * the real paragraphs carry manually-applied fs-500/fs-400 utility
@@ -36,6 +50,7 @@ defined( 'ABSPATH' ) || exit;
 
 $title                   = $attributes['title'] ?? '';
 $animated_title          = $attributes['animatedTitle'] ?? '';
+$header_variant          = $attributes['headerVariant'] ?? 'default';
 $intro_text              = $attributes['introText'] ?? '';
 $intro_text_font_size    = $attributes['introTextFontSize'] ?? '';
 $secondary_panel_type    = $attributes['secondaryPanelType'] ?? 'none';
@@ -56,6 +71,9 @@ if ( $background_url ) {
 }
 if ( $animated_title ) {
 	$root_classes[] = 'page-header--has-animated-title';
+}
+if ( 'service' === $header_variant ) {
+	$root_classes[] = 'page-header--service';
 }
 
 $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $root_classes ) ) );

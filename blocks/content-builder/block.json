@@ -15,7 +15,7 @@
 		"align": true,
 		"color": {
 			"background": true,
-			"text": false,
+			"text": true,
 			"gradient": false,
 			"__experimentalSkipSerialization": true
 		}

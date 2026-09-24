@@ -1,10 +1,12 @@
 /**
  * Real, confirmed choices — see content-builder-research.md for the source
- * audit. fs-300/fs-800/fs-950 are deliberately excluded from every list
- * below: none of the three has a real, working `--fs-*` token in the
- * current source (cb-identitygroup2026/_tokens.scss), so offering them
- * would just be a dead select option (confirmed: fs-950 is the one real
- * source itself still offers despite it resolving to nothing).
+ * audit. fs-800/fs-950 are deliberately excluded from every list below:
+ * neither has a real, working `--fs-*` token in the current source
+ * (cb-identitygroup2026/_tokens.scss), so offering them would just be a
+ * dead select option (confirmed: fs-950 is the one real source itself
+ * still offers despite it resolving to nothing). fs-300 DOES have a real
+ * token in this project (tokens.css/tokens/identity.css) and is offered
+ * in TEXT_FS_OPTIONS as the default text-module size.
  */
 
 export const COLUMN_LAYOUT_OPTIONS = [
@@ -43,7 +45,7 @@ export const FW_OPTIONS = [
 const fsOption = ( slug ) => ( { label: slug, value: slug } );
 
 export const HEADING_FS_OPTIONS = [ 'fs-200', 'fs-400', 'fs-500', 'fs-600', 'fs-700', 'fs-850', 'fs-875', 'fs-900' ].map( fsOption );
-export const TEXT_FS_OPTIONS = [ 'fs-100', 'fs-200', 'fs-400', 'fs-500', 'fs-600', 'fs-700' ].map( fsOption );
+export const TEXT_FS_OPTIONS = [ 'fs-100', 'fs-200', 'fs-300', 'fs-400', 'fs-500', 'fs-600', 'fs-700' ].map( fsOption );
 export const LIST_FS_OPTIONS = [ 'fs-100', 'fs-200', 'fs-400', 'fs-500' ].map( fsOption );
 export const STATS_FS_OPTIONS = TEXT_FS_OPTIONS;
 
@@ -85,8 +87,8 @@ export function emptyModule() {
 		headingFontSize: '',
 		headingFontWeight: '',
 		textContent: '',
-		textFontSize: 'fs-100',
-		textFontWeight: 'fw-regular',
+		textFontSize: 'fs-300',
+		textFontWeight: 'fw-light',
 		listContent: '',
 		listFontSize: 'fs-100',
 		listFontWeight: 'fw-regular',

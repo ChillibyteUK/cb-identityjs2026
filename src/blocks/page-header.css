@@ -106,6 +106,21 @@
 	font-weight: var(--fw-semi);
 }
 
+/* Service Page Header variant (headerVariant: 'service') — confirmed live
+ * on identityglobal.com/faqs/ (real class cb-service-page-header):
+ * padding-top only (no padding-bottom, unlike the default's symmetric
+ * padding-block), a smaller --fs-850, a border colour distinct from this
+ * project's generic --col-border, and a larger margin-bottom separating
+ * it from following content. See render.php for why --fw-book stands in
+ * for the real source's --fw-semi. */
+.page-header--service .page-header__title {
+	padding-block: 0.25rem 0;
+	margin-bottom: 2rem;
+	border-block-color: hsl(53 36% 96% / 0.5);
+	font-size: var(--fs-850);
+	font-weight: var(--fw-book);
+}
+
 /* The animated split-line title (Region Page Header's real treatment) sits
  * BELOW the plain H1 above, not instead of it — confirmed live on
  * identityglobal.com/sport/: both the H1 ("Identity Sport") and this

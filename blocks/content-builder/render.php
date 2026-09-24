@@ -15,24 +15,88 @@ defined( 'ABSPATH' ) || exit;
 
 $rows                = $attributes['rows'] ?? array();
 $background_image_id = absint( $attributes['backgroundImageId'] ?? 0 );
+$section_classes     = array( 'content-builder' );
+
+// Heading colour (native supports.color.text, skip-serialization — same
+// manual-class pattern as Section Title's own render.php, since
+// __experimentalSkipSerialization means get_block_wrapper_attributes()
+// never auto-applies it). Deliberately scoped to HEADING modules only (see
+// ".content-builder.has-text-color .content-builder__h1/h2/h3 { color:
+// inherit; }" in content-builder.css) — per explicit instruction, this is
+// a manual per-instance override for the heading specifically (e.g. Purple
+// 900 for "Result" on a light purple-200 background), independent of the
+// BODY text colour below, which is automatic, not manual.
+$text_slug = $attributes['textColor'] ?? '';
+if ( $text_slug ) {
+	$section_classes[] = 'has-text-color';
+	$section_classes[] = 'has-' . $text_slug . '-color';
+}
 
 // Background colour (native supports.color.background, skip-serialization —
 // same reasoning/pattern as Push Panel/Section Title elsewhere in this
-// theme). Its slug also drives the real source's own dark-lines/light-lines
-// divider colour logic below — confirmed: a slug with no trailing digit at
-// all (including no colour set) defaults to light-lines, not dark.
-$bg_slug        = $attributes['backgroundColor'] ?? '';
-$section_classes = array( 'content-builder' );
+// theme). Its slug also drives two other things below: the real source's
+// own dark-lines/light-lines divider colour logic, and (new) automatic
+// body-text contrast — neither is a manual control, both are derived from
+// the same digit read off the slug.
+$bg_slug  = $attributes['backgroundColor'] ?? '';
+$bg_digit = 0;
 if ( $bg_slug ) {
 	$section_classes[] = 'has-background';
 	$section_classes[] = 'has-' . $bg_slug . '-background-color';
+
+	if ( preg_match( '/(\d+)(?!.*\d)/', $bg_slug, $bg_digit_match ) ) {
+		$bg_digit = (int) $bg_digit_match[1];
+	}
 }
 
-preg_match( '/(\d+)(?!.*\d)/', $bg_slug, $bg_digit_match );
-$bg_digit          = isset( $bg_digit_match[1] ) ? (int) $bg_digit_match[1] : 0;
-$section_classes[] = ( $bg_digit >= 600 ) ? 'content-builder--light-lines' : 'content-builder--dark-lines';
+// Divider-line colour — ported exactly from cb-content-grid-v2.php
+// (cb-identitygroup2026/blocks/cb-content-grid-v2.php:32-43), confirmed via
+// its three real, distinct branches: (1) no backgroundColor attribute at
+// all → dark-lines (the plain default); (2) a backgroundColor slug ending
+// in a digit → light-lines if that digit is >= 600, else dark-lines; (3) a
+// backgroundColor slug set but with NO digit at all (e.g. "primary-black")
+// → light-lines. Confirmed live: identityglobal.com/work/arm-everywhere/'s
+// "Approach" section uses has-primary-black-background-color and renders
+// light lines — case (3), previously collapsed into case (1)'s dark-lines
+// here by mistake (both hit bg_digit=0), which is what made lines
+// invisible on a dark background with no colour explicitly set.
+$line_class = 'content-builder--dark-lines';
+if ( $bg_slug ) {
+	if ( $bg_digit ) {
+		$line_class = ( $bg_digit >= 600 ) ? 'content-builder--light-lines' : 'content-builder--dark-lines';
+	} else {
+		$line_class = 'content-builder--light-lines';
+	}
+}
+$section_classes[] = $line_class;
+
+// Body-text contrast — automatic, not a manual control (per explicit
+// instruction: "text color is light on dark backgrounds and dark on light
+// backgrounds"). This project's own colour slugs follow a Tailwind-style
+// ramp (low digit = light shade, e.g. purple-100 #f1f0ff; high digit =
+// dark shade, e.g. purple-900 #2f13ba — confirmed in tokens/identity.css),
+// so a digit under 600 means a LIGHT background needing dark text; 600+ or
+// no digit at all (a named dark colour like "primary-black", or no
+// background set at all, which on this dark-by-default brand still means
+// a dark background) all mean a DARK background needing light text — the
+// existing default. Only the "light background, low digit" case needs an
+// override.
+$section_classes[] = ( $bg_digit && $bg_digit < 600 ) ? 'content-builder--text-dark' : 'content-builder--text-light';
 
 $style_declarations = array();
+
+// Driven via a dedicated custom property rather than the "has-text-color
+// has-{slug}-color" class pair cascading down to headings by inheritance —
+// that approach broke once body text (below) needed to win the SAME
+// property on the SAME root element at equal specificity: whichever of
+// the two rules loaded last would leak into the other. A custom property
+// read directly by the heading rule (content-builder.css) sidesteps the
+// whole race. --wp--preset--color--{slug} is WP core's own global custom
+// property for a palette colour, always defined at :root regardless of
+// which element carries the has-*-color class.
+if ( $text_slug ) {
+	$style_declarations[] = sprintf( '--content-builder-heading-color: var(--wp--preset--color--%s);', esc_attr( $text_slug ) );
+}
 
 $background_url = $background_image_id ? wp_get_attachment_image_url( $background_image_id, 'full' ) : '';
 if ( $background_url ) {

@@ -2364,9 +2364,12 @@ select {
  *   silently dropped that rule. Matched to the CURRENT source (no
  *   suppression) — the `content-builder__row--has-h2` class is still
  *   applied in render.php for any future use, just has no rule here.
- * - fs-950 (and fs-300/fs-800): excluded from every select's own choices
- *   (see constants.js) since none has a real, working token in the current
- *   source — not reproduced as dead options here either.
+ * - fs-950 (and fs-800): excluded from every select's own choices (see
+ *   constants.js) since neither has a real, working token in the current
+ *   source — not reproduced as dead options here either. fs-300 WAS in
+ *   this same boat originally, but now has a real token (see tokens.css/
+ *   tokens/identity.css) added earlier in this project's history, so it's
+ *   a real utility class again — see TEXT_FS_OPTIONS in constants.js.
  *
  * Row grid uses this project's own CSS Grid + custom-property convention
  * (--content-builder-col-span) instead of literal Bootstrap col-md-*
@@ -2386,6 +2389,7 @@ select {
 .fs-50 { font-size: var(--fs-50); }
 .fs-100 { font-size: var(--fs-100); }
 .fs-200 { font-size: var(--fs-200); }
+.fs-300 { font-size: var(--fs-300); }
 .fs-400 { font-size: var(--fs-400); }
 .fs-500 { font-size: var(--fs-500); }
 .fs-600 { font-size: var(--fs-600); line-height: 1.2; }
@@ -2415,6 +2419,58 @@ select {
 
 .content-builder--light-lines {
 	--content-builder-line-color: rgba(255, 255, 255, 0.5);
+}
+
+/*
+ * Body-text contrast — automatic (see render.php), not a manual control.
+ * Sets `color` on the section root; every text-bearing module (Text, List,
+ * Quote, etc.) has no explicit colour of its own, so this reaches them
+ * through ordinary inheritance — and headings don't pick it up because
+ * they have their own explicit rule below, keyed off a different, unrelated
+ * custom property. --col-text is this brand's own default body colour
+ * (white on identity's dark-by-default pages), so --text-light is just
+ * that. --text-dark reuses --col-accent-text (this brand's "text sitting
+ * on an accent-coloured surface" token) as the dark ink value — confirmed
+ * its identity value (#0d0d0c) matches production's own
+ * var(--col-primary-black) used for this exact case (Result section,
+ * purple-200 background) exactly.
+ *
+ * !important is required, not a specificity bump — confirmed live via
+ * document.styleSheets that WP core's own generated
+ * ".has-{slug}-color { color: ...; }" rule (from the Heading Colour
+ * control, inline in <head>) carries its own !important, so no plain
+ * selector on this same root element's `color` property can beat it
+ * otherwise. Without this, picking a heading colour also recoloured the
+ * body paragraphs to match it (the root's `color` is what both the
+ * heading-colour class AND ordinary body-text inheritance read from).
+ */
+.content-builder--text-light {
+	color: var(--col-text) !important;
+}
+
+.content-builder--text-dark {
+	color: var(--col-accent-text) !important;
+}
+
+/*
+ * Heading colour — reads a dedicated custom property set inline by
+ * render.php only when an editor has explicitly picked one via the
+ * block's Typography > Colour control, falling back to the sitewide
+ * default (--col-heading, lime) otherwise. Deliberately NOT done via
+ * inheriting the section root's own `color` (an earlier version tried
+ * that, via "has-text-color .content-builder__h2 { color: inherit }") —
+ * that put the heading's colour and the body-text contrast rule above in
+ * a specificity race over the SAME `color` property on the SAME root
+ * element, and confirmed live that setting a heading colour also leaked
+ * into the body paragraphs. A dedicated property has no such conflict:
+ * headings read --content-builder-heading-color specifically, body text
+ * reads the plain `color` cascade specifically, and neither rule touches
+ * the other's property.
+ */
+.content-builder__h1,
+.content-builder__h2,
+.content-builder__h3 {
+	color: var(--content-builder-heading-color, var(--col-heading));
 }
 
 .content-builder--has-background-image {
@@ -3145,6 +3201,77 @@ select {
 	border-top: none;
 }
 
+/* --- src/blocks/faq.css --- */
+/*
+ * FAQ — same structure as Detail List's paired layout (see
+ * src/blocks/detail-list.css): section shell, two-column rows on md+,
+ * title/answer sizing via role tokens only. Adds queue_faq_schema() in
+ * render.php for the aggregated FAQPage JSON-LD — no visual difference.
+ */
+
+.faq {
+  background-color: var(--col-bg);
+  color: var(--col-text);
+  /* Literal 6rem, confirmed live (96px) — this project's --space-6 rung is
+     actually 5rem (80px), not 6rem, so no scale token matches here. */
+  padding-block-end: 6rem;
+  border-block: 1px solid var(--col-border);
+}
+
+/* Not a real source toggle — the real block always has both borders.
+   Added so an editor can drop the top border when this block needs to sit
+   flush against a preceding block. */
+.faq--no-top-border {
+  border-block-start: none;
+}
+
+.faq > .id-container {
+  padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .faq > .id-container {
+    padding-inline: var(--space-5);
+  }
+}
+
+.faq__item {
+  display: grid;
+  grid-template-columns: 1fr;
+  padding-block-end: var(--space-5);
+  border-top: 1px solid var(--col-border);
+}
+
+.faq__item:first-child {
+  border-top: none;
+  padding-top: var(--space-3);
+}
+
+@media (min-width: 768px) {
+  .faq__item {
+    grid-template-columns: 6fr 5fr;
+    column-gap: 8.3333%;
+    align-items: start;
+  }
+}
+
+.faq__question {
+  margin: 0;
+  padding-block: 0.75rem;
+  color: inherit;
+  font-size: var(--fs-detail-list-title);
+  font-weight: var(--fw-light);
+}
+
+.faq__answer {
+  margin: 0;
+  padding-block: 0.75rem;
+  font-size: var(--fs-detail-list-description);
+  font-weight: var(--fw-light);
+  line-height: var(--lh-body);
+  text-wrap: balance;
+}
+
 /* --- src/blocks/feature-overlay.css --- */
 /*
  * Feature Overlay — see identity-global-block-spec.md. Built from
@@ -3826,6 +3953,21 @@ select {
 	padding-block-end: 0.5rem;
 	font-size: var(--fs-900);
 	font-weight: var(--fw-semi);
+}
+
+/* Service Page Header variant (headerVariant: 'service') — confirmed live
+ * on identityglobal.com/faqs/ (real class cb-service-page-header):
+ * padding-top only (no padding-bottom, unlike the default's symmetric
+ * padding-block), a smaller --fs-850, a border colour distinct from this
+ * project's generic --col-border, and a larger margin-bottom separating
+ * it from following content. See render.php for why --fw-book stands in
+ * for the real source's --fw-semi. */
+.page-header--service .page-header__title {
+	padding-block: 0.25rem 0;
+	margin-bottom: 2rem;
+	border-block-color: hsl(53 36% 96% / 0.5);
+	font-size: var(--fs-850);
+	font-weight: var(--fw-book);
 }
 
 /* The animated split-line title (Region Page Header's real treatment) sits
