@@ -343,6 +343,44 @@ if ( 'auto' === $mode ) {
 				}
 				wp_reset_postdata();
 			}
+		} else {
+			// No service term at all on the current case study (confirmed a
+			// real, live case: identityglobal.com/work/british-cycling/ has
+			// no service assigned either — its own REST API confirms
+			// "service":[] — yet still shows related work there. Its
+			// Related Work block instance has a manually-set theme_filter
+			// in that case; here, per explicit instruction, the fallback is
+			// the current post's OWN already-assigned theme terms instead
+			// of requiring a separate manual selection — $selected_themes
+			// still overrides when an editor DOES pick one explicitly.
+			$theme_terms = $selected_themes;
+			if ( ! $theme_terms ) {
+				$current_theme_terms = wp_get_post_terms( get_the_ID(), 'theme', array( 'fields' => 'ids' ) );
+				if ( ! is_wp_error( $current_theme_terms ) ) {
+					$theme_terms = $current_theme_terms;
+				}
+			}
+
+			if ( $theme_terms ) {
+				$theme_query = new WP_Query(
+					array(
+						'post_type'      => 'case_study',
+						'posts_per_page' => $count,
+						'orderby'        => 'date',
+						'order'          => 'DESC',
+						'post__not_in'   => array( get_the_ID() ),
+						'tax_query'      => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+							array(
+								'taxonomy' => 'theme',
+								'field'    => 'term_id',
+								'terms'    => $theme_terms,
+							),
+						),
+					)
+				);
+				$posts = wp_list_pluck( $theme_query->posts, 'ID' );
+				wp_reset_postdata();
+			}
 		}
 	} else {
 		// Off a case study page, or a manual Services override is set on
