@@ -250,6 +250,16 @@ if ( 'auto' === $mode ) {
 		return;
 	}
 } else {
+	// Viewing this grid ON a case study's own page shouldn't ever list that
+	// same case study among its "related work" — confirmed against
+	// production's real .cb-related-work equivalent (identityglobal.com/
+	// work/arm-everywhere/), whose own card list never includes the
+	// current page. 'auto' mode above already excludes get_the_ID() in its
+	// own sub-queries; this is the same exclusion for the plain grid mode.
+	if ( is_singular( 'case_study' ) ) {
+		$query_args['post__not_in'] = array( get_the_ID() );
+	}
+
 	$selected_services = array_filter( array_map( 'absint', $attributes['selectedServices'] ?? array() ) );
 
 	if ( $selected_services ) {
