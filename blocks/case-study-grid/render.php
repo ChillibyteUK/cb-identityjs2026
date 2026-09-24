@@ -329,6 +329,15 @@ if ( 'auto' === $mode ) {
 				return strcmp( get_post_field( 'post_date_gmt', $b ), get_post_field( 'post_date_gmt', $a ) );
 			}
 		);
+	}
+
+	// $query_args['posts_per_page'] is forced to -1 above whenever any
+	// tax_query applies (services and/or themes) so ranking/reranking sees
+	// the FULL matching set first — this re-applies $count afterward.
+	// Previously only happened inside the rerank branch above, so a
+	// themes-only filter (no services selected) silently ignored $count
+	// entirely and returned every matching post.
+	if ( $tax_query ) {
 		$posts = array_slice( $posts, 0, $count );
 	}
 }
