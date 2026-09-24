@@ -100,7 +100,7 @@ export function emptyModule() {
 		linksRows: [],
 		logoGridRows: [],
 		imageId: 0,
-		imageAspectRatio: '16x9',
+		imageAspectRatio: 'native',
 		imageSize: 'cover',
 		videoUrl: '',
 		qaRows: [],
