@@ -321,37 +321,39 @@ function ImageFields( { module: mod, updateModule } ) {
 
 	return (
 		<>
-			<div className="cb-identityjs2026-editor-field">
-				<label className="cb-identityjs2026-editor-field__label">{ __( 'Image', 'cb-identityjs2026' ) }</label>
-				<MediaUploadCheck>
-					<MediaUpload
-						onSelect={ ( media ) => updateModule( { imageId: media.id } ) }
-						allowedTypes={ [ 'image' ] }
-						value={ mod.imageId }
-						render={ ( { open } ) => (
-							<div className="cb-identityjs2026-editor-field__control">
-								{ url && <img src={ url } alt="" style={ { maxWidth: '200px', display: 'block', marginBottom: '8px' } } /> }
-								<Button variant="secondary" onClick={ open }>
-									{ url ? __( 'Replace Image', 'cb-identityjs2026' ) : __( 'Select Image', 'cb-identityjs2026' ) }
-								</Button>
-							</div>
-						) }
-					/>
-				</MediaUploadCheck>
+			<div className="cb-identityjs2026-editor-field-row cb-identityjs2026-editor-field-row--3col">
+				<div className="cb-identityjs2026-editor-field">
+					<label className="cb-identityjs2026-editor-field__label">{ __( 'Image', 'cb-identityjs2026' ) }</label>
+					<MediaUploadCheck>
+						<MediaUpload
+							onSelect={ ( media ) => updateModule( { imageId: media.id } ) }
+							allowedTypes={ [ 'image' ] }
+							value={ mod.imageId }
+							render={ ( { open } ) => (
+								<div className="cb-identityjs2026-editor-field__control">
+									{ url && <img src={ url } alt="" style={ { maxWidth: '200px', display: 'block', marginBottom: '8px' } } /> }
+									<Button variant="secondary" onClick={ open }>
+										{ url ? __( 'Replace Image', 'cb-identityjs2026' ) : __( 'Select Image', 'cb-identityjs2026' ) }
+									</Button>
+								</div>
+							) }
+						/>
+					</MediaUploadCheck>
+				</div>
+				<SelectControl
+					label={ __( 'Aspect Ratio', 'cb-identityjs2026' ) }
+					value={ mod.imageAspectRatio }
+					options={ IMAGE_ASPECT_RATIO_OPTIONS }
+					onChange={ ( value ) => updateModule( { imageAspectRatio: value } ) }
+				/>
+				<SelectControl
+					label={ __( 'Size', 'cb-identityjs2026' ) }
+					value={ mod.imageSize }
+					options={ IMAGE_SIZE_OPTIONS }
+					onChange={ ( value ) => updateModule( { imageSize: value } ) }
+					help={ __( '"Native" + "Contain" caps the image to its own real pixel width so it never upscales.', 'cb-identityjs2026' ) }
+				/>
 			</div>
-			<SelectControl
-				label={ __( 'Aspect Ratio', 'cb-identityjs2026' ) }
-				value={ mod.imageAspectRatio }
-				options={ IMAGE_ASPECT_RATIO_OPTIONS }
-				onChange={ ( value ) => updateModule( { imageAspectRatio: value } ) }
-			/>
-			<SelectControl
-				label={ __( 'Size', 'cb-identityjs2026' ) }
-				value={ mod.imageSize }
-				options={ IMAGE_SIZE_OPTIONS }
-				onChange={ ( value ) => updateModule( { imageSize: value } ) }
-				help={ __( '"Native" + "Contain" caps the image to its own real pixel width so it never upscales.', 'cb-identityjs2026' ) }
-			/>
 			<ToggleControl
 				label={ __( 'Bleed to edge', 'cb-identityjs2026' ) }
 				checked={ !! mod.imageBleedEdge }

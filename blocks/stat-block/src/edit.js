@@ -116,36 +116,40 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 				fields={ isStack ? STACK_FIELDS : COLUMN_FIELDS }
 			/>
 
-			<TextControl
-				label={ __( 'CTA Message', 'cb-identityjs2026' ) }
-				value={ ctaMessage }
-				help={ __( 'Optional text shown alongside the CTA button.', 'cb-identityjs2026' ) }
-				onChange={ ( value ) => setAttributes( { ctaMessage: value } ) }
-			/>
-
-			<div style={ { display: 'flex', flexWrap: 'wrap', gap: '12px' } }>
-				<div style={ { flex: '50 1 0%' } }>
+			{ ! isStack && (
+				<>
 					<TextControl
-						type="url"
-						label={ __( 'CTA Link URL', 'cb-identityjs2026' ) }
-						value={ ctaLinkUrl }
-						onChange={ ( value ) => setAttributes( { ctaLinkUrl: value } ) }
+						label={ __( 'CTA Message', 'cb-identityjs2026' ) }
+						value={ ctaMessage }
+						help={ __( 'Optional text shown alongside the CTA button.', 'cb-identityjs2026' ) }
+						onChange={ ( value ) => setAttributes( { ctaMessage: value } ) }
 					/>
-				</div>
-				<div style={ { flex: '50 1 0%' } }>
-					<TextControl
-						label={ __( 'CTA Link Text', 'cb-identityjs2026' ) }
-						value={ ctaLinkText }
-						onChange={ ( value ) => setAttributes( { ctaLinkText: value } ) }
-					/>
-				</div>
-			</div>
 
-			<ToggleControl
-				label={ __( 'Open CTA Link in a New Tab', 'cb-identityjs2026' ) }
-				checked={ ctaLinkTarget }
-				onChange={ ( value ) => setAttributes( { ctaLinkTarget: value } ) }
-			/>
+					<div style={ { display: 'flex', flexWrap: 'wrap', gap: '12px' } }>
+						<div style={ { flex: '50 1 0%' } }>
+							<TextControl
+								type="url"
+								label={ __( 'CTA Link URL', 'cb-identityjs2026' ) }
+								value={ ctaLinkUrl }
+								onChange={ ( value ) => setAttributes( { ctaLinkUrl: value } ) }
+							/>
+						</div>
+						<div style={ { flex: '50 1 0%' } }>
+							<TextControl
+								label={ __( 'CTA Link Text', 'cb-identityjs2026' ) }
+								value={ ctaLinkText }
+								onChange={ ( value ) => setAttributes( { ctaLinkText: value } ) }
+							/>
+						</div>
+					</div>
+
+					<ToggleControl
+						label={ __( 'Open CTA Link in a New Tab', 'cb-identityjs2026' ) }
+						checked={ ctaLinkTarget }
+						onChange={ ( value ) => setAttributes( { ctaLinkTarget: value } ) }
+					/>
+				</>
+			) }
 		</EditorBlockShell>
 	);
 }
