@@ -470,6 +470,10 @@
 	background: #ccc;
 }
 
+.cb-identityjs2026-editor-field-row--2col {
+	grid-template-columns: repeat(2, 1fr);
+}
+
 .cb-identityjs2026-editor-field-row--3col {
 	grid-template-columns: repeat(3, 1fr);
 }

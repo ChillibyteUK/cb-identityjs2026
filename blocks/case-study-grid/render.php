@@ -256,24 +256,57 @@ if ( 'auto' === $mode ) {
 	// work/arm-everywhere/), whose own card list never includes the
 	// current page. 'auto' mode above already excludes get_the_ID() in its
 	// own sub-queries; this is the same exclusion for the plain grid mode.
-	if ( is_singular( 'case_study' ) ) {
+	$is_case_study_page = is_singular( 'case_study' );
+
+	if ( $is_case_study_page ) {
 		$query_args['post__not_in'] = array( get_the_ID() );
 	}
 
 	$selected_services = array_filter( array_map( 'absint', $attributes['selectedServices'] ?? array() ) );
+	$selected_themes   = array_filter( array_map( 'absint', $attributes['selectedThemes'] ?? array() ) );
+
+	$tax_query = array();
 
 	if ( $selected_services ) {
+		$tax_query[]        = array(
+			'taxonomy' => 'service',
+			'field'    => 'term_id',
+			'terms'    => $selected_services,
+		);
+		$rerank_by_service = $selected_services;
+	}
+
+	// Theme filtering only applies on a case study page: manually selected
+	// themes override auto-matching by the CURRENT case study's own theme
+	// terms; off a case study page this field has no effect at all (the
+	// current, pre-existing behaviour — Services-only filtering, or none).
+	if ( $is_case_study_page ) {
+		if ( $selected_themes ) {
+			$tax_query[] = array(
+				'taxonomy' => 'theme',
+				'field'    => 'term_id',
+				'terms'    => $selected_themes,
+			);
+		} else {
+			$current_theme_terms = wp_get_post_terms( get_the_ID(), 'theme', array( 'fields' => 'ids' ) );
+			if ( ! is_wp_error( $current_theme_terms ) && $current_theme_terms ) {
+				$tax_query[] = array(
+					'taxonomy' => 'theme',
+					'field'    => 'term_id',
+					'terms'    => $current_theme_terms,
+				);
+			}
+		}
+	}
+
+	if ( $tax_query ) {
 		// Pull the full matching set first so priority ranking (below) is
 		// accurate before limiting to $count — matches Featured Work.
 		$query_args['posts_per_page'] = -1;
-		$query_args['tax_query']      = array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
-			array(
-				'taxonomy' => 'service',
-				'field'    => 'term_id',
-				'terms'    => $selected_services,
-			),
-		);
-		$rerank_by_service = $selected_services;
+		if ( count( $tax_query ) > 1 ) {
+			$tax_query['relation'] = 'AND';
+		}
+		$query_args['tax_query'] = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 	}
 
 	$query = new WP_Query( $query_args );

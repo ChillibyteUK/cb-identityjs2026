@@ -33,14 +33,17 @@ const TAXONOMY_OPTIONS = [
 ];
 
 export default function Edit( { attributes, setAttributes, clientId } ) {
-	const { mode, heroCaseStudy, count, taxonomyFilter, selectedServices } = attributes;
+	const { mode, heroCaseStudy, count, taxonomyFilter, selectedServices, selectedThemes } = attributes;
 	const blockProps = useBlockProps( { className: 'container cb-identityjs2026-editor-block' } );
 
-	const { serviceTerms, hasResolved } = useSelect( ( select ) => {
-		const query = { per_page: -1, orderby: 'name', order: 'asc', _fields: [ 'id', 'name' ] };
+	const { serviceTerms, hasResolvedServices, themeTerms, hasResolvedThemes } = useSelect( ( select ) => {
+		const serviceQuery = { per_page: -1, orderby: 'name', order: 'asc', _fields: [ 'id', 'name' ] };
+		const themeQuery = { per_page: -1, orderby: 'name', order: 'asc', _fields: [ 'id', 'name' ] };
 		return {
-			serviceTerms: select( coreStore ).getEntityRecords( 'taxonomy', 'service', query ),
-			hasResolved: select( coreStore ).hasFinishedResolution( 'getEntityRecords', [ 'taxonomy', 'service', query ] ),
+			serviceTerms: select( coreStore ).getEntityRecords( 'taxonomy', 'service', serviceQuery ),
+			hasResolvedServices: select( coreStore ).hasFinishedResolution( 'getEntityRecords', [ 'taxonomy', 'service', serviceQuery ] ),
+			themeTerms: select( coreStore ).getEntityRecords( 'taxonomy', 'theme', themeQuery ),
+			hasResolvedThemes: select( coreStore ).hasFinishedResolution( 'getEntityRecords', [ 'taxonomy', 'theme', themeQuery ] ),
 		};
 	}, [] );
 
@@ -49,6 +52,13 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 			? selectedServices.filter( ( existing ) => existing !== id )
 			: [ ...selectedServices, id ];
 		setAttributes( { selectedServices: next } );
+	}
+
+	function toggleTheme( id ) {
+		const next = selectedThemes.includes( id )
+			? selectedThemes.filter( ( existing ) => existing !== id )
+			: [ ...selectedThemes, id ];
+		setAttributes( { selectedThemes: next } );
 	}
 
 	return (
@@ -99,27 +109,55 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 			) }
 
 			{ 'grid' === mode && (
-				<div className="cb-identityjs2026-editor-field">
-					<label className="cb-identityjs2026-editor-field__label">{ __( 'Services', 'cb-identityjs2026' ) }</label>
-					<p className="cb-identityjs2026-editor-field__help">
-						{ __( 'Optional. Leave all unchecked to show the latest case studies regardless of service.', 'cb-identityjs2026' ) }
-					</p>
-					{ ! hasResolved ? (
-						<Spinner />
-					) : ! ( serviceTerms ?? [] ).length ? (
-						<p className="cb-identityjs2026-editor-field__help">{ __( 'No terms found.', 'cb-identityjs2026' ) }</p>
-					) : (
-						<div className="cb-identityjs2026-term-checklist">
-							{ serviceTerms.map( ( term ) => (
-								<CheckboxControl
-									key={ term.id }
-									label={ term.name }
-									checked={ selectedServices.includes( term.id ) }
-									onChange={ () => toggleService( term.id ) }
-								/>
-							) ) }
-						</div>
-					) }
+				<div className="cb-identityjs2026-editor-field-row cb-identityjs2026-editor-field-row--2col">
+					<div className="cb-identityjs2026-editor-field">
+						<label className="cb-identityjs2026-editor-field__label">{ __( 'Services', 'cb-identityjs2026' ) }</label>
+						<p className="cb-identityjs2026-editor-field__help">
+							{ __( 'Optional. Leave all unchecked to show the latest case studies regardless of service.', 'cb-identityjs2026' ) }
+						</p>
+						{ ! hasResolvedServices ? (
+							<Spinner />
+						) : ! ( serviceTerms ?? [] ).length ? (
+							<p className="cb-identityjs2026-editor-field__help">{ __( 'No terms found.', 'cb-identityjs2026' ) }</p>
+						) : (
+							<div className="cb-identityjs2026-term-checklist">
+								{ serviceTerms.map( ( term ) => (
+									<CheckboxControl
+										key={ term.id }
+										label={ term.name }
+										checked={ selectedServices.includes( term.id ) }
+										onChange={ () => toggleService( term.id ) }
+									/>
+								) ) }
+							</div>
+						) }
+					</div>
+
+					<div className="cb-identityjs2026-editor-field">
+						<label className="cb-identityjs2026-editor-field__label">{ __( 'Themes', 'cb-identityjs2026' ) }</label>
+						<p className="cb-identityjs2026-editor-field__help">
+							{ __(
+								'Only has an effect on a case study page: leaving this unchecked auto-filters by the CURRENT case study’s own theme terms; picking a theme here overrides that auto-match. On any other page, this field is ignored entirely.',
+								'cb-identityjs2026'
+							) }
+						</p>
+						{ ! hasResolvedThemes ? (
+							<Spinner />
+						) : ! ( themeTerms ?? [] ).length ? (
+							<p className="cb-identityjs2026-editor-field__help">{ __( 'No terms found.', 'cb-identityjs2026' ) }</p>
+						) : (
+							<div className="cb-identityjs2026-term-checklist">
+								{ themeTerms.map( ( term ) => (
+									<CheckboxControl
+										key={ term.id }
+										label={ term.name }
+										checked={ selectedThemes.includes( term.id ) }
+										onChange={ () => toggleTheme( term.id ) }
+									/>
+								) ) }
+							</div>
+						) }
+					</div>
 				</div>
 			) }
 		</EditorBlockShell>
