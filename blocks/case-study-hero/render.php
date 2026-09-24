@@ -14,6 +14,13 @@
  * convention — see that block's own comment on why, not the real source's
  * raw pasted vimeo_url + cb_vimeo_url_with_dnt()).
  *
+ * autoplay=1&muted=1 (plus "autoplay" in the iframe's own allow attribute,
+ * required by browser autoplay policy) — explicit instruction: when this
+ * block has a video, it autoplays muted. Real production's own embed only
+ * ever added `&autoplay=1` with no muted param (cb_vimeo_url_with_dnt()
+ * only ever adds dnt=1) — that's not reproduced here, this is a
+ * deliberate, explicit deviation, not a missed value.
+ *
  * @package cb-identityjs2026
  */
 
@@ -48,13 +55,15 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'case-stud
 				'badge'     => '0',
 				'player_id' => '0',
 				'app_id'    => $vimeo_app_id,
+				'autoplay'  => '1',
+				'muted'     => '1',
 			),
 			'https://player.vimeo.com/video/' . rawurlencode( $vimeo_id )
 		);
 		?>
 		<div class="id-container case-study-hero__video-container">
 			<div class="case-study-hero__video-overlay"></div>
-			<iframe class="case-study-hero__video" src="<?php echo esc_url( $video_src ); ?>" frameborder="0" allow="fullscreen" allowfullscreen></iframe>
+			<iframe class="case-study-hero__video" src="<?php echo esc_url( $video_src ); ?>" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
 		</div>
 	<?php endif; ?>
 </section>
