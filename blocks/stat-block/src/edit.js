@@ -112,7 +112,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 				value={ stats }
 				onChange={ ( rows ) => setAttributes( { stats: rows } ) }
 				emptyRow={ { intro: '', prefix: '', value: '', suffix: '', descriptor: '' } }
-				layout="column"
+				layout={ isStack ? 'row' : 'column' }
 				fields={ isStack ? STACK_FIELDS : COLUMN_FIELDS }
 			/>
 
