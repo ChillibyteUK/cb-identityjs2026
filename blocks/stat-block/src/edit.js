@@ -1,27 +1,40 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
-import { TextControl, ToggleControl, Button } from '@wordpress/components';
+import { TextControl, ToggleControl, Button, SelectControl } from '@wordpress/components';
 import EditorBlockShell from '../../_shared/EditorBlockShell';
 import RepeaterField from '../../_shared/RepeaterField';
 
 /**
  * Built from Case Study Key Stats (cb-case-study-key-stats) + cb-stats — see
- * identity-global-block-spec.md's Stat Block entry. The spec flags an open
- * decision between Case Study Key Stats' unlimited stat/descriptor repeater
- * and cb-stats' fixed 4-slot prefix/suffix/hero/CTA structure, and
- * recommends rebuilding as the repeater (matches real saved content) while
- * folding cb-stats' prefix/suffix/hero/CTA/background-parallax options in
- * as per-row/per-block fields — that's what this is.
+ * identity-global-block-spec.md's Stat Block entry.
  *
- * The real source's own `pre_title` (hardcoded "Key Stats" fallback when
- * blank) is dropped per the spec's migration note — a Section Title block
- * placed before this one replaces it, consistent with every other block in
- * the spec that had its own pretitle.
+ * `layout` replaces the first version's single merged field set (every
+ * stat row always showing intro/prefix/value/suffix/descriptor) — confirmed
+ * live that was the wrong call: real case-study usage is a plain
+ * stat/descriptor list (Case Study Key Stats' own shape, not a counter),
+ * so those extra fields were dead UI clutter for the common case.
+ * - stack: Case Study Key Stats' real shape — full-width rows, just
+ *   `value` + `descriptor`.
+ * - column: cb-stats' counter shape — card grid with the full
+ *   intro/prefix/value/suffix/descriptor set.
  */
+const STACK_FIELDS = [
+	{ name: 'value', label: __( 'Value', 'cb-identityjs2026' ), type: 'text', help: __( 'e.g. "300" or "17,000+"', 'cb-identityjs2026' ) },
+	{ name: 'descriptor', label: __( 'Descriptor', 'cb-identityjs2026' ), type: 'text' },
+];
+
+const COLUMN_FIELDS = [
+	{ name: 'intro', label: __( 'Intro', 'cb-identityjs2026' ), type: 'text', help: __( 'Optional lead-in word, e.g. "Over"', 'cb-identityjs2026' ) },
+	{ name: 'prefix', label: __( 'Prefix', 'cb-identityjs2026' ), type: 'text', help: __( 'e.g. "$"', 'cb-identityjs2026' ) },
+	{ name: 'value', label: __( 'Value', 'cb-identityjs2026' ), type: 'text', help: __( 'e.g. "200"', 'cb-identityjs2026' ) },
+	{ name: 'suffix', label: __( 'Suffix', 'cb-identityjs2026' ), type: 'text', help: __( 'e.g. "+" or "M"', 'cb-identityjs2026' ) },
+	{ name: 'descriptor', label: __( 'Descriptor', 'cb-identityjs2026' ), type: 'text' },
+];
+
 export default function Edit( { attributes, setAttributes, clientId } ) {
 	const {
-		showHero,
-		heroTitle,
+		layout,
+		preTitle,
 		backgroundImageId,
 		backgroundImageUrl,
 		stats,
@@ -31,22 +44,26 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 		ctaLinkTarget,
 	} = attributes;
 	const blockProps = useBlockProps( { className: 'container cb-identityjs2026-editor-block' } );
+	const isStack = 'column' !== layout;
 
 	return (
 		<EditorBlockShell blockProps={ blockProps } clientId={ clientId } title="CB Stat Block" textDomain="cb-identityjs2026">
-			<ToggleControl
-				label={ __( 'Show Hero Title', 'cb-identityjs2026' ) }
-				checked={ showHero }
-				onChange={ ( value ) => setAttributes( { showHero: value } ) }
+			<SelectControl
+				label={ __( 'Layout', 'cb-identityjs2026' ) }
+				value={ layout }
+				options={ [
+					{ label: __( 'Stack (case study — plain stat list)', 'cb-identityjs2026' ), value: 'stack' },
+					{ label: __( 'Column (counter cards — intro/prefix/suffix)', 'cb-identityjs2026' ), value: 'column' },
+				] }
+				onChange={ ( value ) => setAttributes( { layout: value } ) }
 			/>
 
-			{ showHero && (
-				<TextControl
-					label={ __( 'Hero Title', 'cb-identityjs2026' ) }
-					value={ heroTitle }
-					onChange={ ( value ) => setAttributes( { heroTitle: value } ) }
-				/>
-			) }
+			<TextControl
+				label={ __( 'Pre-title', 'cb-identityjs2026' ) }
+				value={ preTitle }
+				help={ __( 'Optional small header above the stats, e.g. "Key Stats".', 'cb-identityjs2026' ) }
+				onChange={ ( value ) => setAttributes( { preTitle: value } ) }
+			/>
 
 			<div className="cb-identityjs2026-editor-field">
 				<label className="cb-identityjs2026-editor-field__label">{ __( 'Background Image', 'cb-identityjs2026' ) }</label>
@@ -96,13 +113,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 				onChange={ ( rows ) => setAttributes( { stats: rows } ) }
 				emptyRow={ { intro: '', prefix: '', value: '', suffix: '', descriptor: '' } }
 				layout="column"
-				fields={ [
-					{ name: 'intro', label: __( 'Intro', 'cb-identityjs2026' ), type: 'text', help: __( 'Optional lead-in word, e.g. "Over"', 'cb-identityjs2026' ) },
-					{ name: 'prefix', label: __( 'Prefix', 'cb-identityjs2026' ), type: 'text', help: __( 'e.g. "$"', 'cb-identityjs2026' ) },
-					{ name: 'value', label: __( 'Value', 'cb-identityjs2026' ), type: 'text', help: __( 'e.g. "200"', 'cb-identityjs2026' ) },
-					{ name: 'suffix', label: __( 'Suffix', 'cb-identityjs2026' ), type: 'text', help: __( 'e.g. "+" or "M"', 'cb-identityjs2026' ) },
-					{ name: 'descriptor', label: __( 'Descriptor', 'cb-identityjs2026' ), type: 'text' },
-				] }
+				fields={ isStack ? STACK_FIELDS : COLUMN_FIELDS }
 			/>
 
 			<TextControl

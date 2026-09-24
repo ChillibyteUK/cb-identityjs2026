@@ -48,14 +48,13 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'case-stud
 				'badge'     => '0',
 				'player_id' => '0',
 				'app_id'    => $vimeo_app_id,
-				'autoplay'  => '1',
 			),
 			'https://player.vimeo.com/video/' . rawurlencode( $vimeo_id )
 		);
 		?>
 		<div class="id-container case-study-hero__video-container">
 			<div class="case-study-hero__video-overlay"></div>
-			<iframe class="case-study-hero__video" src="<?php echo esc_url( $video_src ); ?>" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+			<iframe class="case-study-hero__video" src="<?php echo esc_url( $video_src ); ?>" frameborder="0" allow="fullscreen" allowfullscreen></iframe>
 		</div>
 	<?php endif; ?>
 </section>

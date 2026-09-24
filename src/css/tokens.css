@@ -95,6 +95,7 @@
   --fs-subtitle: 1.25rem;
   --fs-body: 1rem;
   --fs-small: 0.875rem;
+  --fs-300: var(--fs-small); /* real source's own small-label rung (Child Page Nav header, Brand Grid strap, Stat Block pre-title) — generic default just borrows --fs-small until a brand needs its own */
   --fs-content-heading: var(--fs-h1); /* a size between --fs-h3 and hero-title scale — Home Intro's content_heading; generic default just borrows --fs-h1 until a brand needs its own */
   --fs-hero-title: clamp(2.5rem, 2rem + 4vw, 6rem); /* Home Intro's big animated title — genuinely fluid/viewport-based in the one real source seen so far, not a fixed clamp; generic placeholder only */
 
@@ -113,7 +114,7 @@
 
   --img-child-page-nav-bg: none; /* Child Page Nav's background image is genuinely per-brand (confirmed: identity/coda/health each use a different file) — no generic default image to fall back to */
   --fs-child-page-nav-item: var(--fs-h1); /* real source's --fs-850 (its own h1-equivalent rung, distinct from our --fs-h1 role token) — generic default just borrows --fs-h1 until a brand needs its own */
-  --fs-child-page-nav-header: var(--fs-small); /* real source's --fs-300 (its own small-label rung) — generic default just borrows --fs-small */
+  --fs-child-page-nav-header: var(--fs-300);
 
   --fs-cta-title: var(--fs-h2);
   --lh-cta-title: var(--lh-heading);
@@ -143,7 +144,7 @@
   --col-brand-grid-bg: var(--col-bg-alt);
   --fs-brand-grid-intro: var(--fs-h1);
   --fs-brand-grid-name: var(--fs-small);
-  --fs-brand-grid-strap: var(--fs-small);
+  --fs-brand-grid-strap: var(--fs-300);
   --fs-brand-grid-last: var(--fs-subtitle);
 
   --col-feature-overlay-bg: var(--col-bg);

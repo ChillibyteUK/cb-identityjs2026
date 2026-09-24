@@ -373,6 +373,11 @@
           "size": "1.1111rem"
         },
         {
+          "name": "300",
+          "slug": "300",
+          "size": "clamp(1rem, 0.95rem + 0.5vw, 1.25rem)"
+        },
+        {
           "name": "400",
           "slug": "400",
           "size": "clamp(1.2222rem, 1.1rem + 0.6vw, 1.375rem)"

@@ -2328,20 +2328,11 @@
 /* --- src/blocks/stat-block.css --- */
 /*
  * Stat Block — see identity-global-block-spec.md. Confirmed against
- * cb-identitygroup2026's own _cb_case_study_key_stats.scss (colours,
- * borders, grid columns, spacing, font sizes/weights).
- *
- * Structural simplification: real source uses a single shared
- * `grid-template-columns: auto 1fr` across ALL stat rows at once (each
- * row is `display: contents` so its value/descriptor become direct
- * children of one big grid, keeping every row's descriptor column
- * perfectly aligned regardless of how wide each row's own value text is).
- * Replicating that here would need `display: contents` chained through
- * .stat-block__item → .id-container → .stat-block__item-inner, which
- * would also strip .id-container's own max-width/centring behaviour along
- * the way. Each row gets its own value/descriptor grid instead — visually
- * equivalent column proportions, just not perfectly cross-row aligned when
- * value lengths vary a lot.
+ * cb-identitygroup2026's own _cb_case_study_key_stats.scss for the stack
+ * layout's colours/borders/spacing/type. `stat-block--column`'s card grid
+ * (the cb-stats counter shape) is a from-scratch responsive layout, not a
+ * pixel-precise port of cb-stats' own fixed 4-slot markup — see
+ * render.php's own header comment.
  */
 
 .stat-block {
@@ -2357,8 +2348,24 @@
 	content: "";
 	position: absolute;
 	inset: 0;
-	z-index: -1;
+	z-index: -2;
 	background: var(--stat-block-bg-url) center / cover no-repeat fixed;
+}
+
+/*
+ * Confirmed live: the real source's own translucent rgba(255,255,255,.1)
+ * panel (kept below, on .stat-block__grid) isn't enough contrast on its
+ * own once a busy/colourful background photo is picked — text became
+ * unreadable. This dark scrim sits between the image and every layer of
+ * content, guaranteeing legibility regardless of what image gets chosen,
+ * rather than relying on the image itself happening to be dark/muted.
+ */
+.stat-block::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background: rgba(13, 13, 12, 0.65);
 }
 
 @supports ( -webkit-touch-callout: none ) {
@@ -2367,28 +2374,27 @@
 	}
 }
 
-.stat-block__hero-title {
-	margin: 0;
-	padding-block: var(--space-4);
+.stat-block__pre-title {
 	border-block-end: 1px solid rgba(255, 255, 255, 0.4);
 	background-color: rgba(255, 255, 255, 0.1);
-	font-family: var(--ff-heading);
-	font-size: var(--fs-h1);
-	font-weight: var(--fw-heading);
-	line-height: 1.1;
-	color: var(--col-heading);
 }
 
-.stat-block__hero-title .id-container,
-.stat-block__item-inner,
-.stat-block__cta-row-inner {
+.stat-block__pre-title .id-container {
+	/* Every property below is .section-title__text's own rule
+	   (section-title.css), copied wholesale — not reconstructed one
+	   property at a time from a different source. */
+	padding-block: 1rem 0.75rem;
 	padding-inline: var(--space-4);
+	font-family: var(--ff-body);
+	font-size: var(--fs-section-title);
+	font-weight: var(--fw-regular);
+	line-height: 1;
+	text-transform: uppercase;
+	color: var(--col-accent);
 }
 
 @media (min-width: 768px) {
-	.stat-block__hero-title .id-container,
-	.stat-block__item-inner,
-	.stat-block__cta-row-inner {
+	.stat-block__pre-title .id-container {
 		padding-inline: var(--space-5);
 	}
 }
@@ -2397,26 +2403,113 @@
 	background-color: rgba(255, 255, 255, 0.1);
 }
 
-.stat-block__item {
-	border-block-end: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.stat-block__item:last-child {
-	border-block-end: 0;
-}
-
-.stat-block__item-inner {
+/*
+ * --- Stack layout: Case Study Key Stats' own shape — full-width rows ---
+ *
+ * One shared grid across ALL rows, not a separate grid per row — needed to
+ * keep every row's descriptor column starting at the same x position
+ * regardless of how wide any one row's own stat text is (a per-row grid
+ * can't do that: each row's "auto" column would size independently, so a
+ * short "300" and a long "17,000+" would leave their descriptors starting
+ * at different x positions).
+ *
+ * --stat-inset replicates .id-container's own centring math (half of
+ * whatever's left over past 1920px) as a custom property, inherited down
+ * to .stat-block__value and added to that element's own
+ * padding-inline-start instead of living on the grid container. Padding
+ * on the grid container itself was tried first and was wrong: it shrinks
+ * the grid's own content-box, so every row's border-block-end (drawn at
+ * the edge of __value/__descriptor's own border-box) stopped short of the
+ * true edges instead of reaching them. Padding on __value itself doesn't
+ * have that problem — border-box padding is included inside the border,
+ * so the border still reaches __value's own box edge, which now starts at
+ * true x-0. __descriptor needs no equivalent on its own end: its 1fr
+ * column already runs to the grid's true right edge unconstrained.
+ *
+ * `100cqw`, not `100%` — confirmed live that a custom property's `%`
+ * isn't "pre-resolved" at its definition site the way a preprocessor
+ * variable would be; it re-resolves wherever var() is actually consumed.
+ * Consumed on .stat-block__value (a grid item inside the "auto" column),
+ * `100%` resolved against that tiny column's own width, not the full
+ * section — collapsing the whole inset to ~0. `100vw` (tried next) fixed
+ * that but introduced its own small error: `vw` includes the scrollbar
+ * width, while .id-container's `%` (a percentage of an ancestor's content
+ * box) doesn't — a consistent few-pixel mismatch against the title/footer.
+ * `container-type: inline-size` below turns .stat-block__grid into a query
+ * container, so `cqw` resolves against ITS OWN content-box width (same
+ * scrollbar-excluded basis id-container's `%` ultimately uses), matching
+ * exactly rather than approximately.
+ */
+.stat-block--stack .stat-block__grid {
 	display: grid;
 	grid-template-columns: 1fr;
-	align-items: center;
-	gap: var(--space-1) var(--space-4);
-	padding-block: var(--space-3);
+	container-type: inline-size;
+	--stat-inset: max( 0px, calc( ( 100cqw - 1920px ) / 2 ) );
+	/* Real source's own wrapping .cb-case-study-key-stats__container carries
+	   a pb-5 (3rem) under the grid, before the section's own
+	   border-block-end — confirmed against that markup, this had no
+	   equivalent at all. */
+	padding-block-end: var(--space-5);
 }
 
 @media (min-width: 768px) {
-	.stat-block__item-inner {
+	.stat-block--stack .stat-block__grid {
 		grid-template-columns: auto 1fr;
 	}
+}
+
+.stat-block--stack .stat-block__item {
+	display: contents;
+}
+
+.stat-block--stack .stat-block__value,
+.stat-block--stack .stat-block__descriptor {
+	display: flex;
+	align-items: center;
+	border-block-end: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.stat-block--stack .stat-block__value {
+	padding-block: var(--space-3) var(--space-2);
+	padding-inline-start: calc( var(--stat-inset) + var(--space-4) );
+	padding-inline-end: var(--space-4);
+}
+
+.stat-block--stack .stat-block__descriptor {
+	padding: var(--space-3);
+}
+
+@media (min-width: 768px) {
+	.stat-block--stack .stat-block__value {
+		padding-inline-start: calc( var(--stat-inset) + var(--space-5) );
+		padding-inline-end: var(--space-5);
+	}
+}
+
+/* --- Column layout: cb-stats' counter shape — responsive card grid --- */
+
+.stat-block--column .stat-block__grid {
+	display: grid;
+	grid-template-columns: 1fr;
+}
+
+@media (min-width: 600px) {
+	.stat-block--column .stat-block__grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (min-width: 1024px) {
+	.stat-block--column .stat-block__grid {
+		grid-template-columns: repeat(4, 1fr);
+	}
+}
+
+.stat-block--column .stat-block__item {
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	margin: -0.5px;
+	padding-block: var(--space-4);
+	text-align: center;
 }
 
 .stat-block__intro {
@@ -2425,19 +2518,25 @@
 	color: var(--col-text-muted);
 }
 
+/* fs-900/fw-book — confirmed against the real live page's own computed
+   styles (fontSize 80px = --fs-900 at this viewport, fontWeight 450 =
+   --fw-book): fw-semi (500) was still wrong, the real value is 450. */
 .stat-block__value {
 	font-family: var(--ff-heading);
-	font-size: var(--fs-h1);
-	font-weight: var(--fw-bold);
+	font-size: var(--fs-900);
+	font-weight: var(--fw-book);
 	line-height: 1;
 	white-space: nowrap;
 	color: var(--col-accent);
 }
 
+/* fs-500/fw-light/white — confirmed against the real live page's own
+   computed styles (fontSize 28px = --fs-500, fontWeight 300 = --fw-light,
+   color rgb(255,255,255)). */
 .stat-block__descriptor {
-	font-size: var(--fs-small);
-	font-weight: var(--fw-body);
-	color: var(--col-text-muted);
+	font-size: var(--fs-500);
+	font-weight: var(--fw-light);
+	color: #fff;
 }
 
 .stat-block__cta-row-inner {

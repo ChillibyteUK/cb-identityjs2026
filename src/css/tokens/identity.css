@@ -41,6 +41,7 @@
   --fs-subtitle: clamp(1.4444rem, 1.25rem + 0.9vw, 1.75rem); /* fs-500, confirmed current in cb-identitygroup2026/_tokens.scss — same rung as h2, different role name */
   --fs-body: 1.125rem;
   --fs-small: 0.8889rem; /* fs-50 */
+  --fs-300: clamp(1rem, 0.95rem + 0.5vw, 1.25rem); /* confirmed live: 20px, e.g. Stat Block's pre-title, Child Page Nav header, Brand Grid strap */
   --fs-content-heading: clamp(1.5rem, 0.9rem + 1.6vw, 2.5rem); /* fs-800, confirmed identity override in cb-site-tokens.php */
   --fs-hero-title: 11.5vw; /* Home Intro's big animated title — confirmed in _cb_brand_title_text.scss, genuinely viewport-fluid with a breakpoint step, not a single clamp() */
 
@@ -75,7 +76,7 @@
      real formula directly. Corrected wherever this source disagreed;
      unchanged where it already matched. */
   --fs-child-page-nav-item: clamp(1.875rem, 0.95rem + 1.9vw, 3.125rem); /* real --fs-850 */
-  --fs-child-page-nav-header: clamp(1rem, 0.95rem + 0.5vw, 1.25rem); /* real --fs-300 */
+  --fs-child-page-nav-header: var(--fs-300);
 
   --fs-cta-title: clamp(1.875rem, 0.95rem + 1.9vw, 3.125rem); /* real --fs-850 */
   --lh-cta-title: 1.1; /* real --lh-850 */
@@ -89,10 +90,7 @@
   --fs-page-header-intro: clamp(1.1875rem, 0.9rem + 1vw, 1.751rem); /* real --fs-500 — every other paragraph, in both __intro-text and the secondary panel */
   --lh-page-header-intro: 1.5; /* real --lh-200 */
 
-  /* Confirmed in cb-site-tokens.php's identity row (line 358): real --fs-300.
-     Same rung/value already confirmed and in use for
-     --fs-child-page-nav-header, a different block reusing this rung. */
-  --fs-section-title: clamp(1rem, 0.95rem + 0.5vw, 1.25rem);
+  --fs-section-title: var(--fs-300);
 
   /* Detail List — "paired" layout confirmed live on
      identityglobal.com/about/'s "WHY CHOOSE IDENTITY?" section (title
@@ -134,7 +132,7 @@
      clamp() formula already confirmed for Push Panel's title. */
   --fs-brand-grid-intro: clamp(1.875rem, 0.95rem + 1.9vw, 3.125rem);
   --fs-brand-grid-name: 0.8889rem; /* real --fs-50, confirmed live: 14.2224px */
-  --fs-brand-grid-strap: clamp(1rem, 0.95rem + 0.5vw, 1.25rem); /* real --fs-300, confirmed live: 20px */
+  --fs-brand-grid-strap: var(--fs-300);
   --fs-brand-grid-last: clamp(1.1875rem, 0.9rem + 1vw, 1.751rem); /* real --fs-500, confirmed live: 28px */
 
   /* Feature Overlay — cross-checked against both cb-identity2025 (older,

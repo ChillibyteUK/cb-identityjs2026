@@ -6,8 +6,8 @@
 	"category": "cb-identityjs2026",
 	"icon": "chart-bar",
 	"attributes": {
-		"showHero": { "type": "boolean", "default": false },
-		"heroTitle": { "type": "string", "default": "" },
+		"layout": { "type": "string", "default": "stack" },
+		"preTitle": { "type": "string", "default": "" },
 		"backgroundImageId": { "type": "number", "default": 0 },
 		"backgroundImageUrl": { "type": "string", "default": "" },
 		"stats": {

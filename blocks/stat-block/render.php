@@ -5,27 +5,36 @@
  * Built from Case Study Key Stats (cb-case-study-key-stats.php, confirmed
  * against cb-identitygroup2026's own _cb_case_study_key_stats.scss) +
  * cb-stats — see identity-global-block-spec.md's Stat Block entry.
- * Rebuilt as an unlimited stat/descriptor repeater (matches Case Study Key
- * Stats' own real saved content) with cb-stats' prefix/suffix/hero/CTA/
- * background-parallax options folded in as per-row/per-block fields, per
- * the spec's explicit recommendation.
  *
- * Real source's own `pre_title` (hardcoded "Key Stats" fallback) is
- * dropped — a Section Title block placed before this one replaces it, per
- * the spec's migration note (same treatment as every other block that had
- * its own pretitle — Work Index, Post Grid, etc).
+ * `layout` replaces the first version's single merged field set — confirmed
+ * live against a real case-study usage that the extra intro/prefix/suffix
+ * fields were dead weight for the common case (a plain stat/descriptor
+ * list, not a counter):
+ * - stack: Case Study Key Stats' real shape — full-width rows.
+ * - column: cb-stats' counter shape — card grid, full field set. Rebuilt
+ *   as a responsive card grid rather than a pixel-precise port of
+ *   cb-stats' own fixed 4-slot markup (not read in this pass) — flagged
+ *   as a simplification, revisit if cb-stats' exact layout is needed.
  *
- * Simplification: no aos-fade-up scroll-reveal stagger on each stat item
- * (real source's own data-aos/data-aos-delay) — this theme has no AOS
- * library wired in yet, and this is a visual-polish detail, not layout.
+ * `pre_title`'s hardcoded "Key Stats" fallback (real source) is dropped —
+ * left blank by default, same as every other block that had one (Work
+ * Index, Post Grid) — but kept as a real optional field here (not fully
+ * migrated to a separate Section Title block) since it's confirmed live to
+ * still visually read as part of this block, not a standalone section.
+ *
+ * The `::before` background gets its own dark scrim layer, not just the
+ * bare photo — confirmed live that cb-stats/Key Stats' own translucent
+ * rgba(255,255,255,.1) panel alone doesn't hold up against a busy/colourful
+ * background image; text needs guaranteed contrast regardless of whatever
+ * image gets picked.
  *
  * @package cb-identityjs2026
  */
 
 defined( 'ABSPATH' ) || exit;
 
-$show_hero           = ! empty( $attributes['showHero'] );
-$hero_title           = $attributes['heroTitle'] ?? '';
+$layout               = 'column' === ( $attributes['layout'] ?? 'stack' ) ? 'column' : 'stack';
+$pre_title            = $attributes['preTitle'] ?? '';
 $background_image_id  = absint( $attributes['backgroundImageId'] ?? 0 );
 $stats                = is_array( $attributes['stats'] ?? null ) ? $attributes['stats'] : array();
 $cta_message          = $attributes['ctaMessage'] ?? '';
@@ -46,13 +55,10 @@ if ( ! $stats ) {
 	return;
 }
 
-$root_classes = array( 'stat-block' );
-if ( $show_hero && $hero_title ) {
-	$root_classes[] = 'stat-block--hero';
-}
+$root_classes = array( 'stat-block', 'stat-block--' . $layout );
 
-$background_url   = $background_image_id ? wp_get_attachment_image_url( $background_image_id, 'full' ) : '';
-$instance_id      = wp_unique_id( 'stat-block-' );
+$background_url = $background_image_id ? wp_get_attachment_image_url( $background_image_id, 'full' ) : '';
+$instance_id     = wp_unique_id( 'stat-block-' );
 
 $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $root_classes ) ) );
 ?>
@@ -64,33 +70,29 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( '
 	</style>
 <?php endif; ?>
 <section id="<?php echo esc_attr( $instance_id ); ?>" <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?>>
-	<?php if ( $show_hero && $hero_title ) : ?>
-		<h1 class="stat-block__hero-title">
-			<div class="id-container"><?php echo esc_html( $hero_title ); ?></div>
-		</h1>
+	<?php if ( $pre_title ) : ?>
+		<div class="stat-block__pre-title">
+			<div class="id-container"><?php echo esc_html( $pre_title ); ?></div>
+		</div>
 	<?php endif; ?>
 
 	<div class="stat-block__grid">
 		<?php foreach ( $stats as $stat ) : ?>
 			<?php
-			$intro      = $stat['intro'] ?? '';
-			$prefix     = $stat['prefix'] ?? '';
+			$intro      = 'column' === $layout ? ( $stat['intro'] ?? '' ) : '';
+			$prefix     = 'column' === $layout ? ( $stat['prefix'] ?? '' ) : '';
 			$value      = $stat['value'] ?? '';
-			$suffix     = $stat['suffix'] ?? '';
+			$suffix     = 'column' === $layout ? ( $stat['suffix'] ?? '' ) : '';
 			$descriptor = $stat['descriptor'] ?? '';
 			?>
 			<div class="stat-block__item">
-				<div class="id-container stat-block__item-inner">
-					<div class="stat-block__value-col">
-						<?php if ( $intro ) : ?>
-							<div class="stat-block__intro"><?php echo esc_html( $intro ); ?></div>
-						<?php endif; ?>
-						<div class="stat-block__value"><?php echo esc_html( $prefix . $value . $suffix ); ?></div>
-					</div>
-					<?php if ( $descriptor ) : ?>
-						<div class="stat-block__descriptor"><?php echo esc_html( $descriptor ); ?></div>
-					<?php endif; ?>
-				</div>
+				<?php if ( $intro ) : ?>
+					<div class="stat-block__intro"><?php echo esc_html( $intro ); ?></div>
+				<?php endif; ?>
+				<div class="stat-block__value"><?php echo esc_html( $prefix . $value . $suffix ); ?></div>
+				<?php if ( $descriptor ) : ?>
+					<div class="stat-block__descriptor"><?php echo esc_html( $descriptor ); ?></div>
+				<?php endif; ?>
 			</div>
 		<?php endforeach; ?>
 	</div>
