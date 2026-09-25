@@ -16,6 +16,7 @@ export const COLUMN_LAYOUT_OPTIONS = [
 	{ label: 'Two Thirds / One Third', value: '8-4' },
 	{ label: 'Three Columns', value: '4-4-4' },
 	{ label: 'Four Columns', value: '3-3-3-3' },
+	{ label: 'One Quarter / Half / One Quarter', value: '3-6-3' },
 ];
 
 export const MODULE_TYPE_OPTIONS = [

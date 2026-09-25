@@ -512,6 +512,7 @@ endif;
 				'8-4'     => 'content-builder__row--twothirds-third',
 				'4-4-4'   => 'content-builder__row--three-col',
 				'3-3-3-3' => 'content-builder__row--four-col',
+				'3-6-3'   => 'content-builder__row--quarter-half-quarter',
 			);
 
 			$row_classes = array( 'content-builder__row', $row_variant_map[ $column_layout ] ?? $row_variant_map['12'] );
@@ -561,6 +562,8 @@ endif;
 						return 4;
 					case '3-3-3-3':
 						return 3;
+					case '3-6-3':
+						return 1 === $index ? 6 : 3;
 					case '12':
 					default:
 						return 12;
