@@ -2366,13 +2366,20 @@
 
 /*
  * Reproduces cb-policies-page's own secondary_background field — a photo
- * behind just this panel, layered BEHIND the tint above (z-index -2 vs
- * its -1), not instead of it. A separate ::after rather than folding the
- * image into ::before's own background shorthand: it keeps the existing
- * --col-overlay-colour tint untouched for every instance that doesn't use
- * this (the far more common case), and only stacks a second layer for
- * the ones that do.
+ * behind just this panel, layered BEHIND a tint (z-index -2 vs its -1),
+ * not instead of it. cb-policies-page's real overlay for this exact case
+ * (_cb_policies_page.scss's `.overlay`) is rgba(13, 13, 12, 0.75) — this
+ * project's own --col-bg on identity context (#0d0d0c) at 75% opacity,
+ * NOT the --col-overlay-colour purple used by the base ::before above:
+ * that token belongs to the plain (no image) panel case this block was
+ * otherwise built from, and at 80% opacity it almost completely hid the
+ * photo when reused here unchanged (confirmed live — visually
+ * indistinguishable from no image at all).
  */
+.page-header__panel--has-background::before {
+	background-color: color-mix(in srgb, var(--col-bg) 75%, transparent);
+}
+
 .page-header__panel--has-background::after {
 	content: "";
 	position: absolute;
