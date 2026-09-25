@@ -13,14 +13,30 @@ import RepeaterField from '../../_shared/RepeaterField';
  * next to Page Header — there's no reason for either of those to grow a
  * bespoke field here just because this one page needs them once.
  *
- * The real source's two structures (a hardcoded 5-field-pair email list
- * with hand-placed section headings, and an office→sub_addresses
- * repeater) are unified into one `groups` repeater — a name plus a nested
- * list — used in two modes. `new_section`/`is_group` (the evolved
- * cb-identitygroup2026 source's own flags for exactly this same grouping
- * need) aren't needed here: with a real nested repeater, a "section" or
- * "group" is just a top-level row with more than one child, not a flag
- * threaded through a flat list.
+ * The real source's two structures unify into one `groups` repeater, but
+ * NOT the same shape in both modes — confirmed directly against
+ * identityglobal.com/contact/'s live markup, not assumed symmetric:
+ *
+ * - Locations: each group IS one named thing (an office) with a nested
+ *   list of its own sub-addresses — "UK" containing 4 separate addresses
+ *   is genuinely one name with several nested children.
+ * - Email Groups: the real `.cb-contact-page__emails` wrapper (a divider
+ *   boundary, borderred top+bottom) is NOT itself named — it just holds
+ *   several independent name+email PAIRS with no divider between them
+ *   ("New business" / "New business USA" / "New business Middle East"
+ *   all sit inside ONE wrapper), only getting a new wrapper (hence a new
+ *   divider) at "PR & Media". So a Group here has no `name` of its own at
+ *   all — just a nested `entries` list, each entry carrying its own name.
+ *
+ * Getting this backwards (one shared name, multiple emails nested under
+ * it) was a real bug caught after building it — it doesn't match
+ * production's actual grouping, and put a divider between every single
+ * name/email pair instead of only between real section boundaries.
+ *
+ * Either way, `new_section`/`is_group` (the evolved cb-identitygroup2026
+ * source's own flags for exactly this same grouping need) aren't needed
+ * here: with a real nested repeater, a divider boundary is just "a new
+ * top-level row", not a flag threaded through a flat list.
  *
  * The real source's "LOCATIONS" banner (a distinct photo-background
  * section between the two halves) is a separate CB Section Title block
@@ -56,20 +72,20 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					value={ groups }
 					onChange={ ( value ) => setAttributes( { groups: value } ) }
 					fields={ [
-						{ name: 'name', label: __( 'Name', 'cb-identityjs2026' ), type: 'text' },
 						{
-							name: 'emails',
-							label: __( 'Emails', 'cb-identityjs2026' ),
+							name: 'entries',
+							label: __( 'Entries (each with its own name + email) — no divider between entries in the same Group, only between Groups', 'cb-identityjs2026' ),
 							type: 'repeater',
 							subLayout: 'row',
 							subFields: [
+								{ name: 'name', label: __( 'Name', 'cb-identityjs2026' ), type: 'text' },
 								{ name: 'email', label: __( 'Email', 'cb-identityjs2026' ), type: 'text' },
 								{ name: 'phone', label: __( 'Phone', 'cb-identityjs2026' ), type: 'text', help: __( 'Optional.', 'cb-identityjs2026' ) },
 							],
-							subEmptyRow: { email: '', phone: '' },
+							subEmptyRow: { name: '', email: '', phone: '' },
 						},
 					] }
-					emptyRow={ { name: '', emails: [] } }
+					emptyRow={ { entries: [] } }
 				/>
 			) : (
 				<RepeaterField

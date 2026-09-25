@@ -540,6 +540,15 @@
  * (identity's #0d0d0c, matching --col-bg) when an editor hasn't picked
  * one. That sidesteps needing a competing plain CSS background rule here
  * at all.
+ *
+ * Email Groups and Locations do NOT share a group shape (see render.php's
+ * own docblock) — confirmed directly against identityglobal.com/contact/'s
+ * live markup: a Locations group IS one named office (so the 2-column
+ * name/content grid applies to .contact-directory__group itself), while
+ * an Email Groups group is an unnamed divider boundary that can hold
+ * several name+email .contact-directory__entry rows with NO divider
+ * between them — the 2-column grid there applies per-entry instead, and
+ * .contact-directory__group only ever contributes the one shared border.
  */
 
 .contact-directory {
@@ -561,21 +570,58 @@
 	padding-block: 0.5rem 3rem;
 }
 
-.contact-directory__group-name {
+.contact-directory--locations .contact-directory__group {
+	color: var(--col-text);
+}
+
+/*
+ * Real source is a 2-column row (col-md-6 name / col-md-6 email, or
+ * col-lg-6 office / col-lg-6 addresses) — confirmed directly against
+ * identityglobal.com/contact/'s live markup, not a guess: name and
+ * email/address sit side by side, not name-above-a-stacked-list. Below
+ * 768px the real source's Bootstrap columns fall back to full width/
+ * stacked, same as this grid does by simply not applying until then.
+ */
+@media (min-width: 768px) {
+	.contact-directory--locations .contact-directory__group,
+	.contact-directory__entry {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		align-items: start;
+		gap: var(--space-4);
+	}
+}
+
+.contact-directory__entry + .contact-directory__entry {
+	margin-top: 1rem;
+}
+
+.contact-directory__group-name,
+.contact-directory__entry-name {
 	margin: 0 0 1rem;
+	color: var(--col-text);
 	font-weight: var(--fw-light);
+}
+
+@media (min-width: 768px) {
+	.contact-directory__group-name,
+	.contact-directory__entry-name {
+		margin-bottom: 0;
+	}
 }
 
 .contact-directory--locations .contact-directory__group-name {
 	font-size: var(--fs-700);
 }
 
-.contact-directory__email-row,
+.contact-directory__entry-detail {
+	margin-bottom: 1rem;
+}
+
 .contact-directory__address-row {
 	margin-bottom: 1rem;
 }
 
-.contact-directory__email-row:last-child,
 .contact-directory__address-row:last-child {
 	margin-bottom: 0;
 }

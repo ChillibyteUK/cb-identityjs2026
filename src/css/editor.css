@@ -352,7 +352,20 @@
 	}
 }
 
-.cb-identityjs2026-repeater-field--column .cb-identityjs2026-repeater-field__row {
+/*
+ * Direct-child combinators throughout this rule (not a plain descendant
+ * selector) are load-bearing, not stylistic — a nested repeater (e.g.
+ * Contact Directory's Emails-within-a-Group) sits inside this same
+ * .cb-identityjs2026-repeater-field--column container as a field of one
+ * of ITS rows, but is its own independent RepeaterField instance with its
+ * own layout ('row' by default). A descendant selector here would reach
+ * straight through that nesting and force the nested instance's rows
+ * into this column layout regardless of its own subLayout, which is
+ * exactly what happened before this was scoped: an inner "row"-layout
+ * repeater rendered fully stacked instead, with its column headers no
+ * longer lining up with anything underneath them.
+ */
+.cb-identityjs2026-repeater-field--column > .cb-identityjs2026-repeater-field__rows > .cb-identityjs2026-repeater-field__row {
 	flex-direction: column;
 	align-items: stretch;
 
@@ -369,7 +382,7 @@
 	}
 }
 
-.cb-identityjs2026-repeater-field--column .cb-identityjs2026-repeater-field__row-actions {
+.cb-identityjs2026-repeater-field--column > .cb-identityjs2026-repeater-field__rows > .cb-identityjs2026-repeater-field__row > .cb-identityjs2026-repeater-field__row-actions {
 	flex-direction: row;
 	align-self: flex-end;
 }
