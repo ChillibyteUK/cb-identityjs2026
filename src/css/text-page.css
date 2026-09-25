@@ -29,6 +29,19 @@
 .text-page__title {
 	border-bottom: 1px solid var(--col-border);
 	padding-block: 1rem;
+	/* The real source's nav wasn't a fixed overlay, so it never needed this —
+	   this theme's own nav is `position: fixed` (see nav.css's own comment:
+	   "the page needs its own top padding/margin to avoid content jumping
+	   underneath"), and Text Page is often the very first thing on the page.
+	   Same values Page Header already uses for the identical problem
+	   (page-header.css's .page-header__top). */
+	padding-block-start: var(--space-6);
+}
+
+@media (min-width: 768px) {
+	.text-page__title {
+		padding-block-start: 8rem;
+	}
 }
 
 .text-page__title > .id-container,

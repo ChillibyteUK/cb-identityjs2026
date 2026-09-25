@@ -74,17 +74,28 @@ function RepeaterImageField( { field, row, index, updateRow } ) {
  * specifically to bridge that one legacy moment, not as an ongoing
  * safeguard. Literal newlines become <br> first (matching the old
  * textarea's own line-break-only semantics — this project's title fields
- * were never multi-paragraph), then the whole thing is wrapped in one <p>
- * purely to satisfy RichText's "must have a tag" requirement — confirmed
- * live that wrapper doesn't force multiline-style paragraph behaviour on
- * an otherwise non-multiline field, it's just the minimal safe container.
+ * were never multi-paragraph).
+ *
+ * The wrapping tag itself must match the field's own `multiline` mode.
+ * The original version of this always wrapped in `<p>` regardless — that
+ * DOES force multiline-style paragraph behaviour on a non-multiline field
+ * despite what an earlier pass here confirmed: reproduced live (2026-09-25)
+ * as visible content corruption on Detail List's own (non-multiline) Title
+ * field, a plain `<p>` wrapper caused RichText to split text typed
+ * immediately after mount mid-word onto a new line — "The" became "Th",
+ * newline, "e". A non-multiline field gets a plain inline `<span>` wrapper
+ * instead, which satisfies the same "must have a tag" requirement without
+ * RichText treating it as a paragraph boundary. Multiline fields (e.g.
+ * Detail List's own Description) keep `<p>`, since multiline="p" mode
+ * genuinely expects `<p>` children.
  */
-function toSafeRichTextHtml( value ) {
+function toSafeRichTextHtml( value, multiline ) {
 	const html = value || '';
 	if ( html.includes( '<' ) ) {
 		return html;
 	}
-	return `<p>${ html.replace( /\r\n|\r|\n/g, '<br>' ) }</p>`;
+	const withBreaks = html.replace( /\r\n|\r|\n/g, '<br>' );
+	return multiline ? `<p>${ withBreaks }</p>` : `<span>${ withBreaks }</span>`;
 }
 
 /**
@@ -321,7 +332,7 @@ export default function RepeaterField( { label, value, onChange, fields, emptyRo
 										className="cb-identityjs2026-editor-field__control"
 										aria-label={ field.label }
 										placeholder={ field.label }
-										value={ toSafeRichTextHtml( row[ field.name ] ) }
+										value={ toSafeRichTextHtml( row[ field.name ], field.multiline ) }
 										onChange={ ( v ) => updateRow( index, { [ field.name ]: v } ) }
 									/>
 									{ field.help && <p className="cb-identityjs2026-editor-field__help">{ field.help }</p> }
