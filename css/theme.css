@@ -4367,6 +4367,18 @@ select {
 	color: var(--col-accent-hover);
 }
 
+/*
+ * .id-button (e.g. a [cb_button] shortcode typed into this field) needs
+ * its own colour back — the plain-inline-link rule above is a real,
+ * higher-specificity `a` selector that otherwise wins over .id-button's
+ * own single-class color declaration, turning its label the same accent
+ * colour as a plain text link instead of the white it's meant to be.
+ */
+.page-header__intro .id-button,
+.page-header__intro .id-button:hover {
+	color: var(--col-button-text);
+}
+
 .page-header__panel {
 	position: relative;
 	border-top: 1px solid var(--col-border);

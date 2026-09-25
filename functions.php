@@ -29,3 +29,4 @@ require_once CB_IDENTITYJS2026_DIR . '/inc/taxonomies.php';
 require_once CB_IDENTITYJS2026_DIR . '/inc/news-templates.php';
 require_once CB_IDENTITYJS2026_DIR . '/inc/case-study.php';
 require_once CB_IDENTITYJS2026_DIR . '/inc/service-parents.php';
+require_once CB_IDENTITYJS2026_DIR . '/inc/button-shortcode.php';

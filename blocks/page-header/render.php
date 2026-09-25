@@ -135,14 +135,15 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( '
 				</div>
 			<?php endif; ?>
 			<?php if ( $intro_text ) : ?>
-				<div class="page-header__intro <?php echo esc_attr( $intro_text_font_size ); ?>"><?php echo wp_kses_post( $intro_text ); ?></div>
+				<?php // do_shortcode() enables e.g. [cb_button] typed directly into this RichText field — a plain button with no surrounding CTA panel, for a page (like Contact) that needs just one and shouldn't grow a bespoke field for it. ?>
+				<div class="page-header__intro <?php echo esc_attr( $intro_text_font_size ); ?>"><?php echo do_shortcode( wp_kses_post( $intro_text ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_kses_post() sanitizes first; do_shortcode() only expands already-registered, trusted shortcodes against that sanitized result. ?></div>
 			<?php endif; ?>
 		</div>
 	</div>
 	<?php if ( 'text' === $secondary_panel_type && $secondary_text ) : ?>
 		<div class="<?php echo $panel_class_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- already esc_attr()'d above. ?>">
 			<div class="id-container">
-				<div class="page-header__panel-text <?php echo esc_attr( $secondary_text_font_size ); ?>"><?php echo wp_kses_post( $secondary_text ); ?></div>
+				<div class="page-header__panel-text <?php echo esc_attr( $secondary_text_font_size ); ?>"><?php echo do_shortcode( wp_kses_post( $secondary_text ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_kses_post() sanitizes first; do_shortcode() only expands already-registered, trusted shortcodes against that sanitized result. ?></div>
 			</div>
 		</div>
 	<?php elseif ( 'quote' === $secondary_panel_type && $quote ) : ?>
