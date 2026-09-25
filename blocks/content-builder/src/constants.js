@@ -48,7 +48,7 @@ export const FW_OPTIONS = [
 const fsOption = ( slug ) => ( { label: slug, value: slug } );
 
 export const HEADING_FS_OPTIONS = [ 'fs-200', 'fs-400', 'fs-500', 'fs-600', 'fs-700', 'fs-850', 'fs-875', 'fs-900' ].map( fsOption );
-export const TEXT_FS_OPTIONS = [ 'fs-100', 'fs-200', 'fs-300', 'fs-400', 'fs-500', 'fs-600', 'fs-700' ].map( fsOption );
+export const TEXT_FS_OPTIONS = [ 'fs-100', 'fs-200', 'fs-300', 'fs-400', 'fs-500', 'fs-600', 'fs-700', 'fs-850' ].map( fsOption );
 export const LIST_FS_OPTIONS = [ 'fs-100', 'fs-200', 'fs-400', 'fs-500' ].map( fsOption );
 export const STATS_FS_OPTIONS = TEXT_FS_OPTIONS;
 

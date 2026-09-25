@@ -564,3 +564,30 @@
 .insight-type--accent .insight-type-grid__date {
 	color: #e0deff;
 }
+
+/*
+ * Content Builder's List module (blocks/content-builder.css's own
+ * .content-builder__list) renders it with no bullet glyphs at all — a
+ * borrowed-looking divider-row treatment with no "confirmed live"
+ * citation behind it (unlike most of that file), and this module has
+ * never actually been used anywhere on this site yet. Per explicit
+ * direction: identity gets real bulleted list markers instead. Scoped
+ * here rather than in the shared file since it's this brand's own
+ * decision, not a verified real-source value other brands should also
+ * carry — .content-builder__text's own inline `ul`s are untouched, this
+ * is only the List module itself.
+ */
+.content-builder__list {
+	list-style: disc;
+	padding-inline-start: var(--space-4);
+	margin-bottom: 0.75em;
+}
+
+.content-builder__list li:not(:first-of-type) {
+	padding-top: 0;
+	border-top: none;
+}
+
+.content-builder__list li {
+	margin-bottom: 0;
+}
