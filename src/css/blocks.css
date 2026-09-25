@@ -740,18 +740,53 @@
 	font-weight: var(--fw-light) !important;
 }
 
+/*
+ * !important on background/color/border here, not just a plain
+ * declaration: confirmed live (stg-identityglobal-staging) that this
+ * theme's own global form reset (forms.css) has an
+ * `input:not([type="button"]):not([type="submit"])...` selector — 8
+ * chained :not() exclusions, each contributing class-level specificity —
+ * that comfortably outranks any plausible class-based override for
+ * `input`, including this one. Its `textarea`/`select` siblings in that
+ * same reset are their own separate, low-specificity selectors (a bare
+ * `textarea`), which is exactly why the textarea below picked up this
+ * block's colours fine on its own while every <input> silently kept the
+ * reset's --col-bg (dark on dark, invisible) instead of --col-border —
+ * confirmed by inspecting document.styleSheets directly, not guessed.
+ */
 .contact-form .ginput_container input[type="text"],
 .contact-form .ginput_container input[type="email"],
 .contact-form .ginput_container textarea {
-	background-color: var(--col-border);
-	color: var(--col-text);
-	border: none;
-	border-radius: 0;
+	background-color: var(--col-border) !important;
+	color: var(--col-text) !important;
+	border: none !important;
+	border-radius: 0 !important;
 }
 
 .contact-form .gform_confirmation_message {
 	color: var(--col-accent);
 	font-size: var(--fs-500);
+}
+
+/*
+ * Gravity Forms' own class name already says "type-inline" — its consent
+ * checkbox and label are meant to sit on one line — but this theme's own
+ * global reset (forms.css: bare `label { display: block; }`) forces the
+ * label onto its own line below the checkbox regardless, since nothing in
+ * GF's CSS happens to redeclare `display` on it. Not fixed in the shared
+ * reset itself: this is the first real content this theme has needed a
+ * GF consent field for, and a blanket exception there could silently
+ * affect every other label site-wide.
+ */
+.contact-form .ginput_container_consent {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.contact-form .gfield_consent_label {
+	display: inline;
+	margin: 0;
 }
 
 /* --- src/blocks/content-builder.css --- */
