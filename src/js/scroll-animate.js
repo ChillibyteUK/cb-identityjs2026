@@ -37,7 +37,21 @@ export function initScrollAnimate() {
 		return;
 	}
 
-	window.gsap.registerPlugin(window.ScrollTrigger);
+	try {
+		window.gsap.registerPlugin(window.ScrollTrigger);
+	} catch (error) {
+		// registerPlugin/ScrollTrigger itself can throw when a mismatched
+		// gsap.min.js/ScrollTrigger.min.js pair gets served mid-deploy,
+		// before both files' cache-busted URLs settle to the same build.
+		// When it does, nothing below can safely run, so reveal everything
+		// immediately rather than leave it CSS-hidden forever.
+		console.error('[scroll-animate] ScrollTrigger.registerPlugin failed:', error);
+		elements.forEach((el) => {
+			el.style.opacity = '1';
+			el.style.transform = 'none';
+		});
+		return;
+	}
 
 	// Trigger positions computed at DOMContentLoaded can be stale by the
 	// time images/fonts below finish loading and shift the page taller —
@@ -46,28 +60,43 @@ export function initScrollAnimate() {
 	// ScrollTrigger only dispatches toggleActions on an observed crossing,
 	// not retroactively once a later refresh() repositions an already-passed
 	// trigger.
-	window.addEventListener('load', () => window.ScrollTrigger.refresh());
+	window.addEventListener('load', () => {
+		try {
+			window.ScrollTrigger.refresh();
+		} catch (error) {
+			console.error('[scroll-animate] ScrollTrigger.refresh failed:', error);
+		}
+	});
 
 	elements.forEach((el) => {
 		const delay = Number(el.dataset.animateDelay || 0) / 1000;
 
-		// .to(), not .fromTo() — the "from" state (opacity: 0, translated) is
-		// already set by base.css before first paint; setting it again here
-		// would apply it a second time via JS, after the element has already
-		// painted at its normal (visible) styles, which is the exact flash
-		// this whole CSS-first approach exists to avoid.
-		window.gsap.to(el, {
-			y: 0,
-			opacity: 1,
-			duration: 0.6,
-			delay,
-			ease: 'power2.out',
-			scrollTrigger: {
-				trigger: el,
-				start: 'top 85%',
-				toggleActions: 'play none none none',
-				once: true,
-			},
-		});
+		try {
+			// .to(), not .fromTo() — the "from" state (opacity: 0, translated) is
+			// already set by base.css before first paint; setting it again here
+			// would apply it a second time via JS, after the element has already
+			// painted at its normal (visible) styles, which is the exact flash
+			// this whole CSS-first approach exists to avoid.
+			window.gsap.to(el, {
+				y: 0,
+				opacity: 1,
+				duration: 0.6,
+				delay,
+				ease: 'power2.out',
+				scrollTrigger: {
+					trigger: el,
+					start: 'top 85%',
+					toggleActions: 'play none none none',
+					once: true,
+				},
+			});
+		} catch (error) {
+			// Same failure mode as the registerPlugin guard above, scoped to
+			// one element's own ScrollTrigger — one bad trigger shouldn't
+			// leave that element (or halt the rest of this loop) invisible.
+			console.error('[scroll-animate] gsap.to/ScrollTrigger failed for element:', el, error);
+			el.style.opacity = '1';
+			el.style.transform = 'none';
+		}
 	});
 }

@@ -18,25 +18,43 @@ export function initTitleBarRevealAnimate(titleSelector, triggerSelector) {
 	const title = document.querySelector(titleSelector);
 	if (!title || typeof window.gsap === 'undefined' || typeof window.ScrollTrigger === 'undefined') return;
 
-	window.gsap.registerPlugin(window.ScrollTrigger);
+	// .bar/.text both start at opacity: 0 in CSS (page-header.css) — this
+	// timeline is the only thing that ever brings them to opacity: 1. If
+	// GSAP/ScrollTrigger throws anywhere below (seen live: a mismatched
+	// gsap.min.js/ScrollTrigger.min.js pair served mid-deploy), the whole
+	// title stays invisible forever instead of just unanimated — reveal it
+	// plainly instead.
+	const revealPlainly = () => {
+		title.querySelectorAll('.bar, .text').forEach((el) => {
+			el.style.opacity = '1';
+			el.style.transform = 'none';
+		});
+	};
 
-	const tl = window.gsap.timeline({
-		defaults: { ease: 'power3.out' },
-		scrollTrigger: {
-			trigger: triggerSelector,
-			start: 'top center',
-			toggleActions: 'play none none none',
-			once: true,
-		},
-	});
+	try {
+		window.gsap.registerPlugin(window.ScrollTrigger);
 
-	tl.fromTo(`${titleSelector} .bar1`, { x: '-150%', opacity: 0 }, { x: 0, opacity: 1, duration: 0.8 }, 0)
-		.fromTo(`${titleSelector} .bar2`, { x: '150%', opacity: 0 }, { x: 0, opacity: 1, duration: 0.8 }, 0.3)
-		.fromTo(`${titleSelector} .bar3`, { x: '-150%', opacity: 0 }, { x: 0, opacity: 1, duration: 0.8 }, 0.6)
-		.to(`${titleSelector} .bar1`, { rotate: -3, duration: 0.4 }, '+=0.1')
-		.to(`${titleSelector} .bar2`, { rotate: 5, duration: 0.4 }, '-=0.3')
-		.to(`${titleSelector} .bar3`, { rotate: -6, duration: 0.4 }, '-=0.3')
-		.to(`${titleSelector} .text`, { opacity: 1, duration: 0.6, stagger: 0.2 }, '+=0.3');
+		const tl = window.gsap.timeline({
+			defaults: { ease: 'power3.out' },
+			scrollTrigger: {
+				trigger: triggerSelector,
+				start: 'top center',
+				toggleActions: 'play none none none',
+				once: true,
+			},
+		});
 
-	tl.timeScale(2);
+		tl.fromTo(`${titleSelector} .bar1`, { x: '-150%', opacity: 0 }, { x: 0, opacity: 1, duration: 0.8 }, 0)
+			.fromTo(`${titleSelector} .bar2`, { x: '150%', opacity: 0 }, { x: 0, opacity: 1, duration: 0.8 }, 0.3)
+			.fromTo(`${titleSelector} .bar3`, { x: '-150%', opacity: 0 }, { x: 0, opacity: 1, duration: 0.8 }, 0.6)
+			.to(`${titleSelector} .bar1`, { rotate: -3, duration: 0.4 }, '+=0.1')
+			.to(`${titleSelector} .bar2`, { rotate: 5, duration: 0.4 }, '-=0.3')
+			.to(`${titleSelector} .bar3`, { rotate: -6, duration: 0.4 }, '-=0.3')
+			.to(`${titleSelector} .text`, { opacity: 1, duration: 0.6, stagger: 0.2 }, '+=0.3');
+
+		tl.timeScale(2);
+	} catch (error) {
+		console.error('[title-bar-reveal-animate] GSAP/ScrollTrigger failed:', error);
+		revealPlainly();
+	}
 }

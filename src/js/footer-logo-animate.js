@@ -28,13 +28,25 @@ export function initFooterLogoAnimate() {
 		}
 		const animDuration = 1.6;
 		const gsapEase = 'power3.out';
-		if (window.gsap && typeof window.gsap.to === 'function') {
-			window.gsap.to(inner, { xPercent: -50, duration: animDuration, ease: gsapEase });
-		} else {
+		const cssFallback = () => {
 			inner.style.transition = `transform ${animDuration}s cubic-bezier(.22,.9,.32,1)`;
 			requestAnimationFrame(() => {
 				inner.style.transform = 'translateX(-50%)';
 			});
+		};
+		if (window.gsap && typeof window.gsap.to === 'function') {
+			try {
+				window.gsap.to(inner, { xPercent: -50, duration: animDuration, ease: gsapEase });
+			} catch (error) {
+				// Same GSAP-internal-throw failure mode as the other animation
+				// scripts here — fall back to the plain CSS-transition path
+				// this function already has, rather than leaving inner stuck
+				// untransformed (showing the wrong half of the wordmark).
+				console.error('[footer-logo-animate] gsap.to failed:', error);
+				cssFallback();
+			}
+		} else {
+			cssFallback();
 		}
 	}
 

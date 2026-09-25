@@ -187,17 +187,29 @@
 	    }
 	    const animDuration = 1.6;
 	    const gsapEase = 'power3.out';
-	    if (window.gsap && typeof window.gsap.to === 'function') {
-	      window.gsap.to(inner, {
-	        xPercent: -50,
-	        duration: animDuration,
-	        ease: gsapEase
-	      });
-	    } else {
+	    const cssFallback = () => {
 	      inner.style.transition = `transform ${animDuration}s cubic-bezier(.22,.9,.32,1)`;
 	      requestAnimationFrame(() => {
 	        inner.style.transform = 'translateX(-50%)';
 	      });
+	    };
+	    if (window.gsap && typeof window.gsap.to === 'function') {
+	      try {
+	        window.gsap.to(inner, {
+	          xPercent: -50,
+	          duration: animDuration,
+	          ease: gsapEase
+	        });
+	      } catch (error) {
+	        // Same GSAP-internal-throw failure mode as the other animation
+	        // scripts here — fall back to the plain CSS-transition path
+	        // this function already has, rather than leaving inner stuck
+	        // untransformed (showing the wrong half of the wordmark).
+	        console.error('[footer-logo-animate] gsap.to failed:', error);
+	        cssFallback();
+	      }
+	    } else {
+	      cssFallback();
 	    }
 	  }
 	  function triggerIfVisible(el) {
@@ -265,54 +277,72 @@
 	function initTitleBarRevealAnimate(titleSelector, triggerSelector) {
 	  const title = document.querySelector(titleSelector);
 	  if (!title || typeof window.gsap === 'undefined' || typeof window.ScrollTrigger === 'undefined') return;
-	  window.gsap.registerPlugin(window.ScrollTrigger);
-	  const tl = window.gsap.timeline({
-	    defaults: {
-	      ease: 'power3.out'
-	    },
-	    scrollTrigger: {
-	      trigger: triggerSelector,
-	      start: 'top center',
-	      toggleActions: 'play none none none',
-	      once: true
-	    }
-	  });
-	  tl.fromTo(`${titleSelector} .bar1`, {
-	    x: '-150%',
-	    opacity: 0
-	  }, {
-	    x: 0,
-	    opacity: 1,
-	    duration: 0.8
-	  }, 0).fromTo(`${titleSelector} .bar2`, {
-	    x: '150%',
-	    opacity: 0
-	  }, {
-	    x: 0,
-	    opacity: 1,
-	    duration: 0.8
-	  }, 0.3).fromTo(`${titleSelector} .bar3`, {
-	    x: '-150%',
-	    opacity: 0
-	  }, {
-	    x: 0,
-	    opacity: 1,
-	    duration: 0.8
-	  }, 0.6).to(`${titleSelector} .bar1`, {
-	    rotate: -3,
-	    duration: 0.4
-	  }, '+=0.1').to(`${titleSelector} .bar2`, {
-	    rotate: 5,
-	    duration: 0.4
-	  }, '-=0.3').to(`${titleSelector} .bar3`, {
-	    rotate: -6,
-	    duration: 0.4
-	  }, '-=0.3').to(`${titleSelector} .text`, {
-	    opacity: 1,
-	    duration: 0.6,
-	    stagger: 0.2
-	  }, '+=0.3');
-	  tl.timeScale(2);
+
+	  // .bar/.text both start at opacity: 0 in CSS (page-header.css) — this
+	  // timeline is the only thing that ever brings them to opacity: 1. If
+	  // GSAP/ScrollTrigger throws anywhere below (seen live: a mismatched
+	  // gsap.min.js/ScrollTrigger.min.js pair served mid-deploy), the whole
+	  // title stays invisible forever instead of just unanimated — reveal it
+	  // plainly instead.
+	  const revealPlainly = () => {
+	    title.querySelectorAll('.bar, .text').forEach(el => {
+	      el.style.opacity = '1';
+	      el.style.transform = 'none';
+	    });
+	  };
+	  try {
+	    window.gsap.registerPlugin(window.ScrollTrigger);
+	    const tl = window.gsap.timeline({
+	      defaults: {
+	        ease: 'power3.out'
+	      },
+	      scrollTrigger: {
+	        trigger: triggerSelector,
+	        start: 'top center',
+	        toggleActions: 'play none none none',
+	        once: true
+	      }
+	    });
+	    tl.fromTo(`${titleSelector} .bar1`, {
+	      x: '-150%',
+	      opacity: 0
+	    }, {
+	      x: 0,
+	      opacity: 1,
+	      duration: 0.8
+	    }, 0).fromTo(`${titleSelector} .bar2`, {
+	      x: '150%',
+	      opacity: 0
+	    }, {
+	      x: 0,
+	      opacity: 1,
+	      duration: 0.8
+	    }, 0.3).fromTo(`${titleSelector} .bar3`, {
+	      x: '-150%',
+	      opacity: 0
+	    }, {
+	      x: 0,
+	      opacity: 1,
+	      duration: 0.8
+	    }, 0.6).to(`${titleSelector} .bar1`, {
+	      rotate: -3,
+	      duration: 0.4
+	    }, '+=0.1').to(`${titleSelector} .bar2`, {
+	      rotate: 5,
+	      duration: 0.4
+	    }, '-=0.3').to(`${titleSelector} .bar3`, {
+	      rotate: -6,
+	      duration: 0.4
+	    }, '-=0.3').to(`${titleSelector} .text`, {
+	      opacity: 1,
+	      duration: 0.6,
+	      stagger: 0.2
+	    }, '+=0.3');
+	    tl.timeScale(2);
+	  } catch (error) {
+	    console.error('[title-bar-reveal-animate] GSAP/ScrollTrigger failed:', error);
+	    revealPlainly();
+	  }
 	}
 
 	/**
@@ -364,7 +394,21 @@
 	    });
 	    return;
 	  }
-	  window.gsap.registerPlugin(window.ScrollTrigger);
+	  try {
+	    window.gsap.registerPlugin(window.ScrollTrigger);
+	  } catch (error) {
+	    // registerPlugin/ScrollTrigger itself can throw when a mismatched
+	    // gsap.min.js/ScrollTrigger.min.js pair gets served mid-deploy,
+	    // before both files' cache-busted URLs settle to the same build.
+	    // When it does, nothing below can safely run, so reveal everything
+	    // immediately rather than leave it CSS-hidden forever.
+	    console.error('[scroll-animate] ScrollTrigger.registerPlugin failed:', error);
+	    elements.forEach(el => {
+	      el.style.opacity = '1';
+	      el.style.transform = 'none';
+	    });
+	    return;
+	  }
 
 	  // Trigger positions computed at DOMContentLoaded can be stale by the
 	  // time images/fonts below finish loading and shift the page taller —
@@ -373,28 +417,42 @@
 	  // ScrollTrigger only dispatches toggleActions on an observed crossing,
 	  // not retroactively once a later refresh() repositions an already-passed
 	  // trigger.
-	  window.addEventListener('load', () => window.ScrollTrigger.refresh());
+	  window.addEventListener('load', () => {
+	    try {
+	      window.ScrollTrigger.refresh();
+	    } catch (error) {
+	      console.error('[scroll-animate] ScrollTrigger.refresh failed:', error);
+	    }
+	  });
 	  elements.forEach(el => {
 	    const delay = Number(el.dataset.animateDelay || 0) / 1000;
-
-	    // .to(), not .fromTo() — the "from" state (opacity: 0, translated) is
-	    // already set by base.css before first paint; setting it again here
-	    // would apply it a second time via JS, after the element has already
-	    // painted at its normal (visible) styles, which is the exact flash
-	    // this whole CSS-first approach exists to avoid.
-	    window.gsap.to(el, {
-	      y: 0,
-	      opacity: 1,
-	      duration: 0.6,
-	      delay,
-	      ease: 'power2.out',
-	      scrollTrigger: {
-	        trigger: el,
-	        start: 'top 85%',
-	        toggleActions: 'play none none none',
-	        once: true
-	      }
-	    });
+	    try {
+	      // .to(), not .fromTo() — the "from" state (opacity: 0, translated) is
+	      // already set by base.css before first paint; setting it again here
+	      // would apply it a second time via JS, after the element has already
+	      // painted at its normal (visible) styles, which is the exact flash
+	      // this whole CSS-first approach exists to avoid.
+	      window.gsap.to(el, {
+	        y: 0,
+	        opacity: 1,
+	        duration: 0.6,
+	        delay,
+	        ease: 'power2.out',
+	        scrollTrigger: {
+	          trigger: el,
+	          start: 'top 85%',
+	          toggleActions: 'play none none none',
+	          once: true
+	        }
+	      });
+	    } catch (error) {
+	      // Same failure mode as the registerPlugin guard above, scoped to
+	      // one element's own ScrollTrigger — one bad trigger shouldn't
+	      // leave that element (or halt the rest of this loop) invisible.
+	      console.error('[scroll-animate] gsap.to/ScrollTrigger failed for element:', el, error);
+	      el.style.opacity = '1';
+	      el.style.transform = 'none';
+	    }
 	  });
 	}
 
@@ -519,20 +577,32 @@
 	  matchImageHeights();
 	}
 
+	// Each init ran unguarded in one synchronous block — a single throw (e.g. a
+	// third-party GSAP/ScrollTrigger internal error) killed every init after it
+	// in this list too, not just the one that failed. Isolating each call keeps
+	// one broken feature from taking the rest of the page's interactivity down
+	// with it.
+	function safeInit(fn, ...args) {
+	  try {
+	    fn(...args);
+	  } catch (error) {
+	    console.error(`[theme.js] ${fn.name || 'init'} failed:`, error);
+	  }
+	}
 	document.addEventListener('DOMContentLoaded', () => {
-	  initLenis();
-	  initNavToggle();
-	  initNavDropdowns();
-	  initDialogs();
-	  initLogoClipAnimate();
-	  initFooterLogoAnimate();
-	  initNavScrollBackground();
-	  initHomeIntroAnimate();
-	  initTitleBarRevealAnimate('.page-header__animated-title', '.page-header');
-	  initScrollAnimate();
-	  initFeatureOverlayParallax();
-	  initContentBuilderParallax();
-	  initContentBuilderImageHeights();
+	  safeInit(initLenis);
+	  safeInit(initNavToggle);
+	  safeInit(initNavDropdowns);
+	  safeInit(initDialogs);
+	  safeInit(initLogoClipAnimate);
+	  safeInit(initFooterLogoAnimate);
+	  safeInit(initNavScrollBackground);
+	  safeInit(initHomeIntroAnimate);
+	  safeInit(initTitleBarRevealAnimate, '.page-header__animated-title', '.page-header');
+	  safeInit(initScrollAnimate);
+	  safeInit(initFeatureOverlayParallax);
+	  safeInit(initContentBuilderParallax);
+	  safeInit(initContentBuilderImageHeights);
 	});
 
 })();

@@ -11,18 +11,31 @@ import { initLenis } from './lenis-init';
 import { initFeatureOverlayParallax } from './feature-overlay-parallax';
 import { initContentBuilderParallax, initContentBuilderImageHeights } from './content-builder';
 
+// Each init ran unguarded in one synchronous block — a single throw (e.g. a
+// third-party GSAP/ScrollTrigger internal error) killed every init after it
+// in this list too, not just the one that failed. Isolating each call keeps
+// one broken feature from taking the rest of the page's interactivity down
+// with it.
+function safeInit(fn, ...args) {
+	try {
+		fn(...args);
+	} catch (error) {
+		console.error(`[theme.js] ${fn.name || 'init'} failed:`, error);
+	}
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-	initLenis();
-	initNavToggle();
-	initNavDropdowns();
-	initDialogs();
-	initLogoClipAnimate();
-	initFooterLogoAnimate();
-	initNavScrollBackground();
-	initHomeIntroAnimate();
-	initTitleBarRevealAnimate('.page-header__animated-title', '.page-header');
-	initScrollAnimate();
-	initFeatureOverlayParallax();
-	initContentBuilderParallax();
-	initContentBuilderImageHeights();
+	safeInit(initLenis);
+	safeInit(initNavToggle);
+	safeInit(initNavDropdowns);
+	safeInit(initDialogs);
+	safeInit(initLogoClipAnimate);
+	safeInit(initFooterLogoAnimate);
+	safeInit(initNavScrollBackground);
+	safeInit(initHomeIntroAnimate);
+	safeInit(initTitleBarRevealAnimate, '.page-header__animated-title', '.page-header');
+	safeInit(initScrollAnimate);
+	safeInit(initFeatureOverlayParallax);
+	safeInit(initContentBuilderParallax);
+	safeInit(initContentBuilderImageHeights);
 });
