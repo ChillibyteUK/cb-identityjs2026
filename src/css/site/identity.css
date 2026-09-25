@@ -268,6 +268,7 @@
 
 .footer__logo-inner {
 	display: block;
+	width: 200%;
 	transform-origin: left center;
 	will-change: transform;
 }

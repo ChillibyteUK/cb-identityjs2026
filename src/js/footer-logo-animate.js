@@ -15,16 +15,13 @@ export function initFooterLogoAnimate() {
 	let triggered = false;
 
 	function prepareAndAnimate() {
-		clip.style.width = '100%';
-		inner.style.transformOrigin = 'left center';
-		inner.style.width = '200%';
-		inner.style.display = 'block';
-		inner.style.transform = 'translateX(0)';
-		// Height is CSS aspect-ratio (see src/css/site/identity.css), not
-		// JS-measured — a JS height lock is inherently racy against exactly
-		// when this function runs relative to first paint, and got the
-		// height wrong twice in a row for that reason. aspect-ratio is
-		// correct from the very first frame, before any JS runs at all.
+		// Resting state (clip 100%, inner 200%, untransformed) and height
+		// (aspect-ratio) are CSS defaults — see .footer__logo-clip and
+		// .footer__logo-inner in src/css/site/identity.css — correct from
+		// the very first paint, before this function ever runs. Setting
+		// them here too, on a delay gated behind IntersectionObserver, was
+		// the cause of a visible 100%->200% snap; this function now only
+		// ever changes `transform`.
 		if (prefersReduced) {
 			inner.style.transform = 'translateX(-50%)';
 			return;
@@ -72,14 +69,4 @@ export function initFooterLogoAnimate() {
 			observer.disconnect();
 		}
 	}
-
-	let resizeTimer = null;
-	window.addEventListener('resize', () => {
-		if (triggered) return;
-		clearTimeout(resizeTimer);
-		resizeTimer = setTimeout(() => {
-			clip.style.width = '100%';
-			inner.style.width = '200%';
-		}, 120);
-	});
 }
