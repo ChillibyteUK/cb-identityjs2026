@@ -665,6 +665,95 @@
 	font-weight: var(--fw-light);
 }
 
+/* --- src/blocks/contact-form.css --- */
+/*
+ * Contact Form — built from cb-contact-form (cb-contact-form.scss). Real
+ * values ported onto this project's tokens: border rgba(255,255,255,.4) →
+ * --col-border, title/content colour var(--col-white) → --col-text,
+ * title --fs-900/--fw-semi, content --fs-800. Gravity Forms styling
+ * overrides (.gform_wrapper input/textarea/label colours, hidden required
+ * legend, confirmation message colour) are ported too — harmless with no
+ * Gravity Forms installed (nothing in the page matches these selectors
+ * until it is), and already correct for when it's deployed to an
+ * environment that has it.
+ */
+
+.contact-form {
+	background-color: var(--col-bg);
+	color: var(--col-text);
+}
+
+.contact-form > .id-container {
+	padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+	.contact-form > .id-container {
+		padding-inline: var(--space-5);
+	}
+}
+
+.contact-form__title {
+	margin-block: 6rem 4rem;
+	border-block: 1px solid var(--col-border);
+	color: var(--col-text);
+	font-size: var(--fs-900);
+	font-weight: var(--fw-semi);
+}
+
+.contact-form__row {
+	padding-block-end: 6rem;
+}
+
+@media (min-width: 768px) {
+	.contact-form__row {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--space-5);
+	}
+}
+
+.contact-form__content {
+	margin-bottom: var(--space-4);
+	color: var(--col-text);
+	font-size: var(--fs-800);
+	line-height: 1.5;
+}
+
+@media (min-width: 768px) {
+	.contact-form__content {
+		margin-bottom: 0;
+	}
+}
+
+/* Real source hides this legend/asterisk pairing outright rather than
+   relying only on the enhancement script's own querySelectorAll pass. */
+.contact-form p.gform_required_legend,
+.contact-form label .gform_required,
+.contact-form .gform_wrapper.gravity-theme .gfield_required {
+	display: none !important;
+}
+
+.contact-form .gform-field-label.gform-field-label--type-inline.gfield_consent_label,
+.contact-form .gfield_label {
+	color: var(--col-text);
+	font-weight: var(--fw-light) !important;
+}
+
+.contact-form .ginput_container input[type="text"],
+.contact-form .ginput_container input[type="email"],
+.contact-form .ginput_container textarea {
+	background-color: var(--col-border);
+	color: var(--col-text);
+	border: none;
+	border-radius: 0;
+}
+
+.contact-form .gform_confirmation_message {
+	color: var(--col-accent);
+	font-size: var(--fs-500);
+}
+
 /* --- src/blocks/content-builder.css --- */
 /*
  * Content Builder — see identity-global-block-spec.md and
