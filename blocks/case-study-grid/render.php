@@ -397,10 +397,14 @@ if ( 'auto' === $mode ) {
 			$rerank_by_service = $selected_services;
 		}
 
-		// $selected_themes only has an effect on a case study page (see
-		// the block's own editor help text) — off one, it's ignored
-		// entirely, same as before this change.
-		if ( $is_case_study_page && $selected_themes ) {
+		// Theme is a manually-picked taxonomy filter on the block instance
+		// itself, same as Services above — it should narrow the grid on
+		// ANY page this block is placed on, not just a case_study CPT
+		// page. (The is_singular('case_study') gate that used to live here
+		// only makes sense for the separate auto-derive-by-current-post's-
+		// own-terms logic above, which by definition needs a case study to
+		// derive terms FROM — that logic is untouched.)
+		if ( $selected_themes ) {
 			$tax_query[] = array(
 				'taxonomy' => 'theme',
 				'field'    => 'term_id',

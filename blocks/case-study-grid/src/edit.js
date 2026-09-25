@@ -140,7 +140,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						<label className="cb-identityjs2026-editor-field__label">{ __( 'Themes', 'cb-identityjs2026' ) }</label>
 						<p className="cb-identityjs2026-editor-field__help">
 							{ __(
-								'Only has an effect on a case study page. Cards are matched by the current case study’s own service (same as production’s Related Work) — picking a theme here just additionally narrows that match, it doesn’t replace it. On any other page, this field is ignored entirely.',
+								'Filters the grid by theme on any page this block is placed on (combined with Services above, if any are picked). On a case study page with no Services picked, it instead just narrows the auto-matched related work by theme — it doesn’t replace that auto-match by service.',
 								'cb-identityjs2026'
 							) }
 						</p>
