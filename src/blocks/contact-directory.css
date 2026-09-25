@@ -28,6 +28,7 @@
 
 .contact-directory {
 	color: var(--col-text);
+	padding-block-start: 3rem;
 }
 
 .contact-directory > .id-container {
@@ -93,12 +94,25 @@
 	margin-bottom: 1rem;
 }
 
+/*
+ * Real source: each sub-address is its own col-md-6 inside the office's
+ * addresses column — confirmed against identityglobal.com/contact/'s live
+ * markup ("UK"'s 4 addresses render 2-up), not a single stacked list.
+ */
 .contact-directory__address-row {
 	margin-bottom: 1rem;
 }
 
-.contact-directory__address-row:last-child {
-	margin-bottom: 0;
+@media (min-width: 768px) {
+	.contact-directory__addresses {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--space-4);
+	}
+
+	.contact-directory__address-row {
+		margin-bottom: 0;
+	}
 }
 
 .contact-directory__email,
