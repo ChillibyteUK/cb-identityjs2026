@@ -4466,13 +4466,27 @@ select {
 	background-color: var(--col-overlay-colour);
 }
 
+/*
+ * Same layout as Section Title (.section-title/.section-title__text) —
+ * border-block, not just a bottom rule, and the text's own padding-block/
+ * font-size/text-transform instead of centring everything on the outer
+ * wrapper. Colour stays --col-accent-alt (not Section Title's default
+ * --col-accent) — confirmed live on id.local/about/culture/ that JOIN US
+ * renders #adf448, this project's own --col-accent-alt.
+ */
 .page-header-alt__careers-pretitle {
 	border-bottom: 1px solid var(--col-border);
-	padding-block: 0.5rem;
 	color: var(--col-accent-alt);
-	font-size: var(--fs-300);
+}
+
+.page-header-alt__careers-pretitle-text {
+	margin: 0;
+	padding-block: 1rem 0.75rem;
+	font-family: var(--ff-body);
+	font-size: var(--fs-section-title);
 	font-weight: var(--fw-regular);
 	line-height: 1;
+	text-transform: uppercase;
 }
 
 .page-header-alt__careers-row {

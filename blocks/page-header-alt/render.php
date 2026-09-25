@@ -68,7 +68,9 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'page-head
 		<div class="page-header-alt__careers-overlay"></div>
 		<?php if ( $careers_pretitle ) : ?>
 			<div class="page-header-alt__careers-pretitle">
-				<div class="id-container"><?php echo esc_html( $careers_pretitle ); ?></div>
+				<div class="id-container">
+					<p class="page-header-alt__careers-pretitle-text"><?php echo esc_html( $careers_pretitle ); ?></p>
+				</div>
 			</div>
 		<?php endif; ?>
 		<div class="id-container">

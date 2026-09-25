@@ -49,25 +49,22 @@ if ( $bg_slug ) {
 	}
 }
 
-// Divider-line colour — ported exactly from cb-content-grid-v2.php
-// (cb-identitygroup2026/blocks/cb-content-grid-v2.php:32-43), confirmed via
-// its three real, distinct branches: (1) no backgroundColor attribute at
-// all → dark-lines (the plain default); (2) a backgroundColor slug ending
-// in a digit → light-lines if that digit is >= 600, else dark-lines; (3) a
-// backgroundColor slug set but with NO digit at all (e.g. "primary-black")
-// → light-lines. Confirmed live: identityglobal.com/work/arm-everywhere/'s
-// "Approach" section uses has-primary-black-background-color and renders
-// light lines — case (3), previously collapsed into case (1)'s dark-lines
-// here by mistake (both hit bg_digit=0), which is what made lines
-// invisible on a dark background with no colour explicitly set.
-$line_class = 'content-builder--dark-lines';
-if ( $bg_slug ) {
-	if ( $bg_digit ) {
-		$line_class = ( $bg_digit >= 600 ) ? 'content-builder--light-lines' : 'content-builder--dark-lines';
-	} else {
-		$line_class = 'content-builder--light-lines';
-	}
-}
+// Divider-line colour — ported from cb-content-grid-v2.php
+// (cb-identitygroup2026/blocks/cb-content-grid-v2.php:32-43), then corrected
+// to match the SAME dark-by-default reasoning the body-text contrast rule
+// below already uses (both read the same bg_digit): a digit under 600 means
+// a genuinely light background, needing dark-lines; everything else — a
+// digit of 600+, a named dark colour with no digit at all (e.g.
+// "primary-black" — confirmed live: identityglobal.com/work/arm-everywhere/'s
+// "Approach" section), OR no backgroundColor attribute at all — means a
+// dark surface (this brand's own default, inheriting the page's own dark
+// background), needing light-lines. The literal ported version only
+// special-cased the "primary-black" branch and still defaulted "no
+// backgroundColor at all" to dark-lines, so an h2 module's border-block
+// went invisible (rgba(13,13,12,.25), near-black) on the Culture page's
+// plain default (no backgroundColor set) — same underlying bug as the
+// primary-black case, just never extended here.
+$line_class = ( $bg_digit && $bg_digit < 600 ) ? 'content-builder--dark-lines' : 'content-builder--light-lines';
 $section_classes[] = $line_class;
 
 // Body-text contrast — automatic, not a manual control (per explicit
