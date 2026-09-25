@@ -255,6 +255,23 @@
 	background-color: var(--col-overlay-colour);
 }
 
+/*
+ * Reproduces cb-policies-page's own secondary_background field — a photo
+ * behind just this panel, layered BEHIND the tint above (z-index -2 vs
+ * its -1), not instead of it. A separate ::after rather than folding the
+ * image into ::before's own background shorthand: it keeps the existing
+ * --col-overlay-colour tint untouched for every instance that doesn't use
+ * this (the far more common case), and only stacks a second layer for
+ * the ones that do.
+ */
+.page-header__panel--has-background::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -2;
+	background: var(--panel-bg-url, none) center / cover no-repeat fixed;
+}
+
 /* No font-size here either — see __intro above for why. */
 .page-header__panel-text {
 	margin-block-end: 0.5em;

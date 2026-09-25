@@ -17,7 +17,8 @@
 		"quote": { "type": "string", "default": "" },
 		"quoteAuthor": { "type": "string", "default": "" },
 		"quoteCompany": { "type": "string", "default": "" },
-		"backgroundId": { "type": "number", "default": 0 }
+		"backgroundId": { "type": "number", "default": 0 },
+		"backgroundScope": { "type": "string", "default": "full" }
 	},
 	"supports": {
 		"anchor": true,

@@ -60,13 +60,24 @@ $quote                = $attributes['quote'] ?? '';
 $quote_author         = $attributes['quoteAuthor'] ?? '';
 $quote_company        = $attributes['quoteCompany'] ?? '';
 $background_id        = absint( $attributes['backgroundId'] ?? 0 );
+$background_scope     = $attributes['backgroundScope'] ?? 'full';
 
 $background_url = $background_id ? wp_get_attachment_image_url( $background_id, 'full' ) : '';
+
+// 'secondary' reproduces cb-policies-page's own secondary_background field,
+// which only ever sat behind its second band — never the title — unlike
+// every other real Page Header sibling this block was built from, where a
+// background always covers the whole thing. Existing saved instances have
+// no backgroundScope attribute at all and fall through to 'full' here,
+// keeping their current whole-block rendering exactly as before this was
+// added.
+$background_is_full      = $background_url && 'full' === $background_scope;
+$background_is_secondary = $background_url && 'secondary' === $background_scope;
 
 $instance_id = wp_unique_id( 'page-header-' );
 
 $root_classes = array( 'page-header' );
-if ( $background_url ) {
+if ( $background_is_full ) {
 	$root_classes[] = 'page-header--has-background';
 }
 if ( $animated_title ) {
@@ -76,12 +87,24 @@ if ( 'service' === $header_variant ) {
 	$root_classes[] = 'page-header--service';
 }
 
+$panel_classes = array( 'page-header__panel' );
+if ( $background_is_secondary ) {
+	$panel_classes[] = 'page-header__panel--has-background';
+}
+$panel_class_attr = esc_attr( implode( ' ', $panel_classes ) );
+
 $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $root_classes ) ) );
 ?>
-<?php if ( $background_url ) : ?>
+<?php if ( $background_is_full ) : ?>
 	<style>
 		#<?php echo esc_attr( $instance_id ); ?> {
 			--bg-url: url('<?php echo esc_url( $background_url ); ?>');
+		}
+	</style>
+<?php elseif ( $background_is_secondary ) : ?>
+	<style>
+		#<?php echo esc_attr( $instance_id ); ?> .page-header__panel {
+			--panel-bg-url: url('<?php echo esc_url( $background_url ); ?>');
 		}
 	</style>
 <?php endif; ?>
@@ -117,13 +140,13 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( '
 		</div>
 	</div>
 	<?php if ( 'text' === $secondary_panel_type && $secondary_text ) : ?>
-		<div class="page-header__panel">
+		<div class="<?php echo $panel_class_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- already esc_attr()'d above. ?>">
 			<div class="id-container">
 				<div class="page-header__panel-text <?php echo esc_attr( $secondary_text_font_size ); ?>"><?php echo wp_kses_post( $secondary_text ); ?></div>
 			</div>
 		</div>
 	<?php elseif ( 'quote' === $secondary_panel_type && $quote ) : ?>
-		<div class="page-header__panel">
+		<div class="<?php echo $panel_class_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- already esc_attr()'d above. ?>">
 			<div class="id-container">
 				<blockquote class="page-header__quote"><?php echo wp_kses_post( nl2br( esc_html( $quote ) ) ); ?></blockquote>
 				<?php if ( $quote_author ) : ?>

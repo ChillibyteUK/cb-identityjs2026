@@ -52,6 +52,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 		quoteAuthor,
 		quoteCompany,
 		backgroundId,
+		backgroundScope,
 	} = attributes;
 	const blockProps = useBlockProps( { className: 'container cb-identityjs2026-editor-block' } );
 	const backgroundUrl = useBackgroundUrl( backgroundId );
@@ -138,6 +139,22 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 				</MediaUploadCheck>
 				<p className="cb-identityjs2026-editor-field__help">{ __( 'Full-bleed photo behind the whole header, with a dark tint over it.', 'cb-identityjs2026' ) }</p>
 			</div>
+
+			{ backgroundUrl && (
+				<SelectControl
+					label={ __( 'Background Scope', 'cb-identityjs2026' ) }
+					value={ backgroundScope }
+					options={ [
+						{ label: 'Full Header', value: 'full' },
+						{ label: 'Secondary Panel Only', value: 'secondary' },
+					] }
+					help={ __(
+						"Full Header matches About/Region/Service Page Header. Secondary Panel Only reproduces cb-policies-page's own secondary_background field, which only ever sat behind its second band, never the title — needs a Secondary Panel below to be visible.",
+						'cb-identityjs2026'
+					) }
+					onChange={ ( value ) => setAttributes( { backgroundScope: value } ) }
+				/>
+			) }
 
 			<SectionHeading>{ __( 'Secondary Panel', 'cb-identityjs2026' ) }</SectionHeading>
 
