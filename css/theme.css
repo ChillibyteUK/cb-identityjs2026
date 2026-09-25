@@ -666,6 +666,95 @@ ol {
 	}
 }
 
+/*
+ * Text Page — a plain WYSIWYG page template (no Content Builder blocks),
+ * ported from cb-identity2025/cb-identitygroup2026's own "Text Page"
+ * template (page-templates/text-page.php + _text-page.scss), still the
+ * real template Privacy Policy/Modern Slavery pages use on both legacy
+ * sites. Faithfully reproduces its title/content width relationship: the
+ * real source's title bar occupies the left 9 of 12 (Bootstrap) columns
+ * (75%, flush left) at md+, while its content column is ALSO 9 of 12
+ * columns wide but offset by an empty 3-column (25%) spacer — the two are
+ * NOT left-aligned with each other in the real source (confirmed directly
+ * against its actual row/col-md-9 vs row/col-md-3+col-md-9 markup, not a
+ * guess). Padding-inline values match its own literal px-4/px-md-5
+ * Bootstrap utility classes exactly (--space-4/--space-5), same
+ * conversion already established in detail-list.css.
+ *
+ * Legacy hardcoded colours (--col-primary-black, --col-white, --col-
+ * green-400, rgba(255,255,255,.4)) map onto this project's own
+ * --col-bg/--col-text/--col-accent/--col-border tokens — real values,
+ * already used identically for the same legacy colours elsewhere in this
+ * theme (see file-list.css).
+ */
+
+.text-page {
+	background-color: var(--col-bg);
+	color: var(--col-text);
+	border-bottom: 1px solid var(--col-border);
+}
+
+.text-page__title {
+	border-bottom: 1px solid var(--col-border);
+	padding-block: 1rem;
+}
+
+.text-page__title > .id-container,
+.text-page > .id-container {
+	padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+	.text-page__title > .id-container,
+	.text-page > .id-container {
+		padding-inline: var(--space-5);
+	}
+}
+
+.text-page__title-heading {
+	margin: 0;
+	color: inherit;
+	font-size: var(--fs-850);
+	font-weight: var(--fw-light);
+}
+
+.text-page__content {
+	padding-block-end: 3rem;
+}
+
+@media (min-width: 768px) {
+	.text-page__title-heading {
+		width: 75%;
+	}
+
+	.text-page__content {
+		width: 75%;
+		margin-inline-start: 25%;
+	}
+}
+
+.text-page__content > :first-child {
+	color: var(--col-accent);
+	font-size: var(--fs-500);
+	border-bottom: 1px solid var(--col-border);
+	margin-bottom: 2rem;
+	padding-block: 1rem 0.5rem;
+}
+
+.text-page__content h2 {
+	border-block: 1px solid var(--col-border);
+	color: var(--col-accent);
+	font-size: var(--fs-600);
+	font-weight: var(--fw-semi);
+	margin-block: 2rem;
+	padding-block: 0.25rem;
+}
+
+.text-page__content table,
+.text-page__content .wp-block-table table {
+	color: var(--col-text);
+}
+
 /* Minimal, deliberately unopinionated form base — expected to be overridden per project. */
 
 input,
