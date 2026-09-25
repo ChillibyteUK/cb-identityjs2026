@@ -1593,6 +1593,67 @@
 	text-wrap: balance;
 }
 
+/* --- src/blocks/file-list.css --- */
+/*
+ * File List — see identity-global-block-spec.md. Built from cb-file-block
+ * (cb-file-block.scss), confirmed by the user as "effectively right with
+ * respect to styling" as-is — ported near-verbatim onto the new semantic
+ * classes/tokens, dropping only the `section_title` pretitle band (now a
+ * separate Section Title block per the spec's migration note) and its
+ * distinct border/margin, which belonged to that pretitle, not the list
+ * itself.
+ *
+ * Real source values: color: var(--col-white) (this project's --col-text
+ * on identity context — #ffffff, exact match), item hover background
+ * var(--col-neutral-1100), list bottom padding 6rem, item padding-block
+ * 0.75rem .5rem, item font-size --fs-700. Per the user's explicit
+ * direction: no border between items (real source's `&:not(:last-child)`
+ * border-bottom dropped), and title is --fs-700/--fw-regular (real
+ * source's own rung), not the spec's --fs-body/--fw-bold simplification.
+ */
+
+.file-list {
+	background-color: var(--col-bg);
+	color: var(--col-text);
+	padding-block-end: 6rem;
+}
+
+.file-list__item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--space-4);
+	width: min(100%, 1920px);
+	margin-inline: auto;
+	padding-block: 0.75rem 0.5rem;
+	padding-inline: var(--space-4);
+	color: inherit;
+	text-decoration: none;
+	transition: background-color 0.3s ease;
+}
+
+@media (min-width: 768px) {
+	.file-list__item {
+		padding-inline: var(--space-5);
+	}
+}
+
+.file-list__item:hover,
+.file-list__item:focus-visible {
+	background-color: var(--col-neutral-1100);
+}
+
+.file-list__item-title {
+	font-size: var(--fs-700);
+	font-weight: var(--fw-regular);
+	color: var(--col-text);
+}
+
+.file-list__item-icon {
+	flex-shrink: 0;
+	color: var(--col-accent);
+}
+
 /* --- src/blocks/home-intro.css --- */
 /*
  * Home Intro — see identity-global-block-spec.md. Confirmed against the
