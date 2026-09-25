@@ -39,6 +39,28 @@
 	color: var(--col-accent);
 }
 
+/*
+ * Reproduces cb-contact-page's own "LOCATIONS" banner exactly: a real
+ * background-image (_cb_contact_page.scss: background-image/-size/
+ * -position/-attachment: fixed, plus a background-color fallback — no
+ * separate dark tint overlay, unlike Page Header's own background
+ * treatment). fixed is dropped on iOS the same way the real source does
+ * it, via the same @supports check used elsewhere in this theme.
+ */
+.section-title--has-background {
+	/* One shorthand, not a separate background-color declaration before it —
+	   the `background` shorthand resets every sub-property it doesn't
+	   mention (including colour) to its initial value, so a preceding
+	   background-color would get silently wiped out by this line. */
+	background: var(--col-bg) var(--bg-url, none) center / cover no-repeat fixed;
+}
+
+@supports (-webkit-touch-callout: none) {
+	.section-title--has-background {
+		background-attachment: scroll;
+	}
+}
+
 .section-title > .id-container {
 	padding-inline: var(--space-4);
 }

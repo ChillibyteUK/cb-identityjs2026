@@ -1,20 +1,20 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "cb-identityjs2026/section-title",
-	"title": "CB Section Title",
+	"name": "cb-identityjs2026/contact-directory",
+	"title": "CB Contact Directory",
 	"category": "cb-identityjs2026",
-	"icon": "heading",
+	"icon": "id-alt",
 	"attributes": {
-		"title": { "type": "string", "default": "" },
-		"backgroundId": { "type": "number", "default": 0 }
+		"mode": { "type": "string", "default": "emails" },
+		"groups": { "type": "array", "default": [] }
 	},
 	"supports": {
 		"anchor": true,
 		"className": true,
 		"align": true,
 		"color": {
-			"text": true,
+			"text": false,
 			"background": true,
 			"gradient": false,
 			"__experimentalSkipSerialization": true

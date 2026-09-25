@@ -121,7 +121,7 @@ function toSafeRichTextHtml( value, multiline ) {
  * @param {string}   props.label    Field group label.
  * @param {Object[]} props.value    Current rows.
  * @param {Function} props.onChange ( rows ) => void
- * @param {Object[]} props.fields   [ { name, label, type: 'text'|'number'|'textarea'|'richtext'|'image'|'file'|'link'|'radio', help, mimeTypes, linkTarget, options, multiline } ]
+ * @param {Object[]} props.fields   [ { name, label, type: 'text'|'number'|'textarea'|'richtext'|'image'|'file'|'link'|'radio'|'repeater', help, mimeTypes, linkTarget, options, multiline, subFields, subEmptyRow, subLayout } ]
  *                                  `linkTarget` (link fields only) adds an "open in new tab" toggle,
  *                                  storing `{name}Target` on the row — same opt-in shape as the
  *                                  top-level `link` field type's `link_target` option. `options`
@@ -129,7 +129,13 @@ function toSafeRichTextHtml( value, multiline ) {
  *                                  top-level `select`/`radio` field types' options shape. `multiline`
  *                                  (richtext fields only) turns on real multi-paragraph editing
  *                                  (RichText's `multiline="p"`); leave it unset for a field that's
- *                                  just single-line-with-line-breaks, e.g. a title.
+ *                                  just single-line-with-line-breaks, e.g. a title. `repeater` fields
+ *                                  nest a second RepeaterField instance inside each row — `subFields`
+ *                                  is that nested instance's own `fields` array (same shape,
+ *                                  recursively), `subEmptyRow` its `emptyRow`, and `subLayout` its
+ *                                  `layout` (defaults to 'row' like the top level). The nested value
+ *                                  lives at `row[name]` as its own array of rows, same shape as this
+ *                                  component's own `value`/`onChange` contract at any depth.
  * @param {Object}   props.emptyRow Shape of a freshly-added row, e.g. { stat: '', title: '' }.
  * @param {string}   [props.layout] 'row' (default) or 'column'.
  */
@@ -240,6 +246,21 @@ export default function RepeaterField( { label, value, onChange, fields, emptyRo
 						if ( 'image' === field.type ) {
 							return (
 								<RepeaterImageField key={ field.name } field={ field } row={ row } index={ index } updateRow={ updateRow } />
+							);
+						}
+
+						if ( 'repeater' === field.type ) {
+							return (
+								<div className="cb-identityjs2026-repeater-field__nested" key={ field.name }>
+									<RepeaterField
+										label={ field.label }
+										layout={ field.subLayout || 'row' }
+										value={ row[ field.name ] || [] }
+										onChange={ ( value ) => updateRow( index, { [ field.name ]: value } ) }
+										fields={ field.subFields || [] }
+										emptyRow={ field.subEmptyRow || {} }
+									/>
+								</div>
 							);
 						}
 

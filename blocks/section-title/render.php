@@ -44,9 +44,28 @@ if ( $bg_slug ) {
 	$root_classes[] = 'has-' . $bg_slug . '-background-color';
 }
 
+// Additive: reproduces cb-contact-page's own "LOCATIONS" banner (a photo
+// behind this same bordered label) — existing instances have no
+// backgroundId at all and skip this entirely, rendering exactly as
+// before. See this block's own edit.js docblock.
+$background_id  = absint( $attributes['backgroundId'] ?? 0 );
+$background_url = $background_id ? wp_get_attachment_image_url( $background_id, 'full' ) : '';
+if ( $background_url ) {
+	$root_classes[] = 'section-title--has-background';
+}
+
+$instance_id = wp_unique_id( 'section-title-' );
+
 $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $root_classes ) ) );
 ?>
-<section <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?>>
+<?php if ( $background_url ) : ?>
+	<style>
+		#<?php echo esc_attr( $instance_id ); ?> {
+			--bg-url: url('<?php echo esc_url( $background_url ); ?>');
+		}
+	</style>
+<?php endif; ?>
+<section id="<?php echo esc_attr( $instance_id ); ?>" <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?>>
 	<div class="id-container">
 		<h2 class="section-title__text"><?php echo esc_html( $title ); ?></h2>
 	</div>

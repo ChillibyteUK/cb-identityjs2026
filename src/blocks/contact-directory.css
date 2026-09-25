@@ -1,0 +1,81 @@
+/*
+ * Contact Directory — see identity-global-block-spec.md's Contact Directory
+ * entry and this block's own edit.js/render.php docblocks for the
+ * re-scoping vs the real cb-contact-page source. Real values ported onto
+ * this project's tokens: border/divider rgba(255,255,255,.4) → --col-border,
+ * link colour var(--col-green-400) → --col-accent, link font-size --fs-300,
+ * link/heading font-weight var(--fw-light), locations heading --fs-700 —
+ * all confirmed identical between both real sources
+ * (cb-contact-page.scss / _cb_contact_page.scss).
+ *
+ * Background colour itself is NOT set here at all — it's Gutenberg's own
+ * background colour support (block.json's supports.color, skip-
+ * serialization — see render.php's own comment), always applied via a
+ * has-*-background-color utility class, defaulting to Primary Black
+ * (identity's #0d0d0c, matching --col-bg) when an editor hasn't picked
+ * one. That sidesteps needing a competing plain CSS background rule here
+ * at all.
+ */
+
+.contact-directory {
+	color: var(--col-text);
+}
+
+.contact-directory > .id-container {
+	padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+	.contact-directory > .id-container {
+		padding-inline: var(--space-5);
+	}
+}
+
+.contact-directory__group {
+	border-top: 1px solid var(--col-border);
+	padding-block: 0.5rem 3rem;
+}
+
+.contact-directory__group-name {
+	margin: 0 0 1rem;
+	font-weight: var(--fw-light);
+}
+
+.contact-directory--locations .contact-directory__group-name {
+	font-size: var(--fs-700);
+}
+
+.contact-directory__email-row,
+.contact-directory__address-row {
+	margin-bottom: 1rem;
+}
+
+.contact-directory__email-row:last-child,
+.contact-directory__address-row:last-child {
+	margin-bottom: 0;
+}
+
+.contact-directory__email,
+.contact-directory__phone {
+	display: block;
+	color: var(--col-accent);
+	font-size: var(--fs-300);
+	font-weight: var(--fw-light);
+	text-decoration: none;
+}
+
+.contact-directory__email:hover,
+.contact-directory__phone:hover {
+	text-decoration: underline;
+}
+
+.contact-directory__address-title {
+	display: block;
+	margin-bottom: 0.5rem;
+	font-weight: var(--fw-semibold);
+}
+
+.contact-directory__address {
+	margin-bottom: 0.5rem;
+	font-weight: var(--fw-light);
+}
