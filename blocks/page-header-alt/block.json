@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cb-identityjs2026/page-header-alt",
+	"title": "CB Page Header Alt",
+	"category": "cb-identityjs2026",
+	"icon": "cover-image",
+	"attributes": {
+		"title": { "type": "string", "default": "" },
+		"introText": { "type": "string", "default": "" },
+		"backgroundId": { "type": "number", "default": 0 },
+		"secondaryText": { "type": "string", "default": "" },
+		"careersPretitle": { "type": "string", "default": "JOIN US" },
+		"careersTitle": { "type": "string", "default": "Careers" },
+		"careersContent": { "type": "string", "default": "" },
+		"careersLinkUrl": { "type": "string", "default": "" },
+		"careersLinkText": { "type": "string", "default": "" },
+		"careersLinkTarget": { "type": "string", "default": "_self" }
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"align": true
+	},
+	"editorScript": "file:./build/index.js",
+	"render": "file:./render.php"
+}

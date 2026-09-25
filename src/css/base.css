@@ -181,3 +181,19 @@ ol {
 .cb-lede {
 	font-size: var(--fs-page-header-lede);
 }
+
+/*
+ * "Heading" RichText format (see blocks/_editor-formats/src/index.js) —
+ * lets an editor mark a run of text inside a flat multiline="p" RichText
+ * field (e.g. Page Header's Secondary Text) as a heading, since Gutenberg's
+ * real heading levels only exist as their own block type. `display: block`
+ * makes the marked <strong> read as its own line/paragraph without
+ * requiring the field itself to support multiple block types.
+ */
+.cb-heading {
+	display: block;
+	margin-block: 1em 0.5em;
+	font-family: var(--ff-heading);
+	font-size: var(--fs-h3, 1.5em);
+	font-weight: var(--fw-heading, 600);
+}
