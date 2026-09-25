@@ -693,6 +693,17 @@
 	padding-top: var(--space-4);
 }
 
+/*
+ * A row's own top padding is only meant to space it from whatever's above
+ * the whole block (page header, previous block, etc). Between two rows in
+ * the SAME block, that spacing is already provided by the previous row's
+ * own bottom padding plus the fixed inter-row margin above — stacking this
+ * row's top padding on top of that too was doubling the visible gap.
+ */
+.content-builder__row + .content-builder__row.content-builder__row--pt {
+	padding-top: 0;
+}
+
 .content-builder__row--pb {
 	padding-bottom: var(--space-5);
 }
