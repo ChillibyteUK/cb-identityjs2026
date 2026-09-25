@@ -95,21 +95,22 @@
 		$field.find( '.cb-identityjs2026-gallery-field__select' ).on( 'click', function ( event ) {
 			event.preventDefault();
 
-			if ( ! frame ) {
-				frame = wp.media( {
-					title: 'Select Images',
-					button: { text: 'Use these images' },
-					multiple: true,
-				} );
+			var ids = ( $input.val() || '' ).split( ',' ).filter( Boolean );
+			var shortcode = ids.length ? '[gallery ids="' + ids.join( ',' ) + '"]' : '[gallery]';
 
-				frame.on( 'select', function () {
-					var attachments = frame.state().get( 'selection' ).toJSON();
-					$input.val( attachments.map( function ( attachment ) {
-						return attachment.id;
-					} ).join( ',' ) );
-					renderPreview( attachments );
-				} );
-			}
+			// wp.media.gallery.edit() opens core's native "Edit Gallery" frame —
+			// the same UI as double-clicking a Gallery block: hover-to-remove
+			// on each image, drag reorder, and an "Add to Gallery" panel.
+			frame = wp.media.gallery.edit( shortcode );
+
+			frame.state( 'gallery-edit' ).on( 'update', function ( selection ) {
+				var attachments = selection.toJSON();
+				$input.val( attachments.map( function ( attachment ) {
+					return attachment.id;
+				} ).join( ',' ) );
+				renderPreview( attachments );
+				frame.close();
+			} );
 
 			frame.open();
 		} );

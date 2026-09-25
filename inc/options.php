@@ -568,7 +568,7 @@ function cb_identityjs2026_render_gallery_field( $args ) {
 			<p class="description" style="margin-top: -4px;"><?php esc_html_e( 'Drag thumbnails to reorder.', 'cb-identityjs2026' ); ?></p>
 		<?php endif; ?>
 		<p>
-			<button type="button" class="button cb-identityjs2026-gallery-field__select">Select Images</button>
+			<button type="button" class="button cb-identityjs2026-gallery-field__select">Edit Gallery</button>
 			<button type="button" class="button cb-identityjs2026-gallery-field__clear">Clear</button>
 		</p>
 	</div>
