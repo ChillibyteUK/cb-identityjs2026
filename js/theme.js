@@ -160,6 +160,27 @@
 	}
 
 	/**
+	 * Records a caught init/animation error to `window.__cbInitErrors` for
+	 * inspection in devtools. console.error alone isn't enough on this theme —
+	 * terser.config.json has drop_console: true, so every console.error call
+	 * is stripped from the js/theme.min.js that actually ships. This survives
+	 * that stripping since it's plain property access, not a console call.
+	 *
+	 * @param {string} source  Which script/function caught the error, e.g.
+	 *                         '[scroll-animate] gsap.to'.
+	 * @param {Error}  error
+	 */
+	function recordInitError(source, error) {
+	  window.__cbInitErrors = window.__cbInitErrors || [];
+	  window.__cbInitErrors.push({
+	    source,
+	    message: error?.message,
+	    stack: error?.stack
+	  });
+	  console.error(source, error);
+	}
+
+	/**
 	 * Footer logo reveal — ported from cb-identity2025/footer.php's inline
 	 * script. Self-guarding: no-ops without #footer-logo-clip in the DOM, safe
 	 * to always run regardless of which brand's footer is active. Uses GSAP
@@ -205,7 +226,7 @@
 	        // scripts here — fall back to the plain CSS-transition path
 	        // this function already has, rather than leaving inner stuck
 	        // untransformed (showing the wrong half of the wordmark).
-	        console.error('[footer-logo-animate] gsap.to failed:', error);
+	        recordInitError('[footer-logo-animate] gsap.to failed', error);
 	        cssFallback();
 	      }
 	    } else {
@@ -340,7 +361,7 @@
 	    }, '+=0.3');
 	    tl.timeScale(2);
 	  } catch (error) {
-	    console.error('[title-bar-reveal-animate] GSAP/ScrollTrigger failed:', error);
+	    recordInitError('[title-bar-reveal-animate] GSAP/ScrollTrigger failed', error);
 	    revealPlainly();
 	  }
 	}
@@ -402,7 +423,7 @@
 	    // before both files' cache-busted URLs settle to the same build.
 	    // When it does, nothing below can safely run, so reveal everything
 	    // immediately rather than leave it CSS-hidden forever.
-	    console.error('[scroll-animate] ScrollTrigger.registerPlugin failed:', error);
+	    recordInitError('[scroll-animate] ScrollTrigger.registerPlugin failed', error);
 	    elements.forEach(el => {
 	      el.style.opacity = '1';
 	      el.style.transform = 'none';
@@ -421,7 +442,7 @@
 	    try {
 	      window.ScrollTrigger.refresh();
 	    } catch (error) {
-	      console.error('[scroll-animate] ScrollTrigger.refresh failed:', error);
+	      recordInitError('[scroll-animate] ScrollTrigger.refresh failed', error);
 	    }
 	  });
 	  elements.forEach(el => {
@@ -449,7 +470,7 @@
 	      // Same failure mode as the registerPlugin guard above, scoped to
 	      // one element's own ScrollTrigger — one bad trigger shouldn't
 	      // leave that element (or halt the rest of this loop) invisible.
-	      console.error('[scroll-animate] gsap.to/ScrollTrigger failed for element:', el, error);
+	      recordInitError('[scroll-animate] gsap.to/ScrollTrigger failed for element', error);
 	      el.style.opacity = '1';
 	      el.style.transform = 'none';
 	    }
@@ -586,7 +607,7 @@
 	  try {
 	    fn(...args);
 	  } catch (error) {
-	    console.error(`[theme.js] ${fn.name || 'init'} failed:`, error);
+	    recordInitError(`[theme.js] ${fn.name || 'init'} failed`, error);
 	  }
 	}
 	document.addEventListener('DOMContentLoaded', () => {

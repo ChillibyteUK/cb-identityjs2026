@@ -14,6 +14,8 @@
  *                                 the title itself, matching both real
  *                                 sources' own trigger choice.
  */
+import { recordInitError } from './record-init-error';
+
 export function initTitleBarRevealAnimate(titleSelector, triggerSelector) {
 	const title = document.querySelector(titleSelector);
 	if (!title || typeof window.gsap === 'undefined' || typeof window.ScrollTrigger === 'undefined') return;
@@ -54,7 +56,7 @@ export function initTitleBarRevealAnimate(titleSelector, triggerSelector) {
 
 		tl.timeScale(2);
 	} catch (error) {
-		console.error('[title-bar-reveal-animate] GSAP/ScrollTrigger failed:', error);
+		recordInitError('[title-bar-reveal-animate] GSAP/ScrollTrigger failed', error);
 		revealPlainly();
 	}
 }

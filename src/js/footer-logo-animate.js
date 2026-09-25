@@ -5,6 +5,8 @@
  * (js/vendor/gsap.min.js) when present, a plain CSS-transition fallback
  * otherwise — same dual path as the real source.
  */
+import { recordInitError } from './record-init-error';
+
 export function initFooterLogoAnimate() {
 	const clip = document.getElementById('footer-logo-clip');
 	const inner = document.getElementById('footer-logo-inner');
@@ -42,7 +44,7 @@ export function initFooterLogoAnimate() {
 				// scripts here — fall back to the plain CSS-transition path
 				// this function already has, rather than leaving inner stuck
 				// untransformed (showing the wrong half of the wordmark).
-				console.error('[footer-logo-animate] gsap.to failed:', error);
+				recordInitError('[footer-logo-animate] gsap.to failed', error);
 				cssFallback();
 			}
 		} else {

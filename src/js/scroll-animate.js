@@ -12,6 +12,8 @@
  * without gsap/ScrollTrigger, or without any [data-animate="fade-up"]
  * element in the DOM.
  */
+import { recordInitError } from './record-init-error';
+
 export function initScrollAnimate() {
 	const elements = document.querySelectorAll('[data-animate="fade-up"]');
 	if (!elements.length) return;
@@ -45,7 +47,7 @@ export function initScrollAnimate() {
 		// before both files' cache-busted URLs settle to the same build.
 		// When it does, nothing below can safely run, so reveal everything
 		// immediately rather than leave it CSS-hidden forever.
-		console.error('[scroll-animate] ScrollTrigger.registerPlugin failed:', error);
+		recordInitError('[scroll-animate] ScrollTrigger.registerPlugin failed', error);
 		elements.forEach((el) => {
 			el.style.opacity = '1';
 			el.style.transform = 'none';
@@ -64,7 +66,7 @@ export function initScrollAnimate() {
 		try {
 			window.ScrollTrigger.refresh();
 		} catch (error) {
-			console.error('[scroll-animate] ScrollTrigger.refresh failed:', error);
+			recordInitError('[scroll-animate] ScrollTrigger.refresh failed', error);
 		}
 	});
 
@@ -94,7 +96,7 @@ export function initScrollAnimate() {
 			// Same failure mode as the registerPlugin guard above, scoped to
 			// one element's own ScrollTrigger — one bad trigger shouldn't
 			// leave that element (or halt the rest of this loop) invisible.
-			console.error('[scroll-animate] gsap.to/ScrollTrigger failed for element:', el, error);
+			recordInitError('[scroll-animate] gsap.to/ScrollTrigger failed for element', error);
 			el.style.opacity = '1';
 			el.style.transform = 'none';
 		}

@@ -10,6 +10,7 @@ import { initScrollAnimate } from './scroll-animate';
 import { initLenis } from './lenis-init';
 import { initFeatureOverlayParallax } from './feature-overlay-parallax';
 import { initContentBuilderParallax, initContentBuilderImageHeights } from './content-builder';
+import { recordInitError } from './record-init-error';
 
 // Each init ran unguarded in one synchronous block — a single throw (e.g. a
 // third-party GSAP/ScrollTrigger internal error) killed every init after it
@@ -20,7 +21,7 @@ function safeInit(fn, ...args) {
 	try {
 		fn(...args);
 	} catch (error) {
-		console.error(`[theme.js] ${fn.name || 'init'} failed:`, error);
+		recordInitError(`[theme.js] ${fn.name || 'init'} failed`, error);
 	}
 }
 
