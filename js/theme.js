@@ -596,6 +596,30 @@
 	    resizeTimer = setTimeout(matchImageHeights, 100);
 	  });
 	  matchImageHeights();
+
+	  // This runs at DOMContentLoaded, well before images finish downloading —
+	  // any <img> that hasn't loaded yet measures 0 height, so the "tallest"
+	  // wrap in a row can be 0 (collapsing every wrap in it to invisible) or
+	  // based on whichever one image happened to already be cached, and
+	  // nothing here re-measures once the rest actually load in (only resize
+	  // did). Re-run once every image in a 2+-image row has loaded or errored.
+	  const images = Array.from(rows).flatMap(row => Array.from(row.querySelectorAll('.content-builder__module--image .content-builder__image-wrap img')));
+	  let pending = images.filter(img => !img.complete).length;
+	  if (pending > 0) {
+	    images.forEach(img => {
+	      if (img.complete) return;
+	      const onLoadOrError = () => {
+	        pending -= 1;
+	        if (pending === 0) matchImageHeights();
+	      };
+	      img.addEventListener('load', onLoadOrError, {
+	        once: true
+	      });
+	      img.addEventListener('error', onLoadOrError, {
+	        once: true
+	      });
+	    });
+	  }
 	}
 
 	// Each init ran unguarded in one synchronous block — a single throw (e.g. a
