@@ -33,7 +33,7 @@ function cb_identityjs2026_block_usage_table_shortcode() {
 
 	$posts = get_posts(
 		array(
-			'post_type'      => array( 'page', 'post' ),
+			'post_type'      => array( 'page', 'post', 'case_study' ),
 			'posts_per_page' => -1,
 			'post_status'    => 'publish',
 		)
