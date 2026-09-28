@@ -27,7 +27,7 @@
 /* ---------------------------------------------------------------------
  * fs-* and fw-* utility scale — the real system's own literal rung classes,
  * consumed directly by every module's per-instance Font Size/Weight
- * select. "fw-book" and "fw-semibold" both resolve to --fw-semi (500),
+ * select. "fw-book" and "fw-semibold" both resolve to --fw-semi (600),
  * NOT their own distinct --fw-book (450)/--fw-semibold (600) tokens — a
  * confirmed, deliberate block-local override in the real source (both
  * themes), replicated here exactly rather than trusting the raw tokens.

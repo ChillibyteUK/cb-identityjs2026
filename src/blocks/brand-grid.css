@@ -155,7 +155,7 @@
 
 .brand-grid__strap {
 	font-size: var(--fs-brand-grid-strap);
-	font-weight: 500;
+	font-weight: 600; /* real source's literal 500 was the Semibold typo — corrected to the real 600 face */
 }
 
 .brand-grid__strap img {

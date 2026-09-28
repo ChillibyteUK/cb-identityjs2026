@@ -18,6 +18,8 @@ body {
 	line-height: var(--lh-body);
 	color: var(--col-text);
 	background-color: var(--col-bg);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 h1,

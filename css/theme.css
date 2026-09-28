@@ -15,7 +15,7 @@
   --fw-regular: 400;
   --fw-book: 450;
   --fw-semibold: 600;
-  --fw-semi: 500; /* confirmed identical in both cb-identity2025 and cb-identitygroup2026's own _tokens.scss */
+  --fw-semi: 600; /* same real Semibold face as --fw-semibold: the 500 this token carried in cb-identity2025/_tokens.scss was the original typo (SuisseIntl-SemiBold.woff2 declared at font-weight 500 instead of 600), carried over into cb-identitygroup2026's _tokens.scss. No 500 face exists — 300/400/450/600 is the full scale. */
 
   /* Rung font-size scale — the real system's own literal fs-* naming
      (content builder modules and similar per-instance size/weight ACF
@@ -103,7 +103,7 @@
   --fw-heading-h1: var(--fw-semibold);
   --fw-body: var(--fw-regular);
   --fw-bold: var(--fw-semibold);
-  --fw-hero-title: var(--fw-bold); /* real identity value is a literal 500, outside the named weight scale entirely — generic default just borrows --fw-bold */
+  --fw-hero-title: var(--fw-bold); /* identity's real value is a literal 600 (the Semibold face) — generic default just borrows --fw-bold */
 
   --lh-heading: 1.2;
   --lh-body: 1.5;
@@ -176,6 +176,8 @@ body {
 	line-height: var(--lh-body);
 	color: var(--col-text);
 	background-color: var(--col-bg);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 h1,
@@ -2110,7 +2112,7 @@ select {
 
 .brand-grid__strap {
 	font-size: var(--fs-brand-grid-strap);
-	font-weight: 500;
+	font-weight: 600; /* real source's literal 500 was the Semibold typo — corrected to the real 600 face */
 }
 
 .brand-grid__strap img {
@@ -2770,7 +2772,7 @@ select {
 /* ---------------------------------------------------------------------
  * fs-* and fw-* utility scale — the real system's own literal rung classes,
  * consumed directly by every module's per-instance Font Size/Weight
- * select. "fw-book" and "fw-semibold" both resolve to --fw-semi (500),
+ * select. "fw-book" and "fw-semibold" both resolve to --fw-semi (600),
  * NOT their own distinct --fw-book (450)/--fw-semibold (600) tokens — a
  * confirmed, deliberate block-local override in the real source (both
  * themes), replicated here exactly rather than trusting the raw tokens.
@@ -4998,7 +5000,7 @@ select {
 	margin-block: 2rem 0.5rem;
 	color: var(--col-text);
 	font-size: var(--fs-push-panel-link);
-	font-weight: 500;
+	font-weight: 600; /* real source's literal 500 was the Semibold typo — corrected to the real 600 face */
 	text-decoration: none;
 	transition: color var(--transition);
 }

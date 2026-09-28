@@ -48,7 +48,7 @@
   --fw-heading: var(--fw-regular); /* h2 */
   --fw-heading-h1: var(--fw-book); /* general case, varies by context */
   --fw-body: var(--fw-light);
-  --fw-hero-title: 500; /* confirmed literal in _cb_brand_title_text.scss — outside the named weight scale (300/400/450/600) entirely, not an approximation */
+  --fw-hero-title: 600; /* real source's literal 500 was the Semibold typo (see tokens.css) — corrected to the real 600 face */
   --lh-body: 1.55; /* confirmed: measured 24.8px at 16px live on identityglobal.com, matches --lh-normal in _tokens.scss */
 
   @media (min-width: 768px) {
@@ -78,7 +78,7 @@
   --fs-child-page-nav-item: clamp(1.875rem, 0.95rem + 1.9vw, 3.125rem); /* real --fs-850 */
   --fs-child-page-nav-header: var(--fs-300);
 
-  --fs-cta-title: clamp(1.875rem, 0.95rem + 1.9vw, 3.125rem); /* real --fs-850 */
+  --fs-cta-title: var(--fs-850);
   --lh-cta-title: 1.1; /* real --lh-850 */
   --ls-cta-title: -0.015em; /* real --ls--15, unchanged */
   --fs-cta-content: clamp(1.3125rem, 0.9rem + 1.2vw, 1.999rem); /* real --fs-600 */

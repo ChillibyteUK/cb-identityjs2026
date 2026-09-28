@@ -159,7 +159,7 @@
 
 .brand-grid__strap {
 	font-size: var(--fs-brand-grid-strap);
-	font-weight: 500;
+	font-weight: 600; /* real source's literal 500 was the Semibold typo — corrected to the real 600 face */
 }
 
 .brand-grid__strap img {
@@ -819,7 +819,7 @@
 /* ---------------------------------------------------------------------
  * fs-* and fw-* utility scale — the real system's own literal rung classes,
  * consumed directly by every module's per-instance Font Size/Weight
- * select. "fw-book" and "fw-semibold" both resolve to --fw-semi (500),
+ * select. "fw-book" and "fw-semibold" both resolve to --fw-semi (600),
  * NOT their own distinct --fw-book (450)/--fw-semibold (600) tokens — a
  * confirmed, deliberate block-local override in the real source (both
  * themes), replicated here exactly rather than trusting the raw tokens.
@@ -3047,7 +3047,7 @@
 	margin-block: 2rem 0.5rem;
 	color: var(--col-text);
 	font-size: var(--fs-push-panel-link);
-	font-weight: 500;
+	font-weight: 600; /* real source's literal 500 was the Semibold typo — corrected to the real 600 face */
 	text-decoration: none;
 	transition: color var(--transition);
 }
