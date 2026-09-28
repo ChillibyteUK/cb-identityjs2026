@@ -237,7 +237,7 @@ function cb_identityjs2026_get_breadcrumbs( $post_id = 0 ) {
 	$post_id     = $post_id ? (int) $post_id : get_the_ID();
 	$breadcrumbs = array(
 		array(
-			'label' => __( 'Home', 'cb-identityjs2026' ),
+			'label' => cb_identityjs2026_pll_string( 'Home' ),
 			'url'   => home_url( '/' ),
 		),
 	);

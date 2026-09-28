@@ -32,10 +32,10 @@ $intro          = $page_for_posts ? get_post_field( 'post_content', $page_for_po
 <div class="news-insights">
 	<section class="news-hero">
 		<h1 class="news-hero__title">
-			<div class="id-container">Insights &amp; Perspectives</div>
+			<div class="id-container"><?php echo esc_html( cb_identityjs2026_pll_string( 'Insights & Perspectives' ) ); ?></div>
 		</h1>
 		<h2 class="news-hero__subtitle">
-			<div class="id-container">Experience changes everything. Here&#8217;s how we&#8217;re shaping what&#8217;s next.</div>
+			<div class="id-container"><?php echo esc_html( cb_identityjs2026_pll_string( 'Experience changes everything. Here’s how we’re shaping what’s next.' ) ); ?></div>
 		</h2>
 		<?php if ( $intro ) : ?>
 			<div class="news-hero__intro id-container">

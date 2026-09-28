@@ -9,8 +9,8 @@ get_header( cb_identityjs2026_get_site() );
 ?>
 
 <div class="container">
-	<h1><?php esc_html_e( 'Page not found', 'cb-identityjs2026' ); ?></h1>
-	<p><?php esc_html_e( "The page you're looking for doesn't exist.", 'cb-identityjs2026' ); ?></p>
+	<h1><?php echo esc_html( cb_identityjs2026_pll_string( 'Page not found' ) ); ?></h1>
+	<p><?php echo esc_html( cb_identityjs2026_pll_string( 'The page you’re looking for doesn’t exist.' ) ); ?></p>
 </div>
 
 <?php

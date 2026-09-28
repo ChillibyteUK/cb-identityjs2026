@@ -49,16 +49,16 @@ while ( have_posts() ) {
 
 	switch ( $category_slug ) {
 		case 'press':
-			$recent_title = 'Recent News';
+			$recent_title = cb_identityjs2026_pll_string( 'Recent News' );
 			break;
 		case 'insights':
-			$recent_title = 'Recent Insights';
+			$recent_title = cb_identityjs2026_pll_string( 'Recent Insights' );
 			break;
 		case 'perspectives':
-			$recent_title = 'Recent Perspectives';
+			$recent_title = cb_identityjs2026_pll_string( 'Recent Perspectives' );
 			break;
 		default:
-			$recent_title = 'Insights & Perspectives'; // esc_html() on output handles the &.
+			$recent_title = cb_identityjs2026_pll_string( 'Insights & Perspectives' ); // esc_html() on output handles the &.
 			break;
 	}
 	?>

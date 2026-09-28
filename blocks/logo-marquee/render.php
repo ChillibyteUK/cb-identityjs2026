@@ -33,7 +33,7 @@ $instance_id = wp_unique_id( 'logo-marquee-' );
 $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'logo-marquee' ) );
 ?>
 <section data-logo-marquee-instance="<?php echo esc_attr( $instance_id ); ?>" <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?>>
-	<div class="id-container logo-marquee__marquee" aria-label="<?php esc_attr_e( 'Logo marquee', 'cb-identityjs2026' ); ?>">
+	<div class="id-container logo-marquee__marquee" aria-label="<?php echo esc_attr( cb_identityjs2026_pll_string( 'Logo marquee' ) ); ?>">
 		<div class="logo-marquee__track">
 			<?php for ( $loop = 0; $loop < 2; $loop++ ) : ?>
 				<div class="logo-marquee__group" <?php echo 1 === $loop ? 'aria-hidden="true"' : ''; ?>>

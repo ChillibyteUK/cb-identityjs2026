@@ -23,10 +23,10 @@ $intro          = $page_for_posts ? get_post_field( 'post_content', $page_for_po
 <div class="news-insights">
 	<section class="news-hero">
 		<h1 class="news-hero__title">
-			<div class="id-container">Press, news &amp; media</div>
+			<div class="id-container"><?php echo esc_html( cb_identityjs2026_pll_string( 'Press, news & media' ) ); ?></div>
 		</h1>
 		<h2 class="news-hero__subtitle">
-			<div class="id-container">Experience changes everything. Here&#8217;s how we&#8217;re shaping what&#8217;s next.</div>
+			<div class="id-container"><?php echo esc_html( cb_identityjs2026_pll_string( 'Experience changes everything. Here’s how we’re shaping what’s next.' ) ); ?></div>
 		</h2>
 		<?php if ( $intro ) : ?>
 			<div class="news-hero__intro id-container">
@@ -41,7 +41,7 @@ $intro          = $page_for_posts ? get_post_field( 'post_content', $page_for_po
 		</div>
 		<a class="insight-type__header" href="<?php echo esc_url( cb_identityjs2026_category_link_by_slug( 'insights' ) ); ?>">
 			<div class="id-container insight-type__header-inner">
-				<span>Insights &amp; perspectives</span>
+				<span><?php echo esc_html( cb_identityjs2026_pll_string( 'Insights & perspectives' ) ); ?></span>
 				<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/img/arrow-wh.svg' ); ?>" width="65" height="60" alt="" />
 			</div>
 		</a>

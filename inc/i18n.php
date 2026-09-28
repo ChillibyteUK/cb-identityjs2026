@@ -31,6 +31,56 @@ function cb_identityjs2026_register_pll_strings() {
 	// Media Panel — video hero's unmute/mute toggle button.
 	pll_register_string( 'Media Panel: Unmute', 'Unmute', 'cb-identityjs2026' );
 	pll_register_string( 'Media Panel: Mute', 'Mute', 'cb-identityjs2026' );
+
+	// Footer (footer-identity.php) — hardcoded column titles and colophon.
+	// Rendered via cb_identityjs2026_pll_string(), not esc_html_e(), so they
+	// resolve through Strings Translation on multilingual installs.
+	foreach ( array(
+		'Services',
+		'Work',
+		'World Expo',
+		'Innovation Lab',
+		'About',
+		'News',
+		'Our Brands',
+		'Locations',
+		'Legal & info',
+		'Identity Events Management Ltd, Registered Number - 04217845 | VAT Number - GB 813 0913 60',
+	) as $string ) {
+		pll_register_string( 'Footer: ' . $string, $string, 'cb-identityjs2026' );
+	}
+
+	// Templates + blocks — fixed front-end chrome (not editor content, which
+	// Polylang translates via posts instead). Each call site renders these
+	// through cb_identityjs2026_pll_string() with esc_html()/esc_attr().
+	// Curly apostrophes are literal here — the old hardcoded templates used
+	// &#8217; entities, which can't survive a Strings Translation round-trip.
+	foreach ( array(
+		'News, insights, and perspectives',
+		'Creating news and leading conversations that shape our industry',
+		'Insights',
+		'Press',
+		'Insights & Perspectives',
+		'Experience changes everything. Here’s how we’re shaping what’s next.',
+		'Press & media',
+		'Press, news & media',
+		'Insights & perspectives',
+		'Recent News',
+		'Recent Insights',
+		'Recent Perspectives',
+		'Page not found',
+		'The page you’re looking for doesn’t exist.',
+		'Identity homepage',
+		'Home',
+		'Our work',
+		'Where experience changes everything',
+		'Filter by:',
+		'All Services',
+		'Reset',
+		'Logo marquee',
+	) as $string ) {
+		pll_register_string( $string, $string, 'cb-identityjs2026' );
+	}
 }
 add_action( 'init', 'cb_identityjs2026_register_pll_strings' );
 

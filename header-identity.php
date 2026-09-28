@@ -27,7 +27,7 @@
 <!-- HEADER-NAV:START -->
 <header id="masthead" class="navbar--fixed-top">
 	<nav class="navbar id-container px-4 px-md-5" aria-label="Primary navigation">
-		<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="logo-clip" id="site-logo-clip" aria-label="<?php esc_attr_e( 'Identity homepage', 'cb-identityjs2026' ); ?>">
+		<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="logo-clip" id="site-logo-clip" aria-label="<?php echo esc_attr( cb_identityjs2026_pll_string( 'Identity homepage' ) ); ?>">
 			<div class="logo-inner" id="site-logo-inner">
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 835.66 81.83" aria-hidden="true">
 					<g fill="#fff">

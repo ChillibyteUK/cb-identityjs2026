@@ -35,7 +35,7 @@
 			</div>
 			<!-- 2. Services, + Work/World Expo/Innovation Lab stacked below -->
 			<div class="col-12 col-sm-6 col-md-4 col-lg-2 order-2 order-md-3 order-lg-2">
-				<div class="footer-title mb-3"><a href="/services/"><?php esc_html_e( 'Services', 'cb-identityjs2026' ); ?></a></div>
+				<div class="footer-title mb-3"><a href="<?php echo esc_url( cb_identityjs2026_page_link( 'services' ) ); ?>"><?php echo esc_html( cb_identityjs2026_pll_string( 'Services' ) ); ?></a></div>
 				<?php
 				wp_nav_menu(
 					array(
@@ -45,13 +45,13 @@
 					)
 				);
 				?>
-				<div class="footer-title mt-4 mb-3"><a href="/work/"><?php esc_html_e( 'Work', 'cb-identityjs2026' ); ?></a></div>
-				<div class="footer-title mb-3"><a href="/world-expo/"><?php esc_html_e( 'World Expo', 'cb-identityjs2026' ); ?></a></div>
-				<div class="footer-title mb-4"><a href="/innovation/"><?php esc_html_e( 'Innovation Lab', 'cb-identityjs2026' ); ?></a></div>
+			<div class="footer-title mt-4 mb-3"><a href="<?php echo esc_url( cb_identityjs2026_page_link( 'work' ) ); ?>"><?php echo esc_html( cb_identityjs2026_pll_string( 'Work' ) ); ?></a></div>
+			<div class="footer-title mb-3"><a href="<?php echo esc_url( cb_identityjs2026_page_link( 'world-expo' ) ); ?>"><?php echo esc_html( cb_identityjs2026_pll_string( 'World Expo' ) ); ?></a></div>
+			<div class="footer-title mb-4"><a href="<?php echo esc_url( cb_identityjs2026_page_link( 'innovation' ) ); ?>"><?php echo esc_html( cb_identityjs2026_pll_string( 'Innovation Lab' ) ); ?></a></div>
 			</div>
 			<!-- 3. About, + News stacked below -->
 			<div class="col-12 col-sm-6 col-md-4 col-lg-2 order-4 order-md-4 order-lg-3">
-				<div class="footer-title mb-3"><a href="/about/"><?php esc_html_e( 'About', 'cb-identityjs2026' ); ?></a></div>
+				<div class="footer-title mb-3"><a href="<?php echo esc_url( cb_identityjs2026_page_link( 'about' ) ); ?>"><?php echo esc_html( cb_identityjs2026_pll_string( 'About' ) ); ?></a></div>
 				<?php
 				wp_nav_menu(
 					array(
@@ -61,7 +61,7 @@
 					)
 				);
 				?>
-				<div class="footer-title mt-4 mb-3"><a href="/news/"><?php esc_html_e( 'News', 'cb-identityjs2026' ); ?></a></div>
+				<div class="footer-title mt-4 mb-3"><a href="<?php echo esc_url( cb_identityjs2026_page_link( 'news' ) ); ?>"><?php echo esc_html( cb_identityjs2026_pll_string( 'News' ) ); ?></a></div>
 				<?php
 				wp_nav_menu(
 					array(
@@ -74,7 +74,7 @@
 			</div>
 			<!-- 4. Our Brands -->
 			<div class="col-12 col-sm-6 col-md-4 col-lg-2 order-1 order-md-5 order-lg-7">
-				<div class="footer-title mb-3"><a href="/about/#brands"><?php esc_html_e( 'Our Brands', 'cb-identityjs2026' ); ?></a></div>
+				<div class="footer-title mb-3"><a href="<?php echo esc_url( cb_identityjs2026_page_link( 'about', 'brands' ) ); ?>"><?php echo esc_html( cb_identityjs2026_pll_string( 'Our Brands' ) ); ?></a></div>
 				<?php
 				wp_nav_menu(
 					array(
@@ -87,7 +87,7 @@
 			</div>
 			<!-- 5. Locations, + Legal & info stacked below -->
 			<div class="col-12 col-sm-6 col-md-4 col-lg-2 order-4 order-md-8 order-lg-9">
-				<div class="footer-title mb-3"><a href="/contact/#locations"><?php esc_html_e( 'Locations', 'cb-identityjs2026' ); ?></a></div>
+				<div class="footer-title mb-3"><a href="<?php echo esc_url( cb_identityjs2026_page_link( 'contact', 'locations' ) ); ?>"><?php echo esc_html( cb_identityjs2026_pll_string( 'Locations' ) ); ?></a></div>
 				<?php
 				wp_nav_menu(
 					array(
@@ -97,7 +97,7 @@
 					)
 				);
 				?>
-				<div class="footer-title mt-4 mb-3"><?php esc_html_e( 'Legal & info', 'cb-identityjs2026' ); ?></div>
+				<div class="footer-title mt-4 mb-3"><?php echo esc_html( cb_identityjs2026_pll_string( 'Legal & info' ) ); ?></div>
 				<?php
 				wp_nav_menu(
 					array(
@@ -140,7 +140,7 @@
 	</div>
 
 	<div class="id-container px-4 px-md-5 pt-4 footer__colophon">
-		<?php esc_html_e( 'Identity Events Management Ltd, Registered Number - 04217845 | VAT Number - GB 813 0913 60', 'cb-identityjs2026' ); ?>
+		<?php echo esc_html( cb_identityjs2026_pll_string( 'Identity Events Management Ltd, Registered Number - 04217845 | VAT Number - GB 813 0913 60' ) ); ?>
 	</div>
 </footer>
 

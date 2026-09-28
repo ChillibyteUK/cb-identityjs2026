@@ -33,10 +33,10 @@ get_header( cb_identityjs2026_get_site() );
 <div class="news-insights">
 	<section class="news-hero">
 		<h1 class="news-hero__title">
-			<div class="id-container">News, insights, and perspectives</div>
+			<div class="id-container"><?php echo esc_html( cb_identityjs2026_pll_string( 'News, insights, and perspectives' ) ); ?></div>
 		</h1>
 		<h2 class="news-hero__subtitle">
-			<div class="id-container">Creating news and leading conversations that shape our industry</div>
+			<div class="id-container"><?php echo esc_html( cb_identityjs2026_pll_string( 'Creating news and leading conversations that shape our industry' ) ); ?></div>
 		</h2>
 		<?php
 		$page_for_posts = get_option( 'page_for_posts' );
@@ -52,7 +52,7 @@ get_header( cb_identityjs2026_get_site() );
 	<section class="insight-type insight-type--dark">
 		<a class="insight-type__header" href="<?php echo esc_url( cb_identityjs2026_category_link_by_slug( 'insights' ) ); ?>">
 			<div class="id-container insight-type__header-inner">
-				<span>Insights</span>
+				<span><?php echo esc_html( cb_identityjs2026_pll_string( 'Insights' ) ); ?></span>
 				<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/img/arrow-wh.svg' ); ?>" width="65" height="60" alt="" />
 			</div>
 		</a>
@@ -64,7 +64,7 @@ get_header( cb_identityjs2026_get_site() );
 	<section class="insight-type insight-type--accent">
 		<a class="insight-type__header" href="<?php echo esc_url( cb_identityjs2026_category_link_by_slug( 'press' ) ); ?>">
 			<div class="id-container insight-type__header-inner">
-				<span>Press</span>
+				<span><?php echo esc_html( cb_identityjs2026_pll_string( 'Press' ) ); ?></span>
 				<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/img/arrow-wh.svg' ); ?>" width="65" height="60" alt="" />
 			</div>
 		</a>

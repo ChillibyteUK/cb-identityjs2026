@@ -78,10 +78,10 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'work-inde
 <div <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?>>
 	<section class="work-index-hero">
 		<h1 class="work-index-hero__pretitle">
-			<div class="id-container">Our work</div>
+			<div class="id-container"><?php echo esc_html( cb_identityjs2026_pll_string( 'Our work' ) ); ?></div>
 		</h1>
 		<h2 class="work-index-hero__pretitle-sub">
-			<div class="id-container">Where experience changes everything</div>
+			<div class="id-container"><?php echo esc_html( cb_identityjs2026_pll_string( 'Where experience changes everything' ) ); ?></div>
 		</h2>
 		<?php if ( $hero_id ) : ?>
 			<?php
@@ -123,14 +123,14 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'work-inde
 		<?php if ( ! is_wp_error( $service_terms ) && ! empty( $service_terms ) ) : ?>
 			<div class="work-index__filter-bar">
 				<div class="id-container work-index__filter-bar-inner">
-					<span class="work-index__filter-label">Filter by:</span>
+					<span class="work-index__filter-label"><?php echo esc_html( cb_identityjs2026_pll_string( 'Filter by:' ) ); ?></span>
 					<select id="work-index-service-filter" class="work-index__filter-select">
-						<option value="all">All Services</option>
+						<option value="all"><?php echo esc_html( cb_identityjs2026_pll_string( 'All Services' ) ); ?></option>
 						<?php foreach ( $service_terms as $service_term ) : ?>
 							<option value="<?php echo esc_attr( $service_term->slug ); ?>"><?php echo esc_html( $service_term->name ); ?></option>
 						<?php endforeach; ?>
 					</select>
-					<button type="button" id="work-index-filter-reset" class="work-index__filter-reset">Reset</button>
+					<button type="button" id="work-index-filter-reset" class="work-index__filter-reset"><?php echo esc_html( cb_identityjs2026_pll_string( 'Reset' ) ); ?></button>
 				</div>
 			</div>
 		<?php endif; ?>
