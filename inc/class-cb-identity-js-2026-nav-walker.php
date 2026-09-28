@@ -62,7 +62,23 @@ if ( ! class_exists( 'CB_Identity_JS_2026_Nav_Walker' ) ) {
 		 */
 		public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
 			$has_children = in_array( 'menu-item-has-children', $item->classes, true );
-			$is_current   = in_array( 'current-menu-item', $item->classes, true );
+			// A parent item highlights when any of these are present:
+			// - current-menu-parent / current_page_parent — the current page
+			//   itself is in this menu as a child of this item (menu
+			//   hierarchy), e.g. a dropdown child is open.
+			// - current-page-ancestor — the current page is NOT in this menu
+			//   at all, but is a child page of this item's page in the page
+			//   hierarchy. This is the live case: /about/culture/ isn't in
+			//   Primary Nav, so WordPress gives About `current-page-ancestor`
+			//   (dashes) and neither of the underscore-less parent classes
+			//   above — confirmed via wp_nav_menu_objects logging on that
+			//   URL. current-menu-ancestor covers the same gap one level
+			//   deeper (grandparent via menu hierarchy).
+			$is_current = in_array( 'current-menu-item', $item->classes, true )
+				|| in_array( 'current-menu-parent', $item->classes, true )
+				|| in_array( 'current-menu-ancestor', $item->classes, true )
+				|| in_array( 'current_page_parent', $item->classes, true )
+				|| in_array( 'current-page-ancestor', $item->classes, true );
 
 			$li_classes = array( 'nav-item' );
 			if ( $has_children ) {
@@ -74,7 +90,11 @@ if ( ! class_exists( 'CB_Identity_JS_2026_Nav_Walker' ) ) {
 			if ( $has_children ) {
 				// Dropdown parents never navigate — the whole item is the toggle.
 				$this->current_submenu_id = 'dropdown-' . $item->ID;
-				$output                  .= '<button type="button" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="' . esc_attr( $this->current_submenu_id ) . '">';
+				$toggle_classes            = array( 'nav-link', 'dropdown-toggle' );
+				if ( $is_current ) {
+					$toggle_classes[] = 'active';
+				}
+				$output .= '<button type="button" class="' . esc_attr( implode( ' ', $toggle_classes ) ) . '" aria-haspopup="true" aria-expanded="false" aria-controls="' . esc_attr( $this->current_submenu_id ) . '">';
 				$output                  .= '<span>' . esc_html( $item->title ) . '</span>';
 				$output                  .= '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" /></svg>';
 				$output                  .= '</button>';
@@ -111,3 +131,58 @@ if ( ! class_exists( 'CB_Identity_JS_2026_Nav_Walker' ) ) {
 		}
 	}
 }
+
+/**
+ * Highlights the section nav item on single case_study views.
+ *
+ * A case_study post (e.g. /work/vodafone-wimbledon-2026/) is not a child
+ * page of anything, so WordPress core never marks any menu item current
+ * for it — unlike /about/culture/, where the About item at least gets
+ * `current-page-ancestor`. This adds `current-menu-parent` (a class the
+ * walker above already treats as current) to the menu item whose URL is
+ * the CPT's own front base — i.e. Work for case_study — derived from the
+ * post type's rewrite slug rather than hardcoded, so it keeps working if
+ * the slug ever changes. Primary menu only; footer menus are untouched.
+ *
+ * Runs on wp_nav_menu_objects, which fires after core's own
+ * _wp_menu_item_classes_by_context(), so core classes are already in
+ * place and this only appends.
+ *
+ * @param WP_Post[] $items Menu items.
+ * @param stdClass  $args  Menu args.
+ * @return WP_Post[]
+ */
+function cb_identityjs2026_case_study_nav_highlight( $items, $args ) {
+	if ( ! is_singular( 'case_study' ) ) {
+		return $items;
+	}
+
+	if ( ! isset( $args->theme_location ) || 'primary' !== $args->theme_location ) {
+		return $items;
+	}
+
+	$post_type = get_post_type_object( 'case_study' );
+	$slug      = ( $post_type && ! empty( $post_type->rewrite['slug'] ) ) ? trim( (string) $post_type->rewrite['slug'], '/' ) : 'work';
+
+	foreach ( $items as $item ) {
+		// Core's own back-compat marks the posts-page item (News) with
+		// `current_page_parent` on every non-page view — including CPT
+		// singles, where it doesn't belong (a case study is not a blog
+		// post). Strip it here so only Work highlights. Regular single
+		// posts never reach this function, so their News highlight is
+		// untouched.
+		$item->classes = array_diff( (array) $item->classes, array( 'current_page_parent' ) );
+
+		$item_path = isset( $item->url ) ? parse_url( $item->url, PHP_URL_PATH ) : null;
+		if ( ! is_string( $item_path ) || '' === $item_path ) {
+			continue;
+		}
+
+		if ( untrailingslashit( $item_path ) === '/' . $slug ) {
+			$item->classes[] = 'current-menu-parent';
+		}
+	}
+
+	return $items;
+}
+add_filter( 'wp_nav_menu_objects', 'cb_identityjs2026_case_study_nav_highlight', 10, 2 );
