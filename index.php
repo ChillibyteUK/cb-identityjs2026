@@ -62,14 +62,14 @@ get_header( cb_identityjs2026_get_site() );
 	</section>
 
 	<section class="insight-type insight-type--accent">
-		<a class="insight-type__header" href="<?php echo esc_url( cb_identityjs2026_category_link_by_slug( 'press' ) ); ?>">
+		<a class="insight-type__header" href="<?php echo esc_url( cb_identityjs2026_category_link_by_slug( 'news' ) ); ?>">
 			<div class="id-container insight-type__header-inner">
-				<span><?php echo esc_html( cb_identityjs2026_pll_string( 'Press' ) ); ?></span>
+				<span><?php echo esc_html( cb_identityjs2026_pll_string( 'News' ) ); ?></span>
 				<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/img/arrow-wh.svg' ); ?>" width="65" height="60" alt="" />
 			</div>
 		</a>
 		<div class="insight-type-grid id-container">
-			<?php cb_identityjs2026_render_insight_cards( 'press', array( 6, 3, 3 ) ); ?>
+			<?php cb_identityjs2026_render_insight_cards( 'news', array( 6, 3, 3 ) ); ?>
 		</div>
 	</section>
 
