@@ -186,3 +186,73 @@ function cb_identityjs2026_case_study_nav_highlight( $items, $args ) {
 	return $items;
 }
 add_filter( 'wp_nav_menu_objects', 'cb_identityjs2026_case_study_nav_highlight', 10, 2 );
+
+/**
+ * Detects the current language from the request path.
+ *
+ * No Polylang on this install yet — the convention is a first path
+ * segment of /en/ or /ar/, with the root site counting as English.
+ *
+ * @return string 'en' or 'ar'.
+ */
+function cb_identityjs2026_current_lang() {
+	$path = isset( $_SERVER['REQUEST_URI'] ) ? parse_url( (string) $_SERVER['REQUEST_URI'], PHP_URL_PATH ) : '/';
+	if ( is_string( $path ) && preg_match( '#^/ar(/|$)#', $path ) ) {
+		return 'ar';
+	}
+	return 'en';
+}
+
+/**
+ * Appends an EN | عربي language switcher after the last primary nav item.
+ *
+ * Polylang installs only — returns the menu untouched when Polylang isn't
+ * active, so single-language sites never render a dead switcher.
+ *
+ * Single <li> reading "EN | عربي" — EN links to /en/, AR to /ar/ — with
+ * `active` on the current language's link, matching the walker's own
+ * active treatment (including data-text for the bold-reserve CSS).
+ * Primary menu only.
+ *
+ * @param string   $items HTML list items.
+ * @param stdClass $args  Menu args.
+ * @return string
+ */
+function cb_identityjs2026_append_lang_switcher( $items, $args ) {
+	if ( ! isset( $args->theme_location ) || 'primary' !== $args->theme_location ) {
+		return $items;
+	}
+
+	if ( ! function_exists( 'pll_current_language' ) ) {
+		return $items;
+	}
+
+	$current = pll_current_language();
+	if ( ! is_string( $current ) || '' === $current ) {
+		$current = cb_identityjs2026_current_lang();
+	}
+
+	$en_url = function_exists( 'pll_home_url' ) ? pll_home_url( 'en' ) : home_url( '/en/' );
+	$ar_url = function_exists( 'pll_home_url' ) ? pll_home_url( 'ar' ) : home_url( '/ar/' );
+
+	$en_classes = array( 'nav-link', 'nav-link-lang' );
+	$ar_classes = array( 'nav-link', 'nav-link-lang' );
+	if ( 'en' === $current ) {
+		$en_classes[] = 'active';
+	} else {
+		$ar_classes[] = 'active';
+	}
+
+	$items .= '<li class="nav-item nav-item-lang">';
+	$items .= '<a class="' . esc_attr( implode( ' ', $en_classes ) ) . '" href="' . esc_url( $en_url ) . '" hreflang="en" data-text="EN"';
+	$items .= 'en' === $current ? ' aria-current="true"' : '';
+	$items .= '>EN</a>';
+	$items .= '<span class="lang-sep" aria-hidden="true">|</span>';
+	$items .= '<a class="' . esc_attr( implode( ' ', $ar_classes ) ) . '" href="' . esc_url( $ar_url ) . '" hreflang="ar" lang="ar" data-text="عربي"';
+	$items .= 'ar' === $current ? ' aria-current="true"' : '';
+	$items .= '>عربي</a>';
+	$items .= '</li>';
+
+	return $items;
+}
+add_filter( 'wp_nav_menu_items', 'cb_identityjs2026_append_lang_switcher', 10, 2 );
