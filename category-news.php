@@ -1,8 +1,8 @@
 <?php
 /**
- * "Press" category archive — identity's own real design, confirmed against
+ * "News" category archive — identity's own real design, confirmed against
  * cb-identitygroup2026/category-press.php. Mirror of category-insights.php:
- * full unbounded list (Press category only), purple-900 section background
+ * full unbounded list (News category only), purple-900 section background
  * instead of dark, cross-links back to Insights at the bottom. See
  * category-insights.php's own header comment for the shared reasoning
  * (no site-dispatch needed, real source's span-cycle helper, etc).
@@ -37,7 +37,7 @@ $intro          = $page_for_posts ? get_post_field( 'post_content', $page_for_po
 
 	<section class="insight-type insight-type--accent">
 		<div class="insight-type-grid insight-type-grid--full id-container">
-			<?php cb_identityjs2026_render_insight_cards_full( 'press' ); ?>
+			<?php cb_identityjs2026_render_insight_cards_full( 'news' ); ?>
 		</div>
 		<a class="insight-type__header" href="<?php echo esc_url( cb_identityjs2026_category_link_by_slug( 'insights' ) ); ?>">
 			<div class="id-container insight-type__header-inner">
@@ -51,7 +51,7 @@ $intro          = $page_for_posts ? get_post_field( 'post_content', $page_for_po
 	echo render_block( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- render_block() output is already escaped by the block's own render.php.
 		array(
 			'blockName' => 'cb-identityjs2026/cta',
-			'attrs'     => array( 'ctaChoice' => cb_identityjs2026_get_setting( 'cta_category_press' ) ),
+			'attrs'     => array( 'ctaChoice' => cb_identityjs2026_get_setting( 'cta_category_news' ) ),
 		)
 	);
 	?>
