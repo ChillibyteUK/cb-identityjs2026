@@ -25,6 +25,21 @@ defined( 'ABSPATH' ) || exit;
  */
 function cb_identityjs2026_page_link( $slug, $fragment = '' ) {
 	$page = get_page_by_path( $slug );
+
+	// Translate to the current language — get_page_by_path() itself is not
+	// language-aware (EN/AR pages can share the same post_name), so without
+	// this the footer always linked to whichever language get_page_by_path()
+	// happened to return first.
+	if ( $page && function_exists( 'pll_get_post' ) ) {
+		$translated_id = pll_get_post( $page->ID );
+		if ( $translated_id ) {
+			$translated = get_post( $translated_id );
+			if ( $translated ) {
+				$page = $translated;
+			}
+		}
+	}
+
 	$url  = $page ? get_permalink( $page ) : home_url( '/' . trim( $slug, '/' ) . '/' );
 
 	if ( '' !== $fragment ) {
