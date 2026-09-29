@@ -5107,6 +5107,173 @@ select {
 	text-transform: uppercase;
 }
 
+/* --- src/blocks/service-grid.css --- */
+/*
+ * Service Grid — see identity-global-block-spec.md. Built from
+ * cb-service-grid (cb-identitygroup2026/blocks/cb-service-grid.php +
+ * src/sass/theme/blocks/_cb_service_grid.scss) — a health/idtravel-only
+ * component with no existing identity styling; migrated here directly
+ * since no brand-restriction exists in its own real source (see this
+ * block's edit.js for the full note).
+ *
+ * Real markup nests padding at TWO levels, not simplified to one: the
+ * section itself carries `pb-5` (bottom only, 48px) and the inner
+ * `.id-container` carries `py-5` (both top/bottom, 48px each) — so real
+ * total bottom padding is 96px (48+48), top is 48px. Reproduced exactly
+ * as two separate rules below, matching the same "don't collapse real
+ * markup's own stacked padding" lesson already learned on Testimonial.
+ *
+ * The real SCSS also references --sg-col-start/--sg-col-end/--sg-row-start/
+ * --sg-row-span custom properties for desktop grid placement, but the real
+ * PHP template sets literal inline grid-column/grid-row styles per item
+ * instead (see render.php) — those custom properties are dead code in the
+ * real source (inline styles always win), so they're not reproduced here;
+ * this file's own render.php sets the same literal inline styles directly.
+ */
+
+.service-grid {
+	padding-block-end: var(--space-5);
+}
+
+.service-grid > .id-container {
+	padding-block: var(--space-5);
+	padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+	.service-grid > .id-container {
+		padding-inline: var(--space-5);
+	}
+}
+
+.service-grid__grid {
+	display: grid;
+	gap: 2rem;
+}
+
+.service-grid__item {
+	display: grid;
+	gap: 1rem;
+}
+
+.service-grid__image,
+.service-grid__body {
+	width: 100%;
+}
+
+.service-grid__image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	aspect-ratio: 1 / 1;
+}
+
+.service-grid__body {
+	background-color: inherit;
+}
+
+.service-grid__title {
+	margin-bottom: 0.75rem;
+	font-size: var(--fs-500);
+	font-weight: var(--fw-light);
+	line-height: 1.25; /* real --lh-500 */
+	letter-spacing: -0.01em; /* real --ls--10 */
+	text-wrap: balance;
+}
+
+.service-grid__content {
+	font-size: var(--fs-100);
+	font-weight: var(--fw-regular);
+	line-height: var(--lh-body); /* real --lh-100, 1.55, same value already used by this token */
+	text-wrap: balance;
+}
+
+.service-grid__content p:last-child {
+	margin-bottom: 0;
+}
+
+@media (max-width: 1199.98px) {
+	.service-grid__image,
+	.service-grid__body {
+		grid-column: auto !important;
+		grid-row: auto !important;
+	}
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+	.service-grid__grid {
+		gap: 1.5rem;
+	}
+
+	.service-grid__item {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		align-items: stretch;
+		gap: 1.5rem;
+	}
+
+	.service-grid__image,
+	.service-grid__body {
+		min-width: 0;
+		width: 100%;
+	}
+
+	.service-grid__body {
+		display: flex;
+		flex-direction: column;
+		justify-content: center !important;
+		align-self: stretch;
+	}
+
+	.service-grid__item:nth-child(even) .service-grid__image {
+		order: 2;
+	}
+
+	.service-grid__item:nth-child(even) .service-grid__body {
+		order: 1;
+	}
+}
+
+@media (max-width: 991.98px) {
+	.service-grid__item {
+		grid-template-columns: 1fr;
+	}
+
+	.service-grid__image,
+	.service-grid__body {
+		width: 100%;
+	}
+}
+
+@media (min-width: 1200px) {
+	.service-grid__grid {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		grid-auto-flow: row;
+		gap: 1.5rem;
+	}
+
+	.service-grid__item {
+		display: contents;
+	}
+
+	.service-grid__image,
+	.service-grid__body {
+		min-width: 0;
+		aspect-ratio: 1 / 1;
+	}
+
+	.service-grid__body {
+		display: flex;
+		flex-direction: column;
+		justify-content: var(--sg-justify, flex-start);
+		min-height: 100%;
+	}
+
+	.service-grid__body--align-end {
+		text-align: right;
+		align-items: flex-end;
+	}
+}
+
 /* --- src/blocks/stat-block.css --- */
 /*
  * Stat Block — see identity-global-block-spec.md. Confirmed against

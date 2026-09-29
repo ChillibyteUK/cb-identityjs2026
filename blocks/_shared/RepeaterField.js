@@ -29,7 +29,7 @@ function generateRowId() {
  * showing as a blank preview with a working "Replace" button, easy to
  * mistake for "this row has no logo" when it does.
  */
-function RepeaterImageField( { field, row, index, updateRow } ) {
+function RepeaterImageField( { field, row, index, updateRow, isColumn } ) {
 	const id = row[ field.name ];
 	const url = useSelect(
 		( select ) => {
@@ -42,21 +42,29 @@ function RepeaterImageField( { field, row, index, updateRow } ) {
 	);
 
 	return (
-		<MediaUploadCheck>
-			<MediaUpload
-				onSelect={ ( media ) => updateRow( index, { [ field.name ]: media.id } ) }
-				allowedTypes={ [ 'image' ] }
-				value={ id }
-				render={ ( { open } ) => (
-					<div className="cb-identityjs2026-repeater-field__image">
-						{ url && <img src={ url } alt="" /> }
-						<Button variant="secondary" size="small" onClick={ open }>
-							{ id ? __( 'Replace', 'cb-identityjs2026' ) : __( 'Select', 'cb-identityjs2026' ) }
-						</Button>
-					</div>
-				) }
-			/>
-		</MediaUploadCheck>
+		<div>
+			{ /* Same pattern as the richtext field type below: 'row' layout
+			    relies on the shared header row's own labels above every
+			    field, 'column' layout has no shared header so each field
+			    needs its own visible one — this was the one field type
+			    that never rendered a label at all, in either layout. */ }
+			{ isColumn && <span className="cb-identityjs2026-editor-field__label">{ field.label }</span> }
+			<MediaUploadCheck>
+				<MediaUpload
+					onSelect={ ( media ) => updateRow( index, { [ field.name ]: media.id } ) }
+					allowedTypes={ [ 'image' ] }
+					value={ id }
+					render={ ( { open } ) => (
+						<div className="cb-identityjs2026-repeater-field__image">
+							{ url && <img src={ url } alt="" /> }
+							<Button variant="secondary" size="small" onClick={ open }>
+								{ id ? __( 'Replace', 'cb-identityjs2026' ) : __( 'Select', 'cb-identityjs2026' ) }
+							</Button>
+						</div>
+					) }
+				/>
+			</MediaUploadCheck>
+		</div>
 	);
 }
 
@@ -245,7 +253,14 @@ export default function RepeaterField( { label, value, onChange, fields, emptyRo
 					{ fields.map( ( field ) => {
 						if ( 'image' === field.type ) {
 							return (
-								<RepeaterImageField key={ field.name } field={ field } row={ row } index={ index } updateRow={ updateRow } />
+								<RepeaterImageField
+									key={ field.name }
+									field={ field }
+									row={ row }
+									index={ index }
+									updateRow={ updateRow }
+									isColumn={ isColumn }
+								/>
 							);
 						}
 
