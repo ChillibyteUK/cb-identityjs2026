@@ -1,0 +1,25 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cb-identityjs2026/leadership",
+	"title": "CB Leadership",
+	"category": "cb-identityjs2026",
+	"icon": "groups",
+	"attributes": {
+		"intro": { "type": "string", "default": "" },
+		"team": { "type": "array", "default": [] }
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"align": true,
+		"color": {
+			"background": true,
+			"text": true,
+			"gradient": false,
+			"__experimentalSkipSerialization": true
+		}
+	},
+	"editorScript": "file:./build/index.js",
+	"render": "file:./render.php"
+}
