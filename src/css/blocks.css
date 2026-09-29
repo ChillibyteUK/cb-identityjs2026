@@ -3537,27 +3537,73 @@
 .work-index-hero {
 	position: relative;
 	background-color: var(--col-bg);
-	padding-block-start: var(--space-6);
+	/* Real Bootstrap pt-5 = 3rem = --space-5, not --space-6 — same wrong
+	   token already caught and fixed on Case Study Hero's own section
+	   (see case-study-hero.css); Work Index just hadn't had this specific
+	   value re-checked against real yet. */
+	padding-block-start: var(--space-5);
 }
 
+/*
+ * Title/subtitle deliberately structured and valued identically to
+ * Case Study Hero's own __title/__subtitle (case-study-hero.css) — both
+ * are bare, unstyled real h1/h2 elements (no font-size/weight utility
+ * classes in either real cb-work-index.php or cb-case-study-hero.php), so
+ * both read the SAME sitewide default h1/h2 typography live. Font-size/
+ * weight/line-height/colour live on the nested .id-container, not the h1/h2
+ * itself, matching that file's own structure exactly — h1/h2 only carry
+ * margin/border. Previously used this block's own fluid --fs-850/
+ * --fw-semibold tokens instead, which don't match Case Study Hero's fixed
+ * 3.125rem/--fw-book at every viewport width and rendered visibly bolder —
+ * confirmed live these fixed values are what both real pages actually use.
+ */
 .work-index-hero__pretitle {
+	/* Setting only margin-block-start left base.css's generic
+	   h1{margin-block: 0 var(--space-3)} rule's margin-block-END (16px)
+	   still active — a separate longhand declaration doesn't override the
+	   other half of a shorthand from a different rule. Explicit margin: 0
+	   first (exactly matching Case Study Hero's own two-rule pattern:
+	   .case-study-hero__title, .case-study-hero__subtitle { margin: 0 }
+	   before its own margin-block-start override) resets every side before
+	   re-adding just the real mt-5 (3rem/48px) below. Also resets colour —
+	   the same base.css rule sets color: var(--col-heading) (lime) on the
+	   h1 itself, invisible only because the nested .id-container's own text
+	   currently covers it, not actually correct. */
 	margin: 0;
-	padding-block: var(--space-3) 0;
+	color: var(--col-text);
+	margin-block-start: var(--space-5);
 	border-block-start: 1px solid var(--col-border);
+}
+
+.work-index-hero__pretitle .id-container {
+	/* Work Index's own real source has pt-2 (8px) here vs Case Study Hero's
+	   real pt-1 (4px) — both genuinely confirmed in their own PHP, not a
+	   bug either way. Matched to Case Study Hero's value anyway per direct
+	   instruction to make the two visually identical. */
+	padding-block-start: 0.25rem;
 	font-family: var(--ff-heading);
-	font-size: var(--fs-850);
-	font-weight: var(--fw-semibold);
+	font-size: 3.125rem; /* 50px, fixed — matches Case Study Hero's own __title exactly */
+	font-weight: var(--fw-book);
+	line-height: 1.1;
 	color: var(--col-text);
 }
 
 .work-index-hero__pretitle-sub {
-	margin: 0 0 var(--space-4);
-	padding-block: var(--space-2) var(--space-3);
+	/* Real h2 has margin: 0 — no extra margin-bottom exists in the source
+	   at all; confirmed live the block's own padding-bottom below is the
+	   only spacing after this line. */
+	margin: 0;
 	border-block: 1px solid var(--col-border);
+}
+
+.work-index-hero__pretitle-sub .id-container {
+	padding-block: 0.5rem 0.25rem; /* real source's own pt-2 pb-1 */
 	font-family: var(--ff-heading);
-	font-size: var(--fs-600);
+	font-size: 2rem; /* 32px, fixed — matches Case Study Hero's own __subtitle exactly */
 	font-weight: var(--fw-regular);
-	/* neutral-800, confirmed live — not otherwise tokenised in this theme. */
+	line-height: 1.15;
+	/* neutral-800, confirmed live — same literal already used by Case Study
+	   Hero's own __subtitle, not otherwise tokenised in this theme. */
 	color: #5e5d55;
 }
 
