@@ -238,6 +238,14 @@
 	text-wrap: balance;
 }
 
+/* Opt-out, not a real source modifier — see ModuleEditor.js/render.php's
+   own notes on why: a plain H2 with no page-title styling, for when an
+   editor just needs correct heading markup. */
+.content-builder__h2--no-lines {
+	padding-block-start: 0;
+	border-block: none;
+}
+
 /* ---------------------------------------------------------------------
  * Text
  * --------------------------------------------------------------------- */

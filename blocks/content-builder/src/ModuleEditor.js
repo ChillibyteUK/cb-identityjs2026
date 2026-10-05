@@ -95,6 +95,26 @@ function HeadingFields( { module: mod, updateModule } ) {
 				onFsChange={ ( value ) => updateModule( { headingFontSize: value } ) }
 				onFwChange={ ( value ) => updateModule( { headingFontWeight: value } ) }
 			/>
+			{ /* H2 only — it's the only heading type with an always-on border
+			    above/below in the real source (confirmed live, matches the
+			    styling real "main page title" sections use). Not a real
+			    source toggle — added per direct client request: H2 is also
+			    the only remaining way to get a real semantic heading tag out
+			    of a Text module since that one lost its own H-tag option, so
+			    editors need a plain H2 without inheriting that page-title
+			    styling. Defaults to on, matching existing content's current
+			    real-matched look exactly. */ }
+			{ 'h2' === mod.moduleType && (
+				<ToggleControl
+					label={ __( 'Divider Lines', 'cb-identityjs2026' ) }
+					checked={ mod.headingShowLines ?? true }
+					help={ __(
+						'Off for a plain H2 with no rule above/below — useful when you just need correct heading markup without the page-title styling.',
+						'cb-identityjs2026'
+					) }
+					onChange={ ( value ) => updateModule( { headingShowLines: value } ) }
+				/>
+			) }
 		</>
 	);
 }

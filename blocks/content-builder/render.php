@@ -177,9 +177,19 @@ if ( ! function_exists( 'cb_identityjs2026_content_builder_render_module' ) ) :
 					break;
 				}
 				$fs_fw = cb_identityjs2026_content_builder_fs_fw_class( $module['headingFontSize'] ?? '', $module['headingFontWeight'] ?? '' );
+				// H2's divider lines (real, confirmed-live, always-on in the
+				// source) are opt-out here, not a real source toggle — see
+				// ModuleEditor.js's own note on why: H2 is also the only
+				// remaining way to get a real heading tag out of a module
+				// that isn't bundled with page-title styling.
+				$heading_classes = array( 'content-builder__' . $type );
+				if ( 'h2' === $type && ! ( $module['headingShowLines'] ?? true ) ) {
+					$heading_classes[] = 'content-builder__h2--no-lines';
+				}
 				printf(
-					'<%1$s class="content-builder__%1$s %2$s">%3$s</%1$s>',
+					'<%1$s class="%2$s %3$s">%4$s</%1$s>',
 					esc_attr( $type ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- tag name is one of h1/h2/h3 only.
+					esc_attr( implode( ' ', $heading_classes ) ),
 					esc_attr( $fs_fw ),
 					wp_kses_post( $text )
 				);
