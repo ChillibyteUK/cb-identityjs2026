@@ -5451,9 +5451,9 @@ select {
 	}
 }
 
-.stat-block__grid {
+/* .stat-block__grid {
 	background-color: rgba(255, 255, 255, 0.1);
-}
+} */
 
 /*
  * --- Stack layout: Case Study Key Stats' own shape — full-width rows ---
