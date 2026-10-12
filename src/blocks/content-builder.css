@@ -263,6 +263,18 @@
 	margin-bottom: 1.5rem;
 }
 
+/* [spc] shortcode (inc/spacer-shortcode.php) — the RichText wraps the
+   shortcode in its own <p>, whose 1.5rem bottom margin above would stack on
+   top of the requested height. Zero it so the gap is exactly the rem value
+   asked for. :has() is within the theme's evergreen baseline. */
+.content-builder__text p:has(> .cb-spc:only-child) {
+	margin-block: 0;
+}
+
+.cb-spc {
+	display: block;
+}
+
 .content-builder__text ul:not(.service-parents),
 .content-builder__list {
 	margin: 0;
