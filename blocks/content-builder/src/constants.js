@@ -89,6 +89,7 @@ export function emptyModule() {
 		headingText: '',
 		headingFontSize: '',
 		headingFontWeight: '',
+		headingColor: '',
 		headingShowLines: true,
 		textContent: '',
 		textFontSize: 'fs-300',

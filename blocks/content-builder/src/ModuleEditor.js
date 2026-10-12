@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
-import { RichText, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
-import { TextControl, TextareaControl, SelectControl, ToggleControl, Button } from '@wordpress/components';
+import { RichText, MediaUpload, MediaUploadCheck, ColorPalette, store as blockEditorStore } from '@wordpress/block-editor';
+import { TextControl, TextareaControl, SelectControl, ToggleControl, Button, Dropdown, ColorIndicator } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { store as coreStore } from '@wordpress/core-data';
 import RepeaterField from '../../_shared/RepeaterField';
@@ -67,16 +67,85 @@ export default function ModuleEditor( { module: mod, updateModule } ) {
 	);
 }
 
-function FsFwRow( { fsValue, fwValue, fsOptions, onFsChange, onFwChange } ) {
+function FsFwRow( { fsValue, fwValue, fsOptions, onFsChange, onFwChange, children } ) {
 	return (
 		<div style={ { display: 'flex', gap: '12px' } }>
-			<div style={ { flex: 1 } }>
+			<div style={ { flex: 1, minWidth: 0 } }>
 				<SelectControl label={ __( 'Font Size', 'cb-identityjs2026' ) } value={ fsValue } options={ fsOptions } onChange={ onFsChange } />
 			</div>
-			<div style={ { flex: 1 } }>
+			<div style={ { flex: 1, minWidth: 0 } }>
 				<SelectControl label={ __( 'Font Weight', 'cb-identityjs2026' ) } value={ fwValue } options={ FW_OPTIONS } onChange={ onFwChange } />
 			</div>
+			{ children && (
+				<div style={ { flex: 1, minWidth: 0 } } className="cb-identityjs2026-editor-field__color">
+					{ children }
+				</div>
+			) }
 		</div>
+	);
+}
+
+/**
+ * Per-heading colour picker — the block editor's own ColorPalette fed by
+ * the live theme palette (block-editor settings `colors`, i.e. theme.json,
+ * so it follows whatever brand is active with no per-brand list to
+ * maintain), tucked inside a swatch-toggle popover so 58 swatches don't
+ * take over the module form. The popover deliberately stays open while
+ * picking (core's own colour-dropdown behaviour), closing on outside
+ * click/Escape via Dropdown itself. Stores the palette SLUG (not the hex),
+ * so render.php can use core's own `has-{slug}-color` utility — same
+ * mechanism the section-level heading colour already uses, just scoped to
+ * one module instead of the whole section (core's utility is !important,
+ * so a module colour beats the section colour where both are set, and an
+ * empty value inherits as before).
+ *
+ * @param {Object}   props
+ * @param {string}   props.value    Palette slug, or '' for default.
+ * @param {Function} props.onChange ( slug ) => void
+ */
+function HeadingColorDropdown( { value, onChange } ) {
+	const palette = useSelect(
+		( select ) => select( blockEditorStore ).getSettings().colors || [],
+		[]
+	);
+	const match = palette.find( ( entry ) => entry.slug === value );
+	const color = match ? match.color : undefined;
+
+	return (
+		<>
+			<span className="cb-identityjs2026-editor-field__label">{ __( 'Colour', 'cb-identityjs2026' ) }</span>
+			<Dropdown
+				popoverProps={ { placement: 'bottom-start' } }
+				renderToggle={ ( { isOpen, onToggle } ) => (
+					<Button
+						variant="secondary"
+						onClick={ onToggle }
+						aria-expanded={ isOpen }
+						aria-label={ __( 'Choose heading colour', 'cb-identityjs2026' ) }
+						style={ { width: '100%', justifyContent: 'flex-start', minHeight: '40px', maxWidth: '100%' } }
+					>
+						<ColorIndicator colorValue={ color } />
+						<span style={ { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } }>
+							{ match ? match.name || match.slug : __( 'Default', 'cb-identityjs2026' ) }
+						</span>
+					</Button>
+				) }
+				renderContent={ () => (
+					<div style={ { padding: '16px' } }>
+						<ColorPalette
+							colors={ palette }
+							value={ color }
+							onChange={ ( next ) => {
+								const nextMatch = palette.find( ( entry ) => entry.color === next );
+								onChange( nextMatch ? nextMatch.slug : '' );
+							} }
+							disableCustomColors
+							clearable
+						/>
+					</div>
+				) }
+			/>
+		</>
 	);
 }
 
@@ -94,7 +163,12 @@ function HeadingFields( { module: mod, updateModule } ) {
 				fsOptions={ HEADING_FS_OPTIONS }
 				onFsChange={ ( value ) => updateModule( { headingFontSize: value } ) }
 				onFwChange={ ( value ) => updateModule( { headingFontWeight: value } ) }
-			/>
+			>
+				<HeadingColorDropdown
+					value={ mod.headingColor || '' }
+					onChange={ ( value ) => updateModule( { headingColor: value } ) }
+				/>
+			</FsFwRow>
 			{ /* H2 only — it's the only heading type with an always-on border
 			    above/below in the real source (confirmed live, matches the
 			    styling real "main page title" sections use). Not a real

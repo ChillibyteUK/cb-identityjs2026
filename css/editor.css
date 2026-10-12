@@ -232,6 +232,20 @@
 	background: #fff;
 }
 
+/*
+ * Content Builder heading colour dropdown (HeadingColorDropdown in
+ * ModuleEditor.js) — the third column of the Size/Weight/Colour row. A
+ * Dropdown toggle is a plain Button, not a BaseControl, so it gets none
+ * of the white-card treatment the two sibling SelectControls pick up from
+ * the rule above — without this it renders as a small button on the bare
+ * grey canvas, misaligned with its neighbours. Same card, so all three
+ * columns match.
+ */
+.cb-identityjs2026-editor-field__color {
+	padding: 0.75rem 1rem;
+	background: #fff;
+}
+
 .cb-identityjs2026-repeater-field__row .components-base-control {
 	padding: 0;
 }

@@ -186,6 +186,18 @@ if ( ! function_exists( 'cb_identityjs2026_content_builder_render_module' ) ) :
 				if ( 'h2' === $type && ! ( $module['headingShowLines'] ?? true ) ) {
 					$heading_classes[] = 'content-builder__h2--no-lines';
 				}
+				// Per-module colour (HeadingColorField in ModuleEditor.js) —
+				// core's own has-{slug}-color utility, generated from
+				// theme.json for every palette colour, so no custom property
+				// or extra CSS is needed. Strict slug check, not a blind
+				// esc_attr(): a stored value that isn't a plain palette slug
+				// renders uncoloured rather than emitting a broken class.
+				// Core's utility is !important, so this beats the
+				// section-level heading colour above where both are set.
+				$heading_color = trim( (string) ( $module['headingColor'] ?? '' ) );
+				if ( '' !== $heading_color && preg_match( '/^[a-z0-9-]+$/', $heading_color ) ) {
+					$heading_classes[] = 'has-' . $heading_color . '-color';
+				}
 				printf(
 					'<%1$s class="%2$s %3$s">%4$s</%1$s>',
 					esc_attr( $type ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- tag name is one of h1/h2/h3 only.
