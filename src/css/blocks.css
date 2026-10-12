@@ -3658,7 +3658,7 @@
    --fw-book): fw-semi (500) was still wrong, the real value is 450. */
 .stat-block__value {
 	font-family: var(--ff-heading);
-	font-size: var(--fs-800);
+	font-size: var(--fs-850);
 	font-weight: var(--fw-book);
 	line-height: 1;
 	white-space: nowrap;
