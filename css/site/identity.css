@@ -568,31 +568,13 @@
 }
 
 /*
- * Content Builder's List module (blocks/content-builder.css's own
- * .content-builder__list) renders it with no bullet glyphs at all — a
- * borrowed-looking divider-row treatment with no "confirmed live"
- * citation behind it (unlike most of that file), and this module has
- * never actually been used anywhere on this site yet. Per explicit
- * direction: identity gets real bulleted list markers instead. Scoped
- * here rather than in the shared file since it's this brand's own
- * decision, not a verified real-source value other brands should also
- * carry — .content-builder__text's own inline `ul`s are untouched, this
- * is only the List module itself.
+ * NOTE (2026-10-12): an earlier per-brand override here forced the List
+ * module back to plain bullets (list-style: disc, dividers off) on the
+ * grounds the divider treatment was unverified. That direction is now
+ * superseded — the List module keeps the shared reference styling
+ * (divider rows, no glyphs), matching cb-content-grid-v2's __list output.
+ * No override block: this comment is the record, not a rule.
  */
-.content-builder__list {
-	list-style: disc;
-	padding-inline-start: var(--space-4);
-	margin-bottom: 0.75em;
-}
-
-.content-builder__list li:not(:first-of-type) {
-	padding-top: 0;
-	border-top: none;
-}
-
-.content-builder__list li {
-  margin-bottom: 0;
-}
 
 /*
  * Single post (single.php) — identity's own real design, ported from

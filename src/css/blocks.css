@@ -1091,6 +1091,30 @@
 }
 
 /*
+ * A UL inside a text module (e.g. pasted list markup in a Text module's
+ * RichText) gets the reference's own __text ul treatment on top of the
+ * shared rules above: a top border on EVERY item including the first, a
+ * closing bottom border on the last, and tighter prose line-height — the
+ * "framed" list look. Kept separate from the combined selectors above so
+ * the dedicated List module keeps the reference's own distinct
+ * first-item-no-border / no-bottom-border treatment. Ported from
+ * cb-identitygroup2026's _cb_content_grid_v2.scss (__text ul rules).
+ */
+.content-builder__text ul:not(.service-parents) li {
+	line-height: 1.2;
+}
+
+.content-builder__text ul:not(.service-parents) li:first-child {
+	border-top: 1px solid var(--content-builder-line-color);
+	padding-top: 0.75rem;
+}
+
+.content-builder__text ul:not(.service-parents) li:last-of-type {
+	border-bottom: 1px solid var(--content-builder-line-color);
+	padding-bottom: 0.5rem;
+}
+
+/*
  * [service_parents] shortcode (inc/service-parents.php) — ported 1:1 from
  * production's own .service-parents rule, read directly off
  * document.styleSheets on the live identityglobal.com/work/arm-everywhere/
