@@ -48,6 +48,15 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 								<Button variant="secondary" onClick={ open }>
 									{ backgroundUrl ? __( 'Replace Background', 'cb-identityjs2026' ) : __( 'Select Background', 'cb-identityjs2026' ) }
 								</Button>
+								{ backgroundUrl && (
+									<Button
+										variant="tertiary"
+										isDestructive
+										onClick={ () => setAttributes( { backgroundId: 0 } ) }
+									>
+										{ __( 'Remove', 'cb-identityjs2026' ) }
+									</Button>
+								) }
 							</div>
 						) }
 					/>
@@ -108,6 +117,15 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 									<Button variant="secondary" onClick={ open }>
 										{ logoUrl ? __( 'Replace Logo', 'cb-identityjs2026' ) : __( 'Select Logo', 'cb-identityjs2026' ) }
 									</Button>
+									{ logoUrl && (
+										<Button
+											variant="tertiary"
+											isDestructive
+											onClick={ () => setAttributes( { logoId: 0 } ) }
+										>
+											{ __( 'Remove', 'cb-identityjs2026' ) }
+										</Button>
+									) }
 								</div>
 							) }
 						/>

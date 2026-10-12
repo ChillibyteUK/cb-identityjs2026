@@ -85,6 +85,15 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 								<Button variant="secondary" onClick={ open }>
 									{ backgroundUrl ? __( 'Replace Background', 'cb-identityjs2026' ) : __( 'Select Background', 'cb-identityjs2026' ) }
 								</Button>
+								{ backgroundUrl && (
+									<Button
+										variant="tertiary"
+										isDestructive
+										onClick={ () => setAttributes( { backgroundId: 0 } ) }
+									>
+										{ __( 'Remove', 'cb-identityjs2026' ) }
+									</Button>
+								) }
 							</div>
 						) }
 					/>

@@ -60,6 +60,16 @@ function RepeaterImageField( { field, row, index, updateRow, isColumn } ) {
 							<Button variant="secondary" size="small" onClick={ open }>
 								{ id ? __( 'Replace', 'cb-identityjs2026' ) : __( 'Select', 'cb-identityjs2026' ) }
 							</Button>
+							{ id ? (
+								<Button
+									variant="tertiary"
+									size="small"
+									isDestructive
+									onClick={ () => updateRow( index, { [ field.name ]: 0 } ) }
+								>
+									{ __( 'Remove', 'cb-identityjs2026' ) }
+								</Button>
+							) : null }
 						</div>
 					) }
 				/>

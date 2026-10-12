@@ -321,6 +321,16 @@ function LogoGridLogos( { ids, onChange } ) {
 						<Button variant="secondary" size="small" onClick={ open }>
 							{ ids && ids.length ? __( 'Replace Logos', 'cb-identityjs2026' ) : __( 'Select Logos', 'cb-identityjs2026' ) }
 						</Button>
+						{ ids && ids.length > 0 && (
+							<Button
+								variant="tertiary"
+								size="small"
+								isDestructive
+								onClick={ () => onChange( [] ) }
+							>
+								{ __( 'Remove All', 'cb-identityjs2026' ) }
+							</Button>
+						) }
 					</div>
 				) }
 			/>
@@ -355,6 +365,15 @@ function ImageFields( { module: mod, updateModule } ) {
 									<Button variant="secondary" onClick={ open }>
 										{ url ? __( 'Replace Image', 'cb-identityjs2026' ) : __( 'Select Image', 'cb-identityjs2026' ) }
 									</Button>
+									{ url && (
+										<Button
+											variant="tertiary"
+											isDestructive
+											onClick={ () => updateModule( { imageId: 0 } ) }
+										>
+											{ __( 'Remove', 'cb-identityjs2026' ) }
+										</Button>
+									) }
 								</div>
 							) }
 						/>

@@ -67,6 +67,15 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 										<Button variant="secondary" onClick={ open }>
 											{ imageUrl ? __( 'Replace Background Image', 'cb-identityjs2026' ) : __( 'Select Background Image', 'cb-identityjs2026' ) }
 										</Button>
+										{ imageUrl && (
+											<Button
+												variant="tertiary"
+												isDestructive
+												onClick={ () => setAttributes( { imageId: 0 } ) }
+											>
+												{ __( 'Remove', 'cb-identityjs2026' ) }
+											</Button>
+										) }
 									</div>
 								) }
 							/>
@@ -89,6 +98,15 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 										<Button variant="secondary" onClick={ open }>
 											{ overlayImageUrl ? __( 'Replace Overlay Image', 'cb-identityjs2026' ) : __( 'Select Overlay Image', 'cb-identityjs2026' ) }
 										</Button>
+										{ overlayImageUrl && (
+											<Button
+												variant="tertiary"
+												isDestructive
+												onClick={ () => setAttributes( { overlayImageId: 0 } ) }
+											>
+												{ __( 'Remove', 'cb-identityjs2026' ) }
+											</Button>
+										) }
 									</div>
 								) }
 							/>
