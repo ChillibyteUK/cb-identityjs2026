@@ -491,6 +491,16 @@ if ( ! function_exists( 'cb_identityjs2026_content_builder_render_module' ) ) :
 				endif;
 				break;
 
+			case 'code':
+				$code = trim( (string) ( $module['codeContent'] ?? '' ) );
+				if ( '' === $code ) {
+					break;
+				}
+				?>
+				<div class="content-builder__code"><?php echo $code; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- raw by design: this module exists so editors can place embeds/iframes/third-party widgets WordPress's own kses would otherwise strip. The trust boundary is the editor, not this output — same model as the Site-Wide Settings script slots (inc/head-tags.php), and roles without unfiltered_html already have disallowed tags stripped by WP core on save. ?></div>
+				<?php
+				break;
+
 			case 'empty':
 			default:
 				break;

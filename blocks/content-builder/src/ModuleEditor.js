@@ -58,6 +58,7 @@ export default function ModuleEditor( { module: mod, updateModule } ) {
 			{ 'video' === mod.moduleType && <VideoFields module={ mod } updateModule={ updateModule } /> }
 			{ 'qa' === mod.moduleType && <QaFields module={ mod } updateModule={ updateModule } /> }
 			{ 'button' === mod.moduleType && <ButtonFields module={ mod } updateModule={ updateModule } /> }
+			{ 'code' === mod.moduleType && <CodeFields module={ mod } updateModule={ updateModule } /> }
 			{ 'empty' === mod.moduleType && (
 				<p className="cb-identityjs2026-editor-field__help">
 					{ __( 'Renders as a deliberately blank column — no fields needed.', 'cb-identityjs2026' ) }
@@ -543,5 +544,43 @@ function ButtonFields( { module: mod, updateModule } ) {
 				help={ __( 'Optional — shown alongside the button, not instead of it.', 'cb-identityjs2026' ) }
 			/>
 		</>
+	);
+}
+
+function CodeFields( { module: mod, updateModule } ) {
+	return (
+		<div className="cb-identityjs2026-editor-field">
+			<label className="cb-identityjs2026-editor-field__label" htmlFor={ `cb-code-${ mod.id }` }>
+				{ __( 'HTML', 'cb-identityjs2026' ) }
+			</label>
+			{ /* Raw <textarea>, not TextareaControl: the passthrough needs
+			    monospace rendering with spellcheck off (same treatment as
+			    the Site-Wide Settings script slots in inc/options.php),
+			    and TextareaControl doesn't guarantee style forwarding to
+			    its inner element. */ }
+			<textarea
+				id={ `cb-code-${ mod.id }` }
+				className="cb-identityjs2026-editor-field__control"
+				rows={ 10 }
+				spellCheck="false"
+				autoCapitalize="off"
+				autoComplete="off"
+				autoCorrect="off"
+				style={ {
+					width: '100%',
+					fontFamily: 'Consolas, Monaco, monospace',
+					fontSize: '12px',
+					whiteSpace: 'pre',
+					overflowWrap: 'normal',
+					overflowX: 'auto',
+				} }
+				value={ mod.codeContent || '' }
+				onChange={ ( event ) => updateModule( { codeContent: event.target.value } ) }
+				placeholder={ __( '<div>…</div>', 'cb-identityjs2026' ) }
+			/>
+			<p className="cb-identityjs2026-editor-field__help">
+				{ __( 'Printed on the page exactly as entered — embeds, iframes, third-party widgets. No filtering, no shortcode expansion.', 'cb-identityjs2026' ) }
+			</p>
+		</div>
 	);
 }

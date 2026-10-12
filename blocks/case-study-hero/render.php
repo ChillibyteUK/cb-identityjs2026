@@ -57,6 +57,7 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'case-stud
 				'app_id'    => $vimeo_app_id,
 				'autoplay'  => '1',
 				'muted'     => '1',
+				'loop'      => '1',
 			),
 			'https://player.vimeo.com/video/' . rawurlencode( $vimeo_id )
 		);

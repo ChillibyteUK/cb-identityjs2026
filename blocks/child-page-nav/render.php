@@ -14,7 +14,7 @@
 defined( 'ABSPATH' ) || exit;
 
 $parent_page_id = absint( $attributes['parentPage'] ?? 0 );
-$title           = trim( $attributes['title'] ?? '' );
+$title          = trim( $attributes['title'] ?? '' );
 
 if ( ! $parent_page_id ) {
 	return;

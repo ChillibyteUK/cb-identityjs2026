@@ -35,6 +35,7 @@ export const MODULE_TYPE_OPTIONS = [
 	{ label: 'Video', value: 'video' },
 	{ label: 'Q&A', value: 'qa' },
 	{ label: 'Button', value: 'button' },
+	{ label: 'Code (HTML)', value: 'code' },
 	{ label: 'Empty', value: 'empty' },
 ];
 
@@ -115,6 +116,7 @@ export function emptyModule() {
 		buttonLinkUrl: '',
 		buttonLinkTarget: false,
 		ctaText: '',
+		codeContent: '',
 	};
 }
 
