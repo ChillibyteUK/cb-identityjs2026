@@ -78,12 +78,12 @@
 .logo-clip {
 	display: inline-block;
 	overflow: hidden;
-	height: 25px;
+	height: 19px; /* matches health's own live value (.cb-site-health header .logo-clip) — travel is 18px, coda/old-identity 25px */
 }
 
 .logo-clip svg {
 	display: block;
-	height: 25px;
+	height: 19px;
 	width: auto;
 }
 
@@ -168,6 +168,30 @@
 #masthead .nav-link[aria-current="page"] {
 	color: var(--col-accent);
 	font-weight: var(--fw-semibold); /* 600 — measured via actual :hover state on live identityglobal.com */
+}
+
+/*
+ * Contact button — add `red` to the menu item's CSS Classes field
+ * (wp-admin → Appearance → Menus → Screen Options → CSS Classes), the same
+ * mechanism as health's `strawberry` / travel's `raspberry`. The walker
+ * passes custom li classes through (see
+ * class-cb-identity-js-2026-nav-walker.php); this styles them. Colours are
+ * the button tokens rather than a raw palette red, so a button-component
+ * rebrand carries the nav button with it. Each selector beats its generic
+ * nav-link counterpart above on specificity, keeping the text readable in
+ * every state (default/hover/current would otherwise go lime).
+ */
+#masthead li.red a {
+	background-color: var(--col-button-bg);
+	padding-inline: 1rem !important;
+	color: var(--col-button-text);
+}
+
+#masthead li.red a:hover,
+#masthead li.red a:focus,
+#masthead li.red a.active,
+#masthead li.red a[aria-current="page"] {
+	color: var(--col-button-text);
 }
 
 /*

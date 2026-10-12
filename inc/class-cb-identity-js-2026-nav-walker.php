@@ -80,10 +80,32 @@ if ( ! class_exists( 'CB_Identity_JS_2026_Nav_Walker' ) ) {
 				|| in_array( 'current_page_parent', $item->classes, true )
 				|| in_array( 'current-page-ancestor', $item->classes, true );
 
-			$li_classes = array( 'nav-item' );
-			if ( $has_children ) {
-				$li_classes[] = 'dropdown';
+		$li_classes = array( 'nav-item' );
+		if ( $has_children ) {
+			$li_classes[] = 'dropdown';
+		}
+
+		// Pass through editor-assigned classes (Appearance → Menus → CSS
+		// Classes, e.g. `red` for the contact button) — core's own
+		// structural classes are deliberately NOT carried over (the walker
+		// computes current/dropdown state itself above), so anything
+		// starting with menu-item/current-/current_/page-/page_ is treated
+		// as core-owned and dropped; everything else is the editor's.
+		$custom_classes = array_filter(
+			(array) $item->classes,
+			static function ( $class ) {
+				if ( ! is_string( $class ) || '' === $class ) {
+					return false;
+				}
+				foreach ( array( 'menu-item', 'current-', 'current_', 'page-', 'page_' ) as $prefix ) {
+					if ( 0 === strpos( $class, $prefix ) ) {
+						return false;
+					}
+				}
+				return true;
 			}
+		);
+		$li_classes = array_merge( $li_classes, array_values( array_unique( $custom_classes ) ) );
 
 			$output .= '<li class="' . esc_attr( implode( ' ', $li_classes ) ) . '">';
 
