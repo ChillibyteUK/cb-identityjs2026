@@ -75,6 +75,17 @@
 	gap: var(--space-4); /* 24px — measured against live identityglobal.com, not the skeleton's default --space-2 */
 }
 
+/*
+ * Mobile hamburger — the shared nav.css leaves .navbar-toggler's colour to
+ * inherit, which computes near-black on this dark header. Explicit white,
+ * scoped here (not shared): other brands' light headers need the dark
+ * icon. Covers the icon (currentColor SVG stroke) and the border together.
+ */
+#masthead .navbar-toggler {
+	color: var(--col-text);
+	border-color: var(--col-text);
+}
+
 .logo-clip {
 	display: inline-block;
 	overflow: hidden;
