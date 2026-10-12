@@ -43,6 +43,17 @@ if ( mb_strlen( wp_strip_all_tags( $quote ) ) > 130 ) {
 }
 
 $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $section_classes ) ) );
+
+// Feed the aggregated Review schema (see queue_review_schema() in
+// inc/utilities.php) — combined with every other testimonial on the page
+// into one footer script, same pattern as the FAQ blocks.
+queue_review_schema(
+	array(
+		'quote'   => $quote,
+		'author'  => $author,
+		'company' => $company,
+	)
+);
 ?>
 <section <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?>>
 	<div class="id-container">

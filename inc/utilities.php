@@ -191,6 +191,82 @@ function output_faq_schema() {
 add_action( 'wp_footer', 'output_faq_schema' );
 
 /**
+ * Queue one testimonial for the aggregated Review JSON-LD schema, output
+ * once in the footer by output_review_schema(). Safe to call from multiple
+ * Testimonial blocks on the same page — everything queued is combined into
+ * a single @graph block rather than one script per block instance, same
+ * pattern as the FAQ schema above.
+ *
+ * Deliberately no reviewRating: these blocks don't collect a star rating,
+ * and inventing one would be dishonest markup. Valid schema.org without
+ * it (Google just won't award rich-result stars for unrated reviews —
+ * adding a rating field to the block later would change that).
+ *
+ * @param array $item Array with 'quote' (string, required), 'author'
+ *                    (string, optional), 'company' (string, optional).
+ * @return void
+ */
+function queue_review_schema( array $item ) {
+	global $review_schema_items;
+
+	if ( ! isset( $review_schema_items ) ) {
+		$review_schema_items = array();
+	}
+
+	if ( empty( $item['quote'] ) ) {
+		return;
+	}
+
+	$review = array(
+		'@type'        => 'Review',
+		'itemReviewed' => array(
+			'@type' => 'Organization',
+			'name'  => get_bloginfo( 'name' ),
+		),
+		'reviewBody'   => wp_strip_all_tags( $item['quote'] ),
+	);
+
+	if ( ! empty( $item['author'] ) ) {
+		$author = array(
+			'@type' => 'Person',
+			'name'  => wp_strip_all_tags( $item['author'] ),
+		);
+
+		if ( ! empty( $item['company'] ) ) {
+			$author['worksFor'] = array(
+				'@type' => 'Organization',
+				'name'  => wp_strip_all_tags( $item['company'] ),
+			);
+		}
+
+		$review['author'] = $author;
+	}
+
+	$review_schema_items[] = $review;
+}
+
+/**
+ * Output the aggregated Review JSON-LD schema, if anything was queued.
+ *
+ * @return void
+ */
+function output_review_schema() {
+	global $review_schema_items;
+
+	if ( empty( $review_schema_items ) ) {
+		return;
+	}
+
+	$schema = array(
+		'@context' => 'https://schema.org',
+		'@graph'   => $review_schema_items,
+	);
+
+	echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . '</script>' . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+}
+add_action( 'wp_footer', 'output_review_schema' );
+
+/**
  * Estimate reading time for a piece of content.
  *
  * @param string $content          Content to estimate.
