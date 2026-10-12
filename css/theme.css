@@ -5611,7 +5611,7 @@ select {
    --fw-book): fw-semi (500) was still wrong, the real value is 450. */
 .stat-block__value {
 	font-family: var(--ff-heading);
-	font-size: var(--fs-900);
+	font-size: var(--fs-800);
 	font-weight: var(--fw-book);
 	line-height: 1;
 	white-space: nowrap;
@@ -5622,9 +5622,10 @@ select {
    computed styles (fontSize 28px = --fs-500, fontWeight 300 = --fw-light,
    color rgb(255,255,255)). */
 .stat-block__descriptor {
-	font-size: var(--fs-500);
+	font-size: var(--fs-400);
 	font-weight: var(--fw-light);
 	color: #fff;
+	text-wrap: pretty;
 }
 
 .stat-block__cta-row-inner {
