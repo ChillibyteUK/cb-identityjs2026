@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { registerFormatType, toggleFormat } from '@wordpress/rich-text';
 import { RichTextToolbarButton } from '@wordpress/block-editor';
 
@@ -73,4 +73,56 @@ registerFormatType( HEADING_FORMAT_NAME, {
 			/>
 		);
 	},
+} );
+
+/**
+ * Real H1–H4 inline formats — same toolbar-button mechanism as Lede (select
+ * text, click, the tag applies), restoring the old TinyMCE Format dropdown's
+ * "heading inside this field" for flat multiline="p" RichText fields like
+ * Content Builder's Text module. Unlike the visual-only .cb-heading format
+ * above (a <strong> that only *looks* like a heading), these emit real
+ * heading elements, so they land in the document outline, AT navigation,
+ * and SEO heading structure as genuine headings.
+ *
+ * Two things to know before touching this: (1) a <p>'s content model can't
+ * hold a heading, so the browser splits the paragraph around the new
+ * element — the saved HTML reads <p>…</p><h2>…</h2><p>…</p>, which is
+ * exactly what the front end wants (render.php passes text modules through
+ * wp_kses_post(), which allows h1–h6, then do_shortcode()); (2) styling
+ * comes from the global h1–h4 rules in src/css/base.css (already loaded in
+ * the editor canvas via theme.min.css), so no per-block CSS is needed.
+ */
+const INLINE_HEADING_LEVELS = [ 'h1', 'h2', 'h3', 'h4' ];
+
+INLINE_HEADING_LEVELS.forEach( ( tagName ) => {
+	const level = tagName.charAt( 1 );
+	const name = `cb-identityjs2026/inline-heading-${ tagName }`;
+
+	registerFormatType( name, {
+		title: sprintf(
+			/* translators: %s: heading level number, e.g. "2" in "Heading 2". */
+			__( 'Heading %s', 'cb-identityjs2026' ),
+			level
+		),
+		tagName,
+		className: null,
+		edit( { isActive, value, onChange } ) {
+			return (
+				<RichTextToolbarButton
+					icon={
+						<span aria-hidden="true" style={ { fontWeight: 700, fontSize: '13px' } }>
+							{ `H${ level }` }
+						</span>
+					}
+					title={ sprintf(
+						/* translators: %s: heading level number, e.g. "2" in "Heading 2". */
+						__( 'Heading %s', 'cb-identityjs2026' ),
+						level
+					) }
+					onClick={ () => onChange( toggleFormat( value, { type: name } ) ) }
+					isActive={ isActive }
+				/>
+			);
+		},
+	} );
 } );
