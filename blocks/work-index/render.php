@@ -25,6 +25,20 @@ defined( 'ABSPATH' ) || exit;
 
 $hero_id         = absint( $attributes['heroCaseStudy'] ?? 0 );
 $show_filter_bar = ! empty( $attributes['showFilterBar'] );
+$sport_only      = ! empty( $attributes['sportOnly'] );
+
+// Sport scoping (the `theme` taxonomy's `sports` term — see the Sport
+// toggle in edit.js): on, the grid (and the fallback hero below) show only
+// sports-tagged case studies; off, sports-tagged ones are excluded. An
+// explicitly-picked hero is always honoured as picked — this only shapes
+// the fallback pick and the grid query. Children of the Sports term follow
+// it in both directions (include_children default).
+$sport_tax_query = array(
+	'taxonomy' => 'theme',
+	'field'    => 'slug',
+	'terms'    => array( 'sports' ),
+	'operator' => $sport_only ? 'IN' : 'NOT IN',
+);
 
 if ( ! $hero_id ) {
 	$hero_query = new WP_Query(
@@ -33,6 +47,7 @@ if ( ! $hero_id ) {
 			'posts_per_page' => 1,
 			'orderby'        => 'menu_order',
 			'order'          => 'ASC',
+			'tax_query'      => array( $sport_tax_query ), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- small, indexed taxonomy query on a bounded post type, same cost class as the grid query below.
 		)
 	);
 	if ( $hero_query->have_posts() ) {
@@ -146,6 +161,7 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'work-inde
 					'orderby'        => 'menu_order',
 					'order'          => 'ASC',
 					'post__not_in'   => $hero_id ? array( $hero_id ) : array(),
+					'tax_query'      => array( $sport_tax_query ), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- see the hero query above.
 				)
 			);
 

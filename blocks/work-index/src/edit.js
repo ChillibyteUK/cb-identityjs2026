@@ -12,7 +12,7 @@ import PostTypePicker from '../../_shared/PostTypePicker';
  * subtitle block-parsing, TomSelect).
  */
 export default function Edit( { attributes, setAttributes, clientId } ) {
-	const { heroCaseStudy, showFilterBar } = attributes;
+	const { heroCaseStudy, showFilterBar, sportOnly } = attributes;
 	const blockProps = useBlockProps( { className: 'container cb-identityjs2026-editor-block' } );
 
 	return (
@@ -25,12 +25,24 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 				help={ __( 'Optional — defaults to the first case study by menu order.', 'cb-identityjs2026' ) }
 			/>
 
-			<ToggleControl
-				label={ __( 'Show Filter Bar', 'cb-identityjs2026' ) }
-				checked={ showFilterBar }
-				onChange={ ( value ) => setAttributes( { showFilterBar: value } ) }
-				help={ __( 'A Service-taxonomy dropdown that filters the grid below, client-side.', 'cb-identityjs2026' ) }
-			/>
+		<div style={ { display: 'flex', gap: '12px' } }>
+			<div style={ { flex: '1 1 0%', minWidth: 0 } }>
+				<ToggleControl
+					label={ __( 'Show Filter Bar', 'cb-identityjs2026' ) }
+					checked={ showFilterBar }
+					onChange={ ( value ) => setAttributes( { showFilterBar: value } ) }
+					help={ __( 'A Service-taxonomy dropdown that filters the grid below, client-side.', 'cb-identityjs2026' ) }
+				/>
+			</div>
+			<div style={ { flex: '1 1 0%', minWidth: 0 } }>
+				<ToggleControl
+					label={ __( 'Sport', 'cb-identityjs2026' ) }
+					checked={ sportOnly }
+					onChange={ ( value ) => setAttributes( { sportOnly: value } ) }
+					help={ __( 'On: the grid shows only sports-tagged case studies (theme: Sports) — use on the Sport page. Off: sports-tagged case studies are excluded — use on the main Work page.', 'cb-identityjs2026' ) }
+				/>
+			</div>
+		</div>
 		</EditorBlockShell>
 	);
 }
