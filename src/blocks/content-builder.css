@@ -263,6 +263,19 @@
 	margin-bottom: 1.5rem;
 }
 
+/*
+ * Lede format (blocks/_editor-formats) inside a Text module — pinned to
+ * fs-400 / Light, regardless of the module's own size/weight or the
+ * global .cb-lede rule in base.css (which serves Page Header). Higher
+ * specificity than both, so it wins in exactly this context and nowhere
+ * else. Case studies render the same Text modules, so they're covered by
+ * the same rule — no post-type scoping needed.
+ */
+.content-builder__text .cb-lede {
+	font-size: var(--fs-400);
+	font-weight: var(--fw-light);
+}
+
 /* [spc] shortcode (inc/spacer-shortcode.php) — the RichText wraps the
    shortcode in its own <p>, whose 1.5rem bottom margin above would stack on
    top of the requested height. Zero it so the gap is exactly the rem value
