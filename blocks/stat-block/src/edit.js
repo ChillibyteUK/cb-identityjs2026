@@ -17,10 +17,12 @@ import RepeaterField from '../../_shared/RepeaterField';
  * so those extra fields were dead UI clutter for the common case.
  * - stack: Case Study Key Stats' real shape — full-width rows, just
  *   `value` + `descriptor`.
- * - column: CB Stat Hero's shape — CTA cell plus intro/prefix/value/
- *   suffix/descriptor stats. Editor rows use per-field widths
- *   (intro 40 / prefix 20 / value 20 / suffix 20, descriptor 100% below)
- *   via RepeaterField's `width`, not the stacked 'column' layout.
+ * - column: CB Stat Hero's shape — CTA cell plus intro/prefix/value/suffix
+ *   stats, no `descriptor` (the real source has none; confirmed live the
+ *   only column usage anywhere has it empty on every row). `descriptor`
+ *   stays a stack-only field. Editor rows use per-field widths
+ *   (intro 40 / prefix 20 / value 20 / suffix 20) via RepeaterField's
+ *   `width`, not the stacked 'column' layout.
  */
 const STACK_FIELDS = [
 	{ name: 'value', label: __( 'Value', 'cb-identityjs2026' ), type: 'text', help: __( 'e.g. "300" or "17,000+"', 'cb-identityjs2026' ) },
@@ -32,7 +34,6 @@ const COLUMN_FIELDS = [
 	{ name: 'prefix', label: __( 'Stat Prefix', 'cb-identityjs2026' ), type: 'text', width: '20%', help: __( 'e.g. "$"', 'cb-identityjs2026' ) },
 	{ name: 'value', label: __( 'Stat', 'cb-identityjs2026' ), type: 'text', width: '20%', help: __( 'Digits only for the count-up, e.g. "40" — put "+" or "%" in Suffix, not here', 'cb-identityjs2026' ) },
 	{ name: 'suffix', label: __( 'Stat Suffix', 'cb-identityjs2026' ), type: 'text', width: '20%', help: __( 'e.g. "+" or "k+" or "%"', 'cb-identityjs2026' ) },
-	{ name: 'descriptor', label: __( 'Descriptor', 'cb-identityjs2026' ), type: 'text', width: '100%', help: __( 'Optional line below the stat — leave empty for the plain Stat Hero look.', 'cb-identityjs2026' ) },
 ];
 
 export default function Edit( { attributes, setAttributes, clientId } ) {

@@ -16,9 +16,11 @@
  *   as the first grid cell (button above message), then one cell per stat
  *   with intro above a prefix/value/suffix stat line. The stat value
  *   animates via data-stat-target count-up (see src/js/stat-count-up.js),
- *   same as the real source. `descriptor` has no equivalent over there —
- *   kept as an optional line below the stat (renders nothing when empty,
- *   so hero-parity content is unaffected).
+ *   same as the real source. `descriptor` has no equivalent over there and
+ *   is no longer offered in the column editor (confirmed live the only
+ *   column usage anywhere had it empty on every row) — the render guard
+ *   stays purely so any legacy row carrying one still displays it instead
+ *   of silently dropping content. `descriptor` remains a real stack field.
  *
  * `pre_title`'s hardcoded "Key Stats" fallback (real source) is dropped —
  * left blank by default, same as every other block that had one (Work

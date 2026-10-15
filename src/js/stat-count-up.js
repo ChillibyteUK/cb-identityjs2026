@@ -27,7 +27,11 @@ export function initStatCountUp() {
 		const startTime = performance.now();
 
 		const tick = (now) => {
-			const progress = Math.min((now - startTime) / duration, 1);
+			// Clamped both ends: a rAF timestamp can predate startTime by up
+			// to a frame (vsync-aligned, and the observer can fire
+			// immediately on a rapid refresh), and without the floor the
+			// ease-out below goes negative — a "-1"/"-2" flash on frame one.
+			const progress = Math.min(Math.max((now - startTime) / duration, 0), 1);
 			const eased = 1 - Math.pow(1 - progress, 3);
 			element.textContent = String(Math.round(target * eased));
 			if (progress < 1) window.requestAnimationFrame(tick);

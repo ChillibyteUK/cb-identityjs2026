@@ -3725,9 +3725,9 @@
 	display: inline-block;
 }
 
-/* `descriptor` has no equivalent in the real source — optional extra line
-   under the stat, same type as the stack layout's own descriptor. Renders
-   nothing when empty, so hero-parity content is unaffected. */
+/* `descriptor` has no equivalent in the real source and is no longer
+   offered in the column editor — this rule only styles the render guard's
+   output for any legacy row still carrying one. */
 .stat-block--column .stat-block__descriptor {
 	margin-block-start: var(--space-2);
 }

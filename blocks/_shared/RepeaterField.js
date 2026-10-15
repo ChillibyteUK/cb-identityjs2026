@@ -154,17 +154,33 @@ function toSafeRichTextHtml( value, multiline ) {
  *                                  `layout` (defaults to 'row' like the top level). The nested value
  *                                  lives at `row[name]` as its own array of rows, same shape as this
  *                                  component's own `value`/`onChange` contract at any depth. `width`
- *                                  (e.g. '40%') sets that field's flex-basis in 'row' layout, so
- *                                  fields can take uneven shares of the row instead of equal
- *                                  ones — a '100%' field wraps onto its own line (rows allow
- *                                  wrapping), e.g. Stat Block's intro 40 / prefix 20 / value
- *                                  20 / suffix 20 with descriptor 100% below.
+ *                                  (e.g. '40%') gives that field a proportional share of a
+ *                                  'row' layout instead of an equal one — implemented as a
+ *                                  unitless flex-grow share from a zero basis (so gaps are
+ *                                  divided exactly, never overflow the row), e.g. Stat
+ *                                  Block's intro 40 / prefix 20 / value 20 / suffix 20.
+ *                                  '100%' instead forces its own full-width line.
  * @param {Object}   props.emptyRow Shape of a freshly-added row, e.g. { stat: '', title: '' }.
  * @param {string}   [props.layout] 'row' (default) or 'column'.
  */
 export default function RepeaterField( { label, value, onChange, fields, emptyRow, layout = 'row' } ) {
 	const isColumn = 'column' === layout;
 	const rows = value || [];
+
+	// Proportional flex share for a `width` like '40%' — unitless grow from
+	// a zero basis, so the browser divides the leftover space (after gaps)
+	// exactly and the shares can never overflow the row and wrap early.
+	// '100%' instead forces its own line: zero grow, full basis.
+	function widthFlex( width ) {
+		const percent = parseFloat( width );
+		if ( ! Number.isFinite( percent ) ) {
+			return undefined;
+		}
+		if ( percent >= 100 ) {
+			return '0 0 100%';
+		}
+		return `${ percent } 1 0%`;
+	}
 
 	// Rows saved before this `id` field existed (or any other future
 	// producer of rows without one) need an id from their very first render,
@@ -236,7 +252,7 @@ export default function RepeaterField( { label, value, onChange, fields, emptyRo
 					{ fields.map( ( field ) => (
 						<span
 							key={ field.name }
-							style={ field.width ? { flex: `1 1 ${ field.width }` } : undefined }
+							style={ field.width ? { flex: widthFlex( field.width ) } : undefined }
 							className={
 								'image' === field.type || 'file' === field.type
 									? 'cb-identityjs2026-repeater-field__header-cell cb-identityjs2026-repeater-field__header-cell--image'
@@ -441,7 +457,7 @@ export default function RepeaterField( { label, value, onChange, fields, emptyRo
 						<div
 							key={ field.name }
 							className="cb-identityjs2026-repeater-field__cell"
-							style={ { flex: `1 1 ${ field.width }` } }
+							style={ { flex: widthFlex( field.width ) } }
 						>
 							{ fieldControl }
 						</div>
