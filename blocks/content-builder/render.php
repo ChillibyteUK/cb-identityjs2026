@@ -382,8 +382,12 @@ if ( ! function_exists( 'cb_identityjs2026_content_builder_render_module' ) ) :
 				$aspect_map   = array(
 					'21x9' => 'ratio-21x9',
 					'16x9' => 'ratio-16x9',
+					'3x2'  => 'ratio-3x2',
 					'4x3'  => 'ratio-4x3',
+					'5x4'  => 'ratio-5x4',
 					'1x1'  => 'ratio-1x1',
+					'2x3'  => 'ratio-2x3',
+					'9x16' => 'ratio-9x16',
 				);
 				if ( isset( $aspect_map[ $aspect ] ) ) {
 					$wrap_classes[] = 'ratio';

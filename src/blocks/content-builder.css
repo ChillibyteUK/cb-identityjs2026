@@ -633,8 +633,12 @@
 
 .ratio-21x9 { --cb-aspect-ratio: calc(9 / 21 * 100%); }
 .ratio-16x9 { --cb-aspect-ratio: calc(9 / 16 * 100%); }
+.ratio-3x2 { --cb-aspect-ratio: calc(2 / 3 * 100%); }
 .ratio-4x3 { --cb-aspect-ratio: calc(3 / 4 * 100%); }
+.ratio-5x4 { --cb-aspect-ratio: calc(4 / 5 * 100%); }
 .ratio-1x1 { --cb-aspect-ratio: 100%; }
+.ratio-2x3 { --cb-aspect-ratio: calc(3 / 2 * 100%); }
+.ratio-9x16 { --cb-aspect-ratio: calc(16 / 9 * 100%); }
 
 /* ---------------------------------------------------------------------
  * Video
