@@ -89,7 +89,7 @@ while ( have_posts() ) {
 		<div class="post-title">
 			<div class="id-container px-4 px-md-5">
 				<div class="row">
-					<div class="col-md-9">
+					<div class="col-12 col-md-9">
 						<h1 class="pt-1"><?php echo esc_html( get_the_title() ); ?></h1>
 					</div>
 				</div>
@@ -97,8 +97,8 @@ while ( have_posts() ) {
 		</div>
 		<div class="id-container">
 			<div class="row post-content-row mb-5">
-				<div class="col-md-3"></div>
-				<div class="col-md-9 post-content px-4 px-md-5 ps-md-0 pe-md-5">
+				<div class="col-12 col-md-3"></div>
+				<div class="col-12 col-md-9 post-content px-4 px-md-5 ps-md-0 pe-md-5">
 					<?php echo apply_filters( 'the_content', get_the_content() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- the_content output, same as the real source. ?>
 				</div>
 			</div>
@@ -106,8 +106,8 @@ while ( have_posts() ) {
 		<div class="post-date-row">
 			<div class="id-container">
 				<div class="row post-content-row">
-					<div class="col-md-3"></div>
-					<div class="col-md-9 post-content px-4 px-md-5 ps-md-0 pe-md-5">
+					<div class="col-12 col-md-3"></div>
+					<div class="col-12 col-md-9 post-content px-4 px-md-5 ps-md-0 pe-md-5">
 						<div class="container post-date pt-3">
 							<?php echo esc_html( get_the_date( 'j F Y' ) ); ?>
 						</div>

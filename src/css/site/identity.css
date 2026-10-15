@@ -463,7 +463,8 @@
 
 .insight-type-grid {
 	display: grid;
-	grid-template-columns: repeat(12, 1fr);
+	/* Single column on mobile: 12 tracks plus 3rem gaps (11 x 48px) overflow narrow viewports. */
+	grid-template-columns: minmax(0, 1fr);
 	/* Real source's row is Bootstrap's g-5 (3rem gutter both axes), not this
 	   theme's own generic --grid-gutter (1rem) — confirmed live: 48px. */
 	gap: var(--space-5);
@@ -473,13 +474,13 @@
 
 @media (min-width: 768px) {
 	.insight-type-grid {
+		grid-template-columns: repeat(12, minmax(0, 1fr));
 		padding-inline: var(--space-5);
 	}
 }
 
 .insight-type-grid__card {
 	display: block;
-	grid-column: span 12;
 	color: inherit;
 	text-decoration: none;
 }

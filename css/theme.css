@@ -2863,6 +2863,7 @@ select {
 .content-builder__h2,
 .content-builder__h3 {
 	color: var(--content-builder-heading-color, var(--col-heading));
+	overflow-wrap: break-word;
 }
 
 .content-builder--has-background-image {
@@ -2945,9 +2946,20 @@ select {
 
 .content-builder__col {
 	grid-column: span var(--content-builder-col-span, 12);
+	min-width: 0;
 }
 
 @media (max-width: 767.98px) {
+	/*
+	 * The 11 × --space-5 column gutters count toward the grid's intrinsic
+	 * minimum (~528px), blowing past narrow viewports even though every
+	 * column stacks full-width below. Zero the column gap on mobile;
+	 * row-gap keeps its stacked rhythm.
+	 */
+	.content-builder__row {
+		column-gap: 0;
+	}
+
 	.content-builder__col {
 		grid-column: span 12;
 	}
@@ -3006,6 +3018,15 @@ select {
 .content-builder__text p {
 	text-wrap: pretty;
 	margin-bottom: 1.5rem;
+}
+
+/*
+ * Long unbreakable strings (pasted URLs, emails) in a text module would
+ * otherwise force the column wider than the viewport — break them instead.
+ * No visual change for ordinary prose.
+ */
+.content-builder__text {
+	overflow-wrap: break-word;
 }
 
 /*
