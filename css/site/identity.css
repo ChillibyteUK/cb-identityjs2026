@@ -399,6 +399,12 @@
 	max-width: 66.6667%;
 }
 
+/* The intro's content is wrapped in its own .container by the_content, which
+   would stack its padding on top of .news-hero__intro's — reset it. */
+.news-hero__intro .container {
+	padding-inline: 0;
+}
+
 @media (max-width: 767.98px) {
 	.news-hero__intro {
 		max-width: 100%;
