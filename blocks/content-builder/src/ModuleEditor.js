@@ -57,6 +57,7 @@ export default function ModuleEditor( { module: mod, updateModule } ) {
 			{ 'image' === mod.moduleType && <ImageFields module={ mod } updateModule={ updateModule } /> }
 			{ 'video' === mod.moduleType && <VideoFields module={ mod } updateModule={ updateModule } /> }
 			{ 'qa' === mod.moduleType && <QaFields module={ mod } updateModule={ updateModule } /> }
+			{ 'faq' === mod.moduleType && <FaqFields module={ mod } updateModule={ updateModule } /> }
 			{ 'button' === mod.moduleType && <ButtonFields module={ mod } updateModule={ updateModule } /> }
 			{ 'code' === mod.moduleType && <CodeFields module={ mod } updateModule={ updateModule } /> }
 			{ 'empty' === mod.moduleType && (
@@ -515,6 +516,22 @@ function QaFields( { module: mod, updateModule } ) {
 				onChange={ ( value ) => updateModule( { qaLargeLeft: value } ) }
 			/>
 		</>
+	);
+}
+
+function FaqFields( { module: mod, updateModule } ) {
+	return (
+		<RepeaterField
+			label={ __( 'FAQs', 'cb-identityjs2026' ) }
+			layout="column"
+			value={ mod.faqRows }
+			onChange={ ( value ) => updateModule( { faqRows: value } ) }
+			fields={ [
+				{ name: 'question', label: __( 'Question', 'cb-identityjs2026' ) },
+				{ name: 'answer', label: __( 'Answer', 'cb-identityjs2026' ), type: 'richtext', multiline: true },
+			] }
+			emptyRow={ { question: '', answer: '' } }
+		/>
 	);
 }
 

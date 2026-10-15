@@ -435,6 +435,30 @@ if ( ! function_exists( 'cb_identityjs2026_content_builder_render_module' ) ) :
 				<?php
 				break;
 
+			case 'faq':
+				$faq_rows = array_values(
+					array_filter(
+						$module['faqRows'] ?? array(),
+						function ( $row ) {
+							return '' !== trim( wp_strip_all_tags( (string) ( $row['question'] ?? '' ) ) );
+						}
+					)
+				);
+				if ( ! $faq_rows ) {
+					break;
+				}
+				queue_faq_schema( $faq_rows );
+				$fs_fw = cb_identityjs2026_content_builder_fs_fw_class( 'fs-300', 'fw-light' );
+				?>
+				<div class="content-builder__faq">
+					<?php foreach ( $faq_rows as $faq_row ) : ?>
+						<h2 class="content-builder__faq-question"><?php echo esc_html( trim( (string) $faq_row['question'] ) ); ?></h2>
+						<div class="content-builder__text <?php echo esc_attr( $fs_fw ); ?>"><?php echo wp_kses_post( trim( (string) ( $faq_row['answer'] ?? '' ) ) ); ?></div>
+					<?php endforeach; ?>
+				</div>
+				<?php
+				break;
+
 			case 'qa':
 				$qa_rows = array_values(
 					array_filter(

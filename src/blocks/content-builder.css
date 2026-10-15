@@ -715,3 +715,23 @@
 .content-builder__module--empty {
 	min-height: 1px;
 }
+
+/*
+ * FAQ module — the question is an H2 styled exactly like .faq__question
+ * (src/blocks/faq.css); the answer stays a plain Text-module block.
+ */
+.content-builder__faq-question {
+	margin: 0;
+	padding-block: 0.75rem;
+	color: inherit;
+	font-size: var(--fs-detail-list-title);
+	font-weight: var(--fw-light);
+}
+
+.content-builder__faq-question + .content-builder__text {
+	margin-bottom: 1.5rem;
+}
+
+.content-builder__faq > :last-child {
+	margin-bottom: 0;
+}
