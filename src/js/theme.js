@@ -4,6 +4,7 @@ import { initDialogs } from './dialog';
 import { initLogoClipAnimate } from './logo-clip-animate';
 import { initFooterLogoAnimate } from './footer-logo-animate';
 import { initNavScrollBackground } from './nav-scroll-background';
+import { initStatCountUp } from './stat-count-up';
 import { initHomeIntroAnimate } from './home-intro-animate';
 import { initTitleBarRevealAnimate } from './title-bar-reveal-animate';
 import { initScrollAnimate } from './scroll-animate';
@@ -37,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	safeInit(initTitleBarRevealAnimate, '.page-header__animated-title', '.page-header');
 	safeInit(initScrollAnimate);
 	safeInit(initFeatureOverlayParallax);
+	safeInit(initStatCountUp);
 	safeInit(initContentBuilderParallax);
 	safeInit(initContentBuilderImageHeights);
 });

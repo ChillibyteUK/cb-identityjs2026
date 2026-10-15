@@ -5,8 +5,10 @@ import EditorBlockShell from '../../_shared/EditorBlockShell';
 import RepeaterField from '../../_shared/RepeaterField';
 
 /**
- * Built from Case Study Key Stats (cb-case-study-key-stats) + cb-stats — see
- * identity-global-block-spec.md's Stat Block entry.
+ * Built from Case Study Key Stats (cb-case-study-key-stats) + CB Stat Hero
+ * (cb-identitygroup2026's cb-stat-hero.php, confirmed against
+ * idtravel-test's /test-4/) — see identity-global-block-spec.md's Stat
+ * Block entry.
  *
  * `layout` replaces the first version's single merged field set (every
  * stat row always showing intro/prefix/value/suffix/descriptor) — confirmed
@@ -15,8 +17,10 @@ import RepeaterField from '../../_shared/RepeaterField';
  * so those extra fields were dead UI clutter for the common case.
  * - stack: Case Study Key Stats' real shape — full-width rows, just
  *   `value` + `descriptor`.
- * - column: cb-stats' counter shape — card grid with the full
- *   intro/prefix/value/suffix/descriptor set.
+ * - column: CB Stat Hero's shape — CTA cell plus intro/prefix/value/
+ *   suffix/descriptor stats. Editor rows use per-field widths
+ *   (intro 40 / prefix 20 / value 20 / suffix 20, descriptor 100% below)
+ *   via RepeaterField's `width`, not the stacked 'column' layout.
  */
 const STACK_FIELDS = [
 	{ name: 'value', label: __( 'Value', 'cb-identityjs2026' ), type: 'text', help: __( 'e.g. "300" or "17,000+"', 'cb-identityjs2026' ) },
@@ -24,11 +28,11 @@ const STACK_FIELDS = [
 ];
 
 const COLUMN_FIELDS = [
-	{ name: 'intro', label: __( 'Intro', 'cb-identityjs2026' ), type: 'text', help: __( 'Optional lead-in word, e.g. "Over"', 'cb-identityjs2026' ) },
-	{ name: 'prefix', label: __( 'Prefix', 'cb-identityjs2026' ), type: 'text', help: __( 'e.g. "$"', 'cb-identityjs2026' ) },
-	{ name: 'value', label: __( 'Value', 'cb-identityjs2026' ), type: 'text', help: __( 'e.g. "200"', 'cb-identityjs2026' ) },
-	{ name: 'suffix', label: __( 'Suffix', 'cb-identityjs2026' ), type: 'text', help: __( 'e.g. "+" or "M"', 'cb-identityjs2026' ) },
-	{ name: 'descriptor', label: __( 'Descriptor', 'cb-identityjs2026' ), type: 'text' },
+	{ name: 'intro', label: __( 'Intro', 'cb-identityjs2026' ), type: 'text', width: '40%', help: __( 'Lead-in above the stat, e.g. "Savings levers delivered across the programme"', 'cb-identityjs2026' ) },
+	{ name: 'prefix', label: __( 'Stat Prefix', 'cb-identityjs2026' ), type: 'text', width: '20%', help: __( 'e.g. "$"', 'cb-identityjs2026' ) },
+	{ name: 'value', label: __( 'Stat', 'cb-identityjs2026' ), type: 'text', width: '20%', help: __( 'Digits only for the count-up, e.g. "40" — put "+" or "%" in Suffix, not here', 'cb-identityjs2026' ) },
+	{ name: 'suffix', label: __( 'Stat Suffix', 'cb-identityjs2026' ), type: 'text', width: '20%', help: __( 'e.g. "+" or "k+" or "%"', 'cb-identityjs2026' ) },
+	{ name: 'descriptor', label: __( 'Descriptor', 'cb-identityjs2026' ), type: 'text', width: '100%', help: __( 'Optional line below the stat — leave empty for the plain Stat Hero look.', 'cb-identityjs2026' ) },
 ];
 
 export default function Edit( { attributes, setAttributes, clientId } ) {
@@ -112,7 +116,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 				value={ stats }
 				onChange={ ( rows ) => setAttributes( { stats: rows } ) }
 				emptyRow={ { intro: '', prefix: '', value: '', suffix: '', descriptor: '' } }
-				layout={ isStack ? 'row' : 'column' }
+				layout="row"
 				fields={ isStack ? STACK_FIELDS : COLUMN_FIELDS }
 			/>
 

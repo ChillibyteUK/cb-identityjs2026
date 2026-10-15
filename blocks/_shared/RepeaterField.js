@@ -153,7 +153,12 @@ function toSafeRichTextHtml( value, multiline ) {
  *                                  recursively), `subEmptyRow` its `emptyRow`, and `subLayout` its
  *                                  `layout` (defaults to 'row' like the top level). The nested value
  *                                  lives at `row[name]` as its own array of rows, same shape as this
- *                                  component's own `value`/`onChange` contract at any depth.
+ *                                  component's own `value`/`onChange` contract at any depth. `width`
+ *                                  (e.g. '40%') sets that field's flex-basis in 'row' layout, so
+ *                                  fields can take uneven shares of the row instead of equal
+ *                                  ones — a '100%' field wraps onto its own line (rows allow
+ *                                  wrapping), e.g. Stat Block's intro 40 / prefix 20 / value
+ *                                  20 / suffix 20 with descriptor 100% below.
  * @param {Object}   props.emptyRow Shape of a freshly-added row, e.g. { stat: '', title: '' }.
  * @param {string}   [props.layout] 'row' (default) or 'column'.
  */
@@ -231,6 +236,7 @@ export default function RepeaterField( { label, value, onChange, fields, emptyRo
 					{ fields.map( ( field ) => (
 						<span
 							key={ field.name }
+							style={ field.width ? { flex: `1 1 ${ field.width }` } : undefined }
 							className={
 								'image' === field.type || 'file' === field.type
 									? 'cb-identityjs2026-repeater-field__header-cell cb-identityjs2026-repeater-field__header-cell--image'
@@ -261,6 +267,10 @@ export default function RepeaterField( { label, value, onChange, fields, emptyRo
 				<div className="cb-identityjs2026-repeater-field__row" key={ row.id }>
 					<span className="cb-identityjs2026-repeater-field__number">{ index + 1 }</span>
 					{ fields.map( ( field ) => {
+						// A field with `width` renders inside a sized cell so rows
+						// can hold uneven shares (e.g. 40/20/20/20 + a 100% line
+						// wrapping below) — see the JSDoc `width` note above.
+						const fieldControl = ( () => {
 						if ( 'image' === field.type ) {
 							return (
 								<RepeaterImageField
@@ -423,7 +433,20 @@ export default function RepeaterField( { label, value, onChange, fields, emptyRo
 								help={ field.help }
 							/>
 						);
-					} ) }
+					} )();
+					if ( ! field.width ) {
+						return fieldControl;
+					}
+					return (
+						<div
+							key={ field.name }
+							className="cb-identityjs2026-repeater-field__cell"
+							style={ { flex: `1 1 ${ field.width }` } }
+						>
+							{ fieldControl }
+						</div>
+					);
+				} ) }
 					<div className="cb-identityjs2026-repeater-field__row-actions">
 						<Button
 							size="small"

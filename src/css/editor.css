@@ -355,6 +355,7 @@
 
 .cb-identityjs2026-repeater-field__row {
 	display: flex;
+	flex-wrap: wrap;
 	align-items: flex-start;
 	gap: 0.75rem;
 	padding: 0.75rem;
@@ -364,6 +365,16 @@
 		flex: 1 1 0%;
 		min-width: 0;
 	}
+}
+
+/*
+ * A field with an explicit `width` (see RepeaterField.js) renders inside a
+ * sized cell holding that flex-basis — the row wraps so a 100% field drops
+ * onto its own line. `flex-wrap` on the base row above is harmless without
+ * widths (equal-share children never exceed 100%), so no opt-in class.
+ */
+.cb-identityjs2026-repeater-field__cell {
+	min-width: 0;
 }
 
 /*

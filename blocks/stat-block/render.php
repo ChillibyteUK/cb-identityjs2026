@@ -11,10 +11,14 @@
  * fields were dead weight for the common case (a plain stat/descriptor
  * list, not a counter):
  * - stack: Case Study Key Stats' real shape — full-width rows.
- * - column: cb-stats' counter shape — card grid, full field set. Rebuilt
- *   as a responsive card grid rather than a pixel-precise port of
- *   cb-stats' own fixed 4-slot markup (not read in this pass) — flagged
- *   as a simplification, revisit if cb-stats' exact layout is needed.
+ * - column: CB Stat Hero's shape (cb-identitygroup2026's cb-stat-hero.php +
+ *   _cb_stat_hero.scss, confirmed against idtravel-test's /test-4/) — CTA
+ *   as the first grid cell (button above message), then one cell per stat
+ *   with intro above a prefix/value/suffix stat line. The stat value
+ *   animates via data-stat-target count-up (see src/js/stat-count-up.js),
+ *   same as the real source. `descriptor` has no equivalent over there —
+ *   kept as an optional line below the stat (renders nothing when empty,
+ *   so hero-parity content is unaffected).
  *
  * `pre_title`'s hardcoded "Key Stats" fallback (real source) is dropped —
  * left blank by default, same as every other block that had one (Work
@@ -77,6 +81,22 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( '
 	<?php endif; ?>
 
 	<div class="stat-block__grid">
+		<?php if ( 'column' === $layout && ( $cta_message || ( $cta_link_url && $cta_link_text ) ) ) : ?>
+			<div class="stat-block__cta-cell">
+				<?php if ( $cta_link_url && $cta_link_text ) : ?>
+					<a
+						href="<?php echo esc_url( $cta_link_url ); ?>"
+						class="id-button stat-block__cta"
+						<?php echo $cta_link_target ? ' target="_blank" rel="noopener"' : ''; ?>
+					>
+						<?php echo esc_html( $cta_link_text ); ?>
+					</a>
+				<?php endif; ?>
+				<?php if ( $cta_message ) : ?>
+					<div class="stat-block__cta-message"><?php echo esc_html( $cta_message ); ?></div>
+				<?php endif; ?>
+			</div>
+		<?php endif; ?>
 		<?php foreach ( $stats as $stat ) : ?>
 			<?php
 			$intro      = 'column' === $layout ? ( $stat['intro'] ?? '' ) : '';
@@ -84,12 +104,34 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( '
 			$value      = $stat['value'] ?? '';
 			$suffix     = 'column' === $layout ? ( $stat['suffix'] ?? '' ) : '';
 			$descriptor = $stat['descriptor'] ?? '';
+			// Hero parity: a purely numeric value animates via data-stat-target
+			// (see stat-count-up.js). Anything else (e.g. legacy rows with the
+			// suffix typed into the value itself, "40+") renders statically so
+			// existing content never collapses to "0".
+			$numeric_value = str_replace( array( ',', ' ' ), '', trim( (string) $value ) );
+			$is_numeric    = '' !== $numeric_value && is_numeric( $numeric_value );
 			?>
 			<div class="stat-block__item">
 				<?php if ( $intro ) : ?>
 					<div class="stat-block__intro"><?php echo esc_html( $intro ); ?></div>
 				<?php endif; ?>
-				<div class="stat-block__value"><?php echo esc_html( $prefix . $value . $suffix ); ?></div>
+				<?php if ( 'column' === $layout ) : ?>
+					<div class="stat-block__stat">
+						<?php if ( '' !== (string) $prefix ) : ?>
+							<span class="stat-block__stat-prefix"><?php echo esc_html( $prefix ); ?></span>
+						<?php endif; ?>
+						<?php if ( $is_numeric ) : ?>
+							<span class="stat-block__stat-value" data-stat-target="<?php echo esc_attr( $numeric_value ); ?>">0</span>
+						<?php else : ?>
+							<span class="stat-block__stat-value"><?php echo esc_html( $value ); ?></span>
+						<?php endif; ?>
+						<?php if ( '' !== (string) $suffix ) : ?>
+							<span class="stat-block__stat-suffix"><?php echo esc_html( $suffix ); ?></span>
+						<?php endif; ?>
+					</div>
+				<?php else : ?>
+					<div class="stat-block__value"><?php echo esc_html( $value ); ?></div>
+				<?php endif; ?>
 				<?php if ( $descriptor ) : ?>
 					<div class="stat-block__descriptor"><?php echo esc_html( $descriptor ); ?></div>
 				<?php endif; ?>
@@ -97,7 +139,7 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( '
 		<?php endforeach; ?>
 	</div>
 
-	<?php if ( $cta_message || ( $cta_link_url && $cta_link_text ) ) : ?>
+	<?php if ( 'stack' === $layout && ( $cta_message || ( $cta_link_url && $cta_link_text ) ) ) : ?>
 		<div class="stat-block__cta-row">
 			<div class="id-container stat-block__cta-row-inner">
 				<?php if ( $cta_message ) : ?>

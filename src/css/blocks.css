@@ -3477,10 +3477,15 @@
 /*
  * Stat Block — see identity-global-block-spec.md. Confirmed against
  * cb-identitygroup2026's own _cb_case_study_key_stats.scss for the stack
- * layout's colours/borders/spacing/type. `stat-block--column`'s card grid
- * (the cb-stats counter shape) is a from-scratch responsive layout, not a
- * pixel-precise port of cb-stats' own fixed 4-slot markup — see
- * render.php's own header comment.
+ * layout's colours/borders/spacing/type.
+ *
+ * `stat-block--column` mirrors CB Stat Hero's own shape
+ * (cb-identitygroup2026's cb-stat-hero.php + _cb_stat_hero.scss, confirmed
+ * against idtravel-test's /test-4/): CTA as the first grid cell (button
+ * above message), then one cell per stat with intro above a
+ * prefix/value/suffix stat line. Same responsive spans as the real
+ * source's own row (col-lg-4 + col-md-6 col-lg-2): CTA full-width below
+ * lg, stats two-up at md, CTA-spanning-4 + stats-spanning-2 at lg.
  */
 
 .stat-block {
@@ -3634,30 +3639,97 @@
 	}
 }
 
-/* --- Column layout: cb-stats' counter shape — responsive card grid --- */
+/* --- Column layout: CB Stat Hero's shape — CTA cell + intro/stat cells --- */
 
 .stat-block--column .stat-block__grid {
 	display: grid;
 	grid-template-columns: 1fr;
+	gap: var(--space-4);
+	/* Same centring width as .id-container (site/identity.css) — the real
+	   source wraps its own row in one. */
+	width: min(100%, 1920px);
+	margin-inline: auto;
+	padding: var(--space-5) var(--space-4);
 }
 
-@media (min-width: 600px) {
+@media (min-width: 768px) {
 	.stat-block--column .stat-block__grid {
 		grid-template-columns: repeat(2, 1fr);
+		padding-inline: var(--space-5);
+	}
+
+	.stat-block--column .stat-block__cta-cell {
+		grid-column: 1 / -1;
 	}
 }
 
-@media (min-width: 1024px) {
+/* `lg` hardcoded here — a custom property can't be read inside an @media
+   condition, so this must stay in sync with tokens.config.js by hand. */
+@media (min-width: 992px) {
 	.stat-block--column .stat-block__grid {
-		grid-template-columns: repeat(4, 1fr);
+		grid-template-columns: repeat(12, 1fr);
+	}
+
+	.stat-block--column .stat-block__cta-cell {
+		grid-column: span 4;
+	}
+
+	.stat-block--column .stat-block__item {
+		grid-column: span 2;
 	}
 }
 
-.stat-block--column .stat-block__item {
-	border: 1px solid rgba(255, 255, 255, 0.1);
-	margin: -0.5px;
-	padding-block: var(--space-4);
-	text-align: center;
+/* Real source's own .id-button mb-5 (3rem) between button and title. */
+.stat-block--column .stat-block__cta {
+	margin-block-end: var(--space-5);
+}
+
+/* Real source's own .stat-hero__cta-title: fs-400/fw-regular. */
+.stat-block--column .stat-block__cta-message {
+	font-size: var(--fs-400);
+	font-weight: var(--fw-regular);
+	color: #fff;
+}
+
+/* Real source's own .stat-hero__intro: fs-100/fw-regular, 1.5rem under it. */
+.stat-block--column .stat-block__intro {
+	margin-block-end: 1.5rem;
+	font-size: var(--fs-100);
+	font-weight: var(--fw-regular);
+	color: #fff;
+}
+
+/*
+ * Real source's own .stat-hero__stat: top+bottom hairlines, baseline flex,
+ * fs-900/fw-book, lh 1. Border colour is this theme's own standard
+ * translucent-white (stack's row borders use the same), not the real
+ * source's own hsl(var(--hsl-neutral-050) / 0.5) literal — same look,
+ * one token binding instead of two.
+ */
+.stat-block--column .stat-block__stat {
+	display: flex;
+	align-items: baseline;
+	gap: 0.1em;
+	border-block-start: 1px solid rgba(255, 255, 255, 0.4);
+	border-block-end: 1px solid rgba(255, 255, 255, 0.4);
+	font-family: var(--ff-heading);
+	font-size: var(--fs-900);
+	font-weight: var(--fw-book);
+	line-height: 1;
+	color: #fff;
+}
+
+.stat-block--column .stat-block__stat-prefix,
+.stat-block--column .stat-block__stat-value,
+.stat-block--column .stat-block__stat-suffix {
+	display: inline-block;
+}
+
+/* `descriptor` has no equivalent in the real source — optional extra line
+   under the stat, same type as the stack layout's own descriptor. Renders
+   nothing when empty, so hero-parity content is unaffected. */
+.stat-block--column .stat-block__descriptor {
+	margin-block-start: var(--space-2);
 }
 
 .stat-block__intro {
