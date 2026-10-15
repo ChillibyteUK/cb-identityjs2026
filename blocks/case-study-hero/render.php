@@ -21,6 +21,9 @@
  * only ever adds dnt=1) — that's not reproduced here, this is a
  * deliberate, explicit deviation, not a missed value.
  *
+ * With no video but a featured image, the image fills the same 16:9 frame
+ * (and overlay) instead.
+ *
  * @package cb-identityjs2026
  */
 
@@ -65,6 +68,12 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'case-stud
 		<div class="id-container case-study-hero__video-container">
 			<div class="case-study-hero__video-overlay"></div>
 			<iframe class="case-study-hero__video" src="<?php echo esc_url( $video_src ); ?>" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+		</div>
+	<?php elseif ( has_post_thumbnail() ) : ?>
+		<?php // No video supplied — fall back to the featured image in the same 16:9 frame. ?>
+		<div class="id-container case-study-hero__video-container">
+			<div class="case-study-hero__video-overlay"></div>
+			<?php the_post_thumbnail( 'full', array( 'class' => 'case-study-hero__image' ) ); ?>
 		</div>
 	<?php endif; ?>
 </section>
