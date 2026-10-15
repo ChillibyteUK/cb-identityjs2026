@@ -18,9 +18,10 @@
  *   animates via data-stat-target count-up (see src/js/stat-count-up.js),
  *   same as the real source. `descriptor` has no equivalent over there and
  *   is no longer offered in the column editor (confirmed live the only
- *   column usage anywhere had it empty on every row) — the render guard
- *   stays purely so any legacy row carrying one still displays it instead
- *   of silently dropping content. `descriptor` remains a real stack field.
+ *   column usage anywhere had it empty on every row) — a descriptor stored
+ *   from stack mode is deliberately suppressed in column output (switching
+ *   back to stack restores it, the data is never stripped).
+ *   `descriptor` remains a real stack field.
  *
  * `pre_title`'s hardcoded "Key Stats" fallback (real source) is dropped —
  * left blank by default, same as every other block that had one (Work
@@ -51,7 +52,10 @@ $cta_link_target      = ! empty( $attributes['ctaLinkTarget'] );
 $stats = array_values(
 	array_filter(
 		$stats,
-		static function ( $stat ) {
+		static function ( $stat ) use ( $layout ) {
+			if ( 'column' === $layout ) {
+				return ! empty( $stat['value'] ) || ! empty( $stat['intro'] ) || ! empty( $stat['prefix'] ) || ! empty( $stat['suffix'] );
+			}
 			return ! empty( $stat['value'] ) || ! empty( $stat['descriptor'] );
 		}
 	)
@@ -105,7 +109,10 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( '
 			$prefix     = 'column' === $layout ? ( $stat['prefix'] ?? '' ) : '';
 			$value      = $stat['value'] ?? '';
 			$suffix     = 'column' === $layout ? ( $stat['suffix'] ?? '' ) : '';
-			$descriptor = $stat['descriptor'] ?? '';
+			// Stack-only: a descriptor typed in stack mode stays stored on the
+			// row (switching back restores it) but never outputs in column
+			// mode — the hero has no such line.
+			$descriptor = 'column' === $layout ? '' : ( $stat['descriptor'] ?? '' );
 			// Hero parity: a purely numeric value animates via data-stat-target
 			// (see stat-count-up.js). Anything else (e.g. legacy rows with the
 			// suffix typed into the value itself, "40+") renders statically so

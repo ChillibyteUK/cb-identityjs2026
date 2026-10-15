@@ -5678,13 +5678,6 @@ select {
 	display: inline-block;
 }
 
-/* `descriptor` has no equivalent in the real source and is no longer
-   offered in the column editor — this rule only styles the render guard's
-   output for any legacy row still carrying one. */
-.stat-block--column .stat-block__descriptor {
-	margin-block-start: var(--space-2);
-}
-
 .stat-block__intro {
 	font-size: var(--fs-small);
 	font-weight: var(--fw-regular);
