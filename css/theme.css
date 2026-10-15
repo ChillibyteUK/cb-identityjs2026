@@ -2080,12 +2080,13 @@ select {
 	position: absolute;
 	inset: 0;
 	background-color: var(--col-brand-grid-bg);
-	padding: 2.5rem 1.5rem 1.5rem;
+	padding: 2.5rem 0;
 	opacity: 0.95;
 }
 
 @media (min-width: 768px) {
 	.brand-grid__card-back {
+		padding: 2.5rem 1.5rem 1.5rem;
 		opacity: 0;
 		transition: opacity 0.3s ease-in-out;
 	}
