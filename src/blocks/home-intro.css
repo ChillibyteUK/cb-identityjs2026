@@ -9,6 +9,12 @@
 	background-color: var(--col-bg);
 	color: var(--col-text);
 	border-block: 1px solid var(--col-border);
+	/* The title's bars start the reveal at x: ±150% (title-bar-reveal-animate.js),
+	   so the right-hand one sits well past the viewport edge until the
+	   timeline plays — which added horizontal page scroll on load. clip (not
+	   hidden) so this doesn't become a scroll container; the full-width
+	   section edge is the viewport edge, so nothing visible is cut off. */
+	overflow-x: clip;
 }
 
 .home-intro__pre-title {
@@ -80,6 +86,22 @@
 	align-items: flex-start;
 	line-height: 1;
 	overflow: visible; /* prevent clipping when rotated */
+}
+
+/* Below 1200px the title column centres the title box, but line 2 hangs
+   4.2em off its left edge (-3.6em margin + the bar's 0.6em overhang) while
+   the right edge only overhangs by 0.6em — so the visible mass sat left of
+   centre and the left bar got cropped on small screens. Nudge the box right
+   by half the difference, (4.2em - 0.6em) / 2 = 1.8em, to centre what's
+   actually drawn. From 1200px the title is left-aligned and this is reset. */
+.home-intro__title {
+	inset-inline-start: 1.8em;
+}
+
+@media (min-width: 1200px) {
+	.home-intro__title {
+		inset-inline-start: 0;
+	}
 }
 
 .home-intro__title .line {

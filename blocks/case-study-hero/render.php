@@ -56,7 +56,7 @@ $media_class = implode( ' ', $media_classes );
 // const (this file is require()'d once per block instance on the page).
 $vimeo_app_id = 58479;
 
-$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'case-study-hero' ) );
+$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'case-study-hero' . ( $full_bleed && ( $vimeo_id || has_post_thumbnail() ) ? ' case-study-hero--bleed' : '' ) ) );
 ?>
 <section <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?>>
 	<h1 class="case-study-hero__title">

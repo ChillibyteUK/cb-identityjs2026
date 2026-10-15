@@ -2348,6 +2348,7 @@ select {
 .case-study-hero__video-overlay {
 	position: absolute;
 	inset: 0;
+	z-index: 1; /* above the video when it's absolutely positioned (Full Bleed) */
 	pointer-events: none;
 	background: linear-gradient(180deg, var(--col-bg) 0%, rgba(13, 13, 12, 0.2) 20%, rgba(13, 13, 12, 0) 30%);
 }
@@ -2370,21 +2371,26 @@ select {
 	width: 100%;
 }
 
-/* Full Bleed — same sizing as Media Panel's .media-panel__bleed-wrapper:
-   fixed 400px on mobile, 90vh (min 780px) from 769px up, with the video
-   scaled to cover rather than letterboxed. The image already covers via
-   object-fit. */
-.case-study-hero__video-container--bleed {
-	width: 100%;
-	aspect-ratio: auto;
-	height: 400px;
+/* Full Bleed — the whole hero (title + subtitle + media) fills the viewport,
+   rather than the media alone being 90vh and pushing the title/subtitle
+   above the fold. The section is a flex column at least one viewport tall;
+   the media takes whatever is left after the title and subtitle, however
+   many lines they wrap to. No navbar height needs subtracting: the navbar
+   is fixed over the top of the section, and sits inside the section's own
+   padding-top + title margin above the first line (96px vs a ~60px bar).
+   The admin-bar variable is 0 for logged-out visitors. The video scales to
+   cover rather than letterboxing; the image covers via object-fit. */
+.case-study-hero--bleed {
+	display: flex;
+	flex-direction: column;
+	min-height: calc(100svh - var(--wp-admin--admin-bar--height, 0px));
 }
 
-@media (min-width: 769px) {
-	.case-study-hero__video-container--bleed {
-		height: 90vh;
-		min-height: 780px;
-	}
+.case-study-hero__video-container--bleed {
+	flex: 1 1 auto;
+	width: 100%;
+	aspect-ratio: auto;
+	min-height: 400px;
 }
 
 .case-study-hero__video-container--bleed .case-study-hero__video {
@@ -2396,6 +2402,13 @@ select {
 	min-height: 100%;
 	min-width: 177.78vh;
 	transform: translate(-50%, -50%);
+}
+
+/* Taken out of flow so the image's intrinsic height can't push the flex
+   item taller than the space left in the viewport. */
+.case-study-hero__video-container--bleed .case-study-hero__image {
+	position: absolute;
+	inset: 0;
 }
 
 /* --- src/blocks/child-page-nav.css --- */
@@ -4034,6 +4047,12 @@ select {
 	background-color: var(--col-bg);
 	color: var(--col-text);
 	border-block: 1px solid var(--col-border);
+	/* The title's bars start the reveal at x: ±150% (title-bar-reveal-animate.js),
+	   so the right-hand one sits well past the viewport edge until the
+	   timeline plays — which added horizontal page scroll on load. clip (not
+	   hidden) so this doesn't become a scroll container; the full-width
+	   section edge is the viewport edge, so nothing visible is cut off. */
+	overflow-x: clip;
 }
 
 .home-intro__pre-title {
@@ -4105,6 +4124,22 @@ select {
 	align-items: flex-start;
 	line-height: 1;
 	overflow: visible; /* prevent clipping when rotated */
+}
+
+/* Below 1200px the title column centres the title box, but line 2 hangs
+   4.2em off its left edge (-3.6em margin + the bar's 0.6em overhang) while
+   the right edge only overhangs by 0.6em — so the visible mass sat left of
+   centre and the left bar got cropped on small screens. Nudge the box right
+   by half the difference, (4.2em - 0.6em) / 2 = 1.8em, to centre what's
+   actually drawn. From 1200px the title is left-aligned and this is reset. */
+.home-intro__title {
+	inset-inline-start: 1.8em;
+}
+
+@media (min-width: 1200px) {
+	.home-intro__title {
+		inset-inline-start: 0;
+	}
 }
 
 .home-intro__title .line {
