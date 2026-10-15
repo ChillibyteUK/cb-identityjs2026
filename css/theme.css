@@ -5981,6 +5981,8 @@ select {
 	position: relative;
 	display: block;
 	aspect-ratio: 21 / 9;
+	width: 100%; /* explicit, or min-height + aspect-ratio would widen the box */
+	min-height: 50vh;
 	overflow: hidden;
 	text-decoration: none;
 	color: inherit;
