@@ -33,7 +33,7 @@ export const MODULE_TYPE_OPTIONS = [
 	{ label: 'Logo Grid', value: 'logo_grid' },
 	{ label: 'Image', value: 'image' },
 	{ label: 'Video', value: 'video' },
-	{ label: 'Q&A', value: 'qa' },
+	{ label: 'Q&A (no Schema)', value: 'qa' },
 	{ label: 'FAQ', value: 'faq' },
 	{ label: 'Button', value: 'button' },
 	{ label: 'Code (HTML)', value: 'code' },
