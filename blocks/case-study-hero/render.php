@@ -21,6 +21,8 @@
  * only ever adds dnt=1) — that's not reproduced here, this is a
  * deliberate, explicit deviation, not a missed value.
  *
+ * Full Width / Full Bleed toggles mirror Media Panel's own, see $media_classes.
+ *
  * With no video but a featured image, the image fills the same 16:9 frame
  * (and overlay) instead.
  *
@@ -32,6 +34,22 @@ defined( 'ABSPATH' ) || exit;
 $subtitle   = $attributes['subtitle'] ?? '';
 $vimeo_id   = $attributes['vimeoId'] ?? '';
 $vimeo_hash = $attributes['vimeoHash'] ?? '';
+$full_width = ! empty( $attributes['fullWidth'] );
+$full_bleed = ! empty( $attributes['fullBleed'] );
+
+// Same two options as Media Panel, applied to whichever of video/image shows:
+// Full Width drops the container so the 16:9 frame runs edge to edge; Full
+// Bleed (which implies full width) swaps the 16:9 box for a viewport-height
+// cover frame.
+$media_classes = array( 'case-study-hero__video-container' );
+if ( $full_bleed ) {
+	$media_classes[] = 'case-study-hero__video-container--bleed';
+} elseif ( $full_width ) {
+	$media_classes[] = 'case-study-hero__video-container--full-width';
+} else {
+	$media_classes[] = 'id-container';
+}
+$media_class = implode( ' ', $media_classes );
 
 // Same fixed Vimeo app/account registration as Media Panel — see that
 // block's own render.php comment for why this is a plain variable, not a
@@ -65,13 +83,13 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'case-stud
 			'https://player.vimeo.com/video/' . rawurlencode( $vimeo_id )
 		);
 		?>
-		<div class="id-container case-study-hero__video-container">
+		<div class="<?php echo esc_attr( $media_class ); ?>">
 			<div class="case-study-hero__video-overlay"></div>
 			<iframe class="case-study-hero__video" src="<?php echo esc_url( $video_src ); ?>" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
 		</div>
 	<?php elseif ( has_post_thumbnail() ) : ?>
 		<?php // No video supplied — fall back to the featured image in the same 16:9 frame. ?>
-		<div class="id-container case-study-hero__video-container">
+		<div class="<?php echo esc_attr( $media_class ); ?>">
 			<div class="case-study-hero__video-overlay"></div>
 			<?php the_post_thumbnail( 'full', array( 'class' => 'case-study-hero__image' ) ); ?>
 		</div>

@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps } from '@wordpress/block-editor';
-import { TextareaControl, TextControl } from '@wordpress/components';
+import { TextareaControl, TextControl, ToggleControl } from '@wordpress/components';
 import EditorBlockShell from '../../_shared/EditorBlockShell';
 
 /**
@@ -22,7 +22,7 @@ import EditorBlockShell from '../../_shared/EditorBlockShell';
  * ported from cb-featured-work.php's own JS).
  */
 export default function Edit( { attributes, setAttributes, clientId } ) {
-	const { subtitle, vimeoId, vimeoHash } = attributes;
+	const { subtitle, vimeoId, vimeoHash, fullWidth, fullBleed } = attributes;
 	const blockProps = useBlockProps( { className: 'container cb-identityjs2026-editor-block' } );
 
 	return (
@@ -52,6 +52,25 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						value={ vimeoHash }
 						help={ __( "The h= value from the video's share/embed URL — required for unlisted videos", 'cb-identityjs2026' ) }
 						onChange={ ( value ) => setAttributes( { vimeoHash: value } ) }
+					/>
+				</div>
+			</div>
+
+			<div style={ { display: 'flex', flexWrap: 'wrap', gap: '12px' } }>
+				<div style={ { flex: '50 1 0%' } }>
+					<ToggleControl
+						label={ __( 'Full Width', 'cb-identityjs2026' ) }
+						help={ __( 'Removes the container so the video/image runs edge-to-edge (still 16:9)', 'cb-identityjs2026' ) }
+						checked={ fullWidth }
+						onChange={ ( value ) => setAttributes( { fullWidth: value } ) }
+					/>
+				</div>
+				<div style={ { flex: '50 1 0%' } }>
+					<ToggleControl
+						label={ __( 'Full Bleed', 'cb-identityjs2026' ) }
+						help={ __( 'Viewport-height cover video/image, ignores the 16:9 box', 'cb-identityjs2026' ) }
+						checked={ fullBleed }
+						onChange={ ( value ) => setAttributes( { fullBleed: value } ) }
 					/>
 				</div>
 			</div>

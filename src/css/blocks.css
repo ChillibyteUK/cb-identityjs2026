@@ -412,6 +412,39 @@
 	object-fit: cover;
 }
 
+/* Full Width — container dropped (see render.php), still the 16:9 frame. */
+.case-study-hero__video-container--full-width {
+	width: 100%;
+}
+
+/* Full Bleed — same sizing as Media Panel's .media-panel__bleed-wrapper:
+   fixed 400px on mobile, 90vh (min 780px) from 769px up, with the video
+   scaled to cover rather than letterboxed. The image already covers via
+   object-fit. */
+.case-study-hero__video-container--bleed {
+	width: 100%;
+	aspect-ratio: auto;
+	height: 400px;
+}
+
+@media (min-width: 769px) {
+	.case-study-hero__video-container--bleed {
+		height: 90vh;
+		min-height: 780px;
+	}
+}
+
+.case-study-hero__video-container--bleed .case-study-hero__video {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 100%;
+	height: 56.25vw;
+	min-height: 100%;
+	min-width: 177.78vh;
+	transform: translate(-50%, -50%);
+}
+
 /* --- src/blocks/child-page-nav.css --- */
 /*
  * Child Page Nav — see identity-global-block-spec.md. Built from

@@ -8,7 +8,9 @@
 	"attributes": {
 		"subtitle": { "type": "string", "default": "" },
 		"vimeoId": { "type": "string", "default": "" },
-		"vimeoHash": { "type": "string", "default": "" }
+		"vimeoHash": { "type": "string", "default": "" },
+		"fullWidth": { "type": "boolean", "default": false },
+		"fullBleed": { "type": "boolean", "default": false }
 	},
 	"supports": {
 		"anchor": true,
