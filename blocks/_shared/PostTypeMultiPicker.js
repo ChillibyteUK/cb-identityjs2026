@@ -35,7 +35,7 @@ export default function PostTypeMultiPicker( { label, postType, value, onChange,
 				status: 'publish',
 				orderby: 'title',
 				order: 'asc',
-				per_page: 20,
+				per_page: 100,
 			} ),
 		[ postType, search ]
 	);

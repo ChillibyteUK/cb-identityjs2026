@@ -61,9 +61,15 @@ export default function ModuleEditor( { module: mod, updateModule } ) {
 			{ 'button' === mod.moduleType && <ButtonFields module={ mod } updateModule={ updateModule } /> }
 			{ 'code' === mod.moduleType && <CodeFields module={ mod } updateModule={ updateModule } /> }
 			{ 'empty' === mod.moduleType && (
-				<p className="cb-identityjs2026-editor-field__help">
-					{ __( 'Renders as a deliberately blank column — no fields needed.', 'cb-identityjs2026' ) }
-				</p>
+				<TextControl
+					type="number"
+					min="0"
+					step="0.25"
+					label={ __( 'Height (rem)', 'cb-identityjs2026' ) }
+					value={ mod.emptyHeight ?? 0 }
+					onChange={ ( value ) => updateModule( { emptyHeight: value } ) }
+					help={ __( 'A decimal rem value, e.g. 1.5. 0 renders a blank column with no height of its own.', 'cb-identityjs2026' ) }
+				/>
 			) }
 		</div>
 	);

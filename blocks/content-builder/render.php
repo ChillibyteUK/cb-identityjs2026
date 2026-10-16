@@ -530,6 +530,18 @@ if ( ! function_exists( 'cb_identityjs2026_content_builder_render_module' ) ) :
 				break;
 
 			case 'empty':
+				// Optional fixed height, in (decimal) rem — 0 / unset renders
+				// the original deliberately-blank column. Capped like [spc] so
+				// a typo can't blow out a layout.
+				$empty_height = min( 20, max( 0, (float) ( $module['emptyHeight'] ?? 0 ) ) );
+				if ( $empty_height > 0 ) {
+					$empty_height = rtrim( rtrim( number_format( $empty_height, 4, '.', '' ), '0' ), '.' );
+					?>
+					<div class="content-builder__empty-spacer" style="height:<?php echo esc_attr( $empty_height ); ?>rem" aria-hidden="true"></div>
+					<?php
+				}
+				break;
+
 			default:
 				break;
 		}

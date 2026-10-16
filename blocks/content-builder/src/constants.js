@@ -123,6 +123,7 @@ export function emptyModule() {
 		buttonLinkTarget: false,
 		ctaText: '',
 		codeContent: '',
+		emptyHeight: 0,
 	};
 }
 

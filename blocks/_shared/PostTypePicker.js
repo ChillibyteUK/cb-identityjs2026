@@ -27,7 +27,7 @@ export default function PostTypePicker( { label, postType, value, onChange, help
 				status: 'publish',
 				orderby: 'title',
 				order: 'asc',
-				per_page: 20,
+				per_page: 100,
 			} ),
 		[ postType, search ]
 	);
