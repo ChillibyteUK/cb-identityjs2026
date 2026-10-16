@@ -123,38 +123,6 @@ foreach ( $query->posts as $card_post ) {
 }
 $used_slugs = array_unique( $used_slugs );
 
-// Same fixed Vimeo app/account registration as Media Panel/Case Study Hero
-// — see those blocks' own render.php comments.
-$vimeo_app_id = 58479;
-
-/**
- * Builds a hover-preview-ready Vimeo embed src from a card's meta, or ''
- * when it has no video.
- *
- * @param array $card_meta cb_identityjs2026_get_case_study_card_meta() result.
- * @return string
- */
-if ( ! function_exists( 'cb_identityjs2026_work_index_video_src' ) ) {
-	function cb_identityjs2026_work_index_video_src( $card_meta, $vimeo_app_id ) {
-		if ( ! $card_meta['vimeoId'] ) {
-			return '';
-		}
-
-		return add_query_arg(
-			array(
-				'h'          => $card_meta['vimeoHash'],
-				'dnt'        => '1',
-				'badge'      => '0',
-				'player_id'  => '0',
-				'app_id'     => $vimeo_app_id,
-				'background' => '1',
-				'autoplay'   => '1',
-			),
-			'https://player.vimeo.com/video/' . rawurlencode( $card_meta['vimeoId'] )
-		);
-	}
-}
-
 $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'work-index' ) );
 ?>
 <div <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?>>
@@ -239,7 +207,7 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'work-inde
 				$post_id       = $card['id'];
 				$service_slugs = $card['service_slugs'];
 				$card_meta     = cb_identityjs2026_get_case_study_card_meta( $post_id );
-				$video_src = cb_identityjs2026_work_index_video_src( $card_meta, $vimeo_app_id );
+				$video_src = cb_identityjs2026_vimeo_src( $card_meta['vimeoId'], $card_meta['vimeoHash'], 'background' );
 				?>
 				<a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="work-index__card" data-service-terms="<?php echo esc_attr( implode( ' ', $service_slugs ) ); ?>">
 					<?php if ( has_post_thumbnail( $post_id ) ) : ?>

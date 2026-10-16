@@ -48,3 +48,91 @@ function cb_identityjs2026_page_link( $slug, $fragment = '' ) {
 
 	return $url;
 }
+
+/**
+ * Vimeo embed URL for a video ID (+ optional privacy hash).
+ *
+ * Every block that embeds Vimeo builds its src here, so the account's fixed
+ * app_id and the player-chrome decisions live in one place.
+ *
+ * Modes:
+ * - `background` — decorative looping video (case-study hero, card hover
+ *   previews). Sends `background=1` (chromeless, no floating pause button)
+ *   AND the explicit autoplay/muted/loop/controls=0 params. `background` and
+ *   `controls=0` are honoured only for videos on a Vimeo account with that
+ *   feature (profiled); for any other video Vimeo ignores them, and the
+ *   explicit params still give an autoplaying muted loop — just with Vimeo's
+ *   floating pause button. So an un-profiled video degrades gracefully with
+ *   no editor-facing toggle, and gets cleaner automatically once profiled.
+ * - `hero` — autoplay/muted/loop/controls=0 without `background`, for
+ *   Media Panel's hero mode: its Mute/Unmute button drives the Vimeo Player
+ *   API, which we haven't confirmed works under background mode.
+ * - `player` — a normal embed with default controls.
+ *
+ * @param string $vimeo_id   Vimeo video ID.
+ * @param string $vimeo_hash Optional privacy hash (the `h` param).
+ * @param string $mode       `background`, `hero` or `player`.
+ * @return string
+ */
+function cb_identityjs2026_vimeo_src( $vimeo_id, $vimeo_hash = '', $mode = 'player' ) {
+	if ( '' === (string) $vimeo_id ) {
+		return '';
+	}
+
+	$args = array(
+		'dnt'       => '1',
+		'badge'     => '0',
+		'player_id' => '0',
+		'app_id'    => 58479, // Vimeo app/account registration for this account — not per-video.
+	);
+	if ( '' !== (string) $vimeo_hash ) {
+		$args = array( 'h' => $vimeo_hash ) + $args;
+	}
+
+	if ( 'background' === $mode || 'hero' === $mode ) {
+		$args += array(
+			'autoplay' => '1',
+			'muted'    => '1',
+			'loop'     => '1',
+			'controls' => '0',
+		);
+	}
+	if ( 'background' === $mode ) {
+		$args['background'] = '1';
+	}
+
+	return add_query_arg( $args, 'https://player.vimeo.com/video/' . rawurlencode( $vimeo_id ) );
+}
+
+/**
+ * Enqueue Vimeo's player.js (needed for the Mute/Unmute button's Player API
+ * calls). Safe to call from any number of block instances per page.
+ *
+ * @return void
+ */
+function cb_identityjs2026_enqueue_vimeo_player() {
+	wp_enqueue_script( 'vimeo-player', 'https://player.vimeo.com/api/player.js', array(), null, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+}
+
+/**
+ * Mute/Unmute toggle button for a Vimeo iframe, shared by Media Panel's
+ * hero mode and Case Study Hero. Wired up by src/js/video-unmute.js via the
+ * Vimeo Player API (so the video must be embedded with
+ * cb_identityjs2026_vimeo_src() in `hero` mode — muted autoplay, no
+ * controls). Positioned at the bottom of its positioned parent; see
+ * src/blocks/video-unmute.css.
+ *
+ * @param string $iframe_id ID attribute of the Vimeo iframe this controls.
+ * @return string Button markup.
+ */
+function cb_identityjs2026_video_unmute_button( $iframe_id ) {
+	cb_identityjs2026_enqueue_vimeo_player();
+
+	return sprintf(
+		'<button type="button" class="video-unmute" data-video-id="%1$s" data-label-muted="%2$s" data-label-unmuted="%3$s">%4$s</button>',
+		esc_attr( $iframe_id ),
+		esc_attr( cb_identityjs2026_pll_string( 'Unmute' ) ),
+		esc_attr( cb_identityjs2026_pll_string( 'Mute' ) ),
+		esc_html( cb_identityjs2026_pll_string( 'Unmute' ) )
+	);
+}

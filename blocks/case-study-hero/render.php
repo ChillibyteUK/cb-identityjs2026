@@ -51,11 +51,6 @@ if ( $full_bleed ) {
 }
 $media_class = implode( ' ', $media_classes );
 
-// Same fixed Vimeo app/account registration as Media Panel — see that
-// block's own render.php comment for why this is a plain variable, not a
-// const (this file is require()'d once per block instance on the page).
-$vimeo_app_id = 58479;
-
 $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'case-study-hero' . ( $full_bleed && ( $vimeo_id || has_post_thumbnail() ) ? ' case-study-hero--bleed' : '' ) ) );
 ?>
 <section <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?>>
@@ -69,23 +64,13 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'case-stud
 	<?php endif; ?>
 	<?php if ( $vimeo_id ) : ?>
 		<?php
-		$video_src = add_query_arg(
-			array(
-				'h'         => $vimeo_hash,
-				'dnt'       => '1',
-				'badge'     => '0',
-				'player_id' => '0',
-				'app_id'    => $vimeo_app_id,
-				'autoplay'  => '1',
-				'muted'     => '1',
-				'loop'      => '1',
-			),
-			'https://player.vimeo.com/video/' . rawurlencode( $vimeo_id )
-		);
+		$video_src = cb_identityjs2026_vimeo_src( $vimeo_id, $vimeo_hash, 'hero' );
+		$iframe_id = wp_unique_id( 'case-study-hero-video-' );
 		?>
 		<div class="<?php echo esc_attr( $media_class ); ?>">
 			<div class="case-study-hero__video-overlay"></div>
-			<iframe class="case-study-hero__video" src="<?php echo esc_url( $video_src ); ?>" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+			<iframe id="<?php echo esc_attr( $iframe_id ); ?>" class="case-study-hero__video" src="<?php echo esc_url( $video_src ); ?>" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+			<?php echo cb_identityjs2026_video_unmute_button( $iframe_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the helper. ?>
 		</div>
 	<?php elseif ( has_post_thumbnail() ) : ?>
 		<?php // No video supplied — fall back to the featured image in the same 16:9 frame. ?>

@@ -394,6 +394,15 @@ Shortcodes: `[contact_email]` (antispambot mailto from settings),
 in `wp_footer`, breadcrumb helpers). Project-coupled helpers (e.g.
 `cb_identityjs2026_page_link()`) go in `inc/helpers.php`.
 
+**Vimeo embeds** are always built with `cb_identityjs2026_vimeo_src( $id, $hash, $mode )` —
+never hand-assemble a `player.vimeo.com` URL in a block. `background` mode
+(case-study hero, card hover previews) sends `background=1` plus explicit
+`autoplay/muted/loop/controls=0`: profiled videos get the chromeless player,
+un-profiled ones ignore the first and degrade to an autoplaying loop with
+Vimeo's floating pause button, so no editor toggle is needed. Media Panel's
+hero mode uses `hero` (no `background`) because its Mute/Unmute button drives
+the Vimeo Player API.
+
 ## File layout
 
 ```
@@ -412,7 +421,7 @@ inc/
   head-tags.php         Font preload + GA/GTM (logged-out only) + verification + custom script slots
   block-usage.php       [block_usage_table] QA shortcode
   utilities.php         Project-agnostic helpers, [contact_email], schema queues, breadcrumbs
-  helpers.php           Project-specific helpers
+  helpers.php           Project-specific helpers: cb_identityjs2026_page_link(), cb_identityjs2026_vimeo_src() (the ONLY place Vimeo embed URLs are built — modes background/hero/player; see its docblock)
   posttypes.php         case_study CPT + CPT-singles-use-page.php filter
   taxonomies.php        person, theme, service, region
   news-templates.php    Insight-card renderers + span cycle (index, category-*, Post Grid)
