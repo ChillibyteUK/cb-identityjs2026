@@ -1023,7 +1023,7 @@
 }
 
 .content-builder__row--pt {
-	padding-top: var(--space-4);
+	padding-top: var(--content-builder-row-pt, var(--space-4));
 }
 
 /*
@@ -1031,18 +1031,16 @@
  * the whole block (page header, previous block, etc). Between two rows in
  * the SAME block, that spacing is already provided by the previous row's
  * own bottom padding plus the fixed inter-row margin above — stacking this
- * row's top padding on top of that too was doubling the visible gap.
+ * row's top padding on top of that too was doubling the visible gap. Applies
+ * to legacy (boolean) rows only: an explicit paddingTop choice (`--pt-set`)
+ * is always honoured.
  */
-.content-builder__row + .content-builder__row.content-builder__row--pt {
+.content-builder__row + .content-builder__row.content-builder__row--pt:not(.content-builder__row--pt-set) {
 	padding-top: 0;
 }
 
 .content-builder__row--pb {
-	padding-bottom: var(--space-5);
-}
-
-.content-builder__row--has-line {
-	border-top: 1px solid var(--content-builder-line-color);
+	padding-bottom: var(--content-builder-row-pb, var(--space-5));
 }
 
 .content-builder__col {
