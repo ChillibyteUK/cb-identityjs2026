@@ -739,3 +739,19 @@
 .content-builder__faq > :last-child {
 	margin-bottom: 0;
 }
+
+/*
+ * Divider module — a full-column-width rule in the same colour/weight as the
+ * section's other divider lines (row top line, h2 lines, list items): 1px
+ * solid var(--content-builder-line-color). Resets the browser/base <hr>
+ * defaults so it's a plain line with no margin of its own.
+ */
+.content-builder__divider {
+	display: block;
+	width: 100%;
+	height: 0;
+	margin: 0;
+	border: 0;
+	border-top: 1px solid var(--content-builder-line-color);
+	opacity: 1;
+}

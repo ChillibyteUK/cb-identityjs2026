@@ -10,9 +10,10 @@ import EditorBlockShell from '../../_shared/EditorBlockShell';
  * Featured/Related/Work Index/Work Carousel/Work by Region — Case Study
  * Grid and Work Index's own card descriptions both depend on it).
  *
- * Placed at the top of a case_study post's content, one per post. Title
- * comes from the post's own title (get_the_title()), not a field here —
- * matches the real source's own h1.
+ * Placed at the top of a case_study post's content, one per post. The h1
+ * is the post's own title (get_the_title()) unless the optional Title field
+ * here is set, which overrides it for this hero only (cards elsewhere still
+ * use the post title).
  *
  * Video stores vimeoId + vimeoHash rather than a pasted vimeo_url, same
  * convention as Media Panel's video mode (see that block's own edit.js
@@ -22,11 +23,17 @@ import EditorBlockShell from '../../_shared/EditorBlockShell';
  * ported from cb-featured-work.php's own JS).
  */
 export default function Edit( { attributes, setAttributes, clientId } ) {
-	const { subtitle, vimeoId, vimeoHash, fullWidth, fullBleed } = attributes;
+	const { title, subtitle, vimeoId, vimeoHash, fullWidth, fullBleed } = attributes;
 	const blockProps = useBlockProps( { className: 'container cb-identityjs2026-editor-block' } );
 
 	return (
 		<EditorBlockShell blockProps={ blockProps } clientId={ clientId } title="CB Case Study Hero" textDomain="cb-identityjs2026">
+			<TextControl
+				label={ __( 'Title (H1)', 'cb-identityjs2026' ) }
+				value={ title }
+				help={ __( 'Optional — overrides the post title as the page heading here. Leave blank to use the post title.', 'cb-identityjs2026' ) }
+				onChange={ ( value ) => setAttributes( { title: value } ) }
+			/>
 			<TextareaControl
 				label={ __( 'Subtitle', 'cb-identityjs2026' ) }
 				value={ subtitle }

@@ -529,6 +529,12 @@ if ( ! function_exists( 'cb_identityjs2026_content_builder_render_module' ) ) :
 				<?php
 				break;
 
+			case 'divider':
+				?>
+				<hr class="content-builder__divider" />
+				<?php
+				break;
+
 			case 'empty':
 				// Optional fixed height, in (decimal) rem — 0 / unset renders
 				// the original deliberately-blank column. Capped like [spc] so

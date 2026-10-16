@@ -60,6 +60,11 @@ export default function ModuleEditor( { module: mod, updateModule } ) {
 			{ 'faq' === mod.moduleType && <FaqFields module={ mod } updateModule={ updateModule } /> }
 			{ 'button' === mod.moduleType && <ButtonFields module={ mod } updateModule={ updateModule } /> }
 			{ 'code' === mod.moduleType && <CodeFields module={ mod } updateModule={ updateModule } /> }
+			{ 'divider' === mod.moduleType && (
+				<p className="cb-identityjs2026-editor-field__help">
+					{ __( 'A full-width horizontal line across the column, in the same colour as the section\'s other divider lines — no fields needed.', 'cb-identityjs2026' ) }
+				</p>
+			) }
 			{ 'empty' === mod.moduleType && (
 				<TextControl
 					type="number"

@@ -37,6 +37,7 @@ export const MODULE_TYPE_OPTIONS = [
 	{ label: 'FAQ', value: 'faq' },
 	{ label: 'Button', value: 'button' },
 	{ label: 'Code (HTML)', value: 'code' },
+	{ label: 'Divider', value: 'divider' },
 	{ label: 'Empty', value: 'empty' },
 ];
 
