@@ -348,7 +348,7 @@ see MULTI-BRAND.md.
 
 27 native blocks under `blocks/`: brand-grid, case-study-grid, case-study-hero (optional Title field overrides the post title as the h1),
 child-page-nav, contact-directory, contact-form (Gravity Forms shortcode),
-content-builder (rows of many module types, optional background parallax; a `divider` module draws a full-width line in the section line colour; rows have Padding Top/Bottom radio groups of 0 / 1.5 / 3 / 5 rem (`paddingTop`/`paddingBottom`; legacy `hasPaddingTop`/`hasPaddingBottom` booleans map to 1.5 / 3, and new rows default to 1.5 / 3); the `empty` module takes a decimal-rem `emptyHeight`, default 0),
+content-builder (rows of many module types, optional background parallax; a `divider` module draws a full-width line in the section line colour; rows have Padding Top/Bottom radio groups of 0 / 1.5 / 3 / 5 rem (`paddingTop`/`paddingBottom`; legacy `hasPaddingTop`/`hasPaddingBottom` booleans map to 1.5 / 3, and new rows default to 3 / 3); the `empty` module takes a decimal-rem `emptyHeight`, default 0),
 cta (picks a Site-Wide Settings CTA), detail-list, faq (feeds the aggregated
 FAQPage schema), feature-overlay, file-list, home-intro, innovation-header,
 leadership, logo-marquee (site-wide or per-block logos), media-panel

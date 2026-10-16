@@ -162,7 +162,7 @@ export function emptyRow() {
 	return {
 		id: generateId(),
 		columnLayout: '12',
-		paddingTop: 1.5,
+		paddingTop: 3,
 		paddingBottom: 3,
 		columns: [ emptyColumn() ],
 	};
