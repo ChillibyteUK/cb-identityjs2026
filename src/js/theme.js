@@ -11,6 +11,7 @@ import { initScrollAnimate } from './scroll-animate';
 import { initLenis } from './lenis-init';
 import { initFeatureOverlayParallax } from './feature-overlay-parallax';
 import { initContentBuilderParallax, initContentBuilderImageHeights } from './content-builder';
+import { initWorkIndex } from './work-index';
 import { recordInitError } from './record-init-error';
 
 // Each init ran unguarded in one synchronous block — a single throw (e.g. a
@@ -41,4 +42,5 @@ document.addEventListener('DOMContentLoaded', () => {
 	safeInit(initStatCountUp);
 	safeInit(initContentBuilderParallax);
 	safeInit(initContentBuilderImageHeights);
+	safeInit(initWorkIndex);
 });

@@ -654,3 +654,29 @@
 	margin-bottom: 0.5rem;
 	font-weight: 600;
 }
+
+/*
+ * Composite fields (PostTypeMultiPicker, a RadioControl group) sit inside one
+ * .cb-identityjs2026-editor-field card that already supplies the padding, so
+ * the BaseControls inside it must not add their own on top.
+ */
+.cb-identityjs2026-editor-block .cb-identityjs2026-editor-field .components-base-control {
+	padding: 0;
+}
+
+/* PostTypeMultiPicker (blocks/_shared/) — spacing around its row list. */
+.cb-identityjs2026-multi-picker .cb-identityjs2026-repeater-field__rows {
+	margin-block-end: 0.75rem;
+}
+
+/* RadioControl laid out as a horizontal option group. */
+.cb-identityjs2026-radio-inline .components-radio-control__group-wrapper {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	gap: 1.5rem;
+}
+
+.cb-identityjs2026-multi-picker .cb-identityjs2026-repeater-field__row > span:nth-child(2) {
+	align-self: center;
+}

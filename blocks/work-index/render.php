@@ -13,6 +13,18 @@
  * - Filter select is a plain <select>, not the real source's TomSelect
  *   combobox enhancement — same filtering behaviour, simpler markup.
  *
+ * Two sources, chosen by the `source` attribute: "all" (every case_study,
+ * the original /work/ behaviour) or "curated" (the editor's own ordered
+ * `caseStudies` list, a relationship-field equivalent). Layout, styling and
+ * behaviour are identical; only the query differs. Curated mode ignores the
+ * Sport toggle, doesn't auto-pick a hero (none if unset), and limits the
+ * filter dropdown to services actually present in the list.
+ *
+ * `title` (h1) and `subtitle` (h2) are editor fields defaulting to "Our work"
+ * / "Where experience changes everything" (block.json); either can be
+ * cleared to omit it. The filter and hover-video scripts live in
+ * src/js/work-index.js, scoped per block instance.
+ *
  * Card description and hover-preview video both come from
  * cb_identityjs2026_get_case_study_card_meta() (inc/case-study.php) — the
  * linked case study's own Case Study Hero block subtitle/vimeoId/vimeoHash,
@@ -23,38 +35,93 @@
 
 defined( 'ABSPATH' ) || exit;
 
+$is_curated      = 'curated' === ( $attributes['source'] ?? 'all' );
 $hero_id         = absint( $attributes['heroCaseStudy'] ?? 0 );
 $show_filter_bar = ! empty( $attributes['showFilterBar'] );
 $sport_only      = ! empty( $attributes['sportOnly'] );
+$title           = trim( $attributes['title'] ?? '' );
+$subtitle        = trim( $attributes['subtitle'] ?? '' );
 
-// Sport scoping (the `theme` taxonomy's `sports` term — see the Sport
-// toggle in edit.js): on, the grid (and the fallback hero below) show only
-// sports-tagged case studies; off, sports-tagged ones are excluded. An
-// explicitly-picked hero is always honoured as picked — this only shapes
-// the fallback pick and the grid query. Children of the Sports term follow
-// it in both directions (include_children default).
-$sport_tax_query = array(
-	'taxonomy' => 'theme',
-	'field'    => 'slug',
-	'terms'    => array( 'sports' ),
-	'operator' => $sport_only ? 'IN' : 'NOT IN',
-);
-
-if ( ! $hero_id ) {
-	$hero_query = new WP_Query(
+if ( $is_curated ) {
+	// Editor-picked IDs, in order, minus the hero (it's shown above, not
+	// repeated in the grid) and any duplicates.
+	$curated_ids = array_values( array_unique( array_filter( array_map( 'absint', (array) ( $attributes['caseStudies'] ?? array() ) ) ) ) );
+	$curated_ids = array_values( array_diff( $curated_ids, array( $hero_id ) ) );
+	$query       = new WP_Query(
 		array(
 			'post_type'      => 'case_study',
-			'posts_per_page' => 1,
-			'orderby'        => 'menu_order',
-			'order'          => 'ASC',
-			'tax_query'      => array( $sport_tax_query ), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- small, indexed taxonomy query on a bounded post type, same cost class as the grid query below.
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+			'post__in'       => $curated_ids ? $curated_ids : array( 0 ),
+			'orderby'        => 'post__in',
 		)
 	);
-	if ( $hero_query->have_posts() ) {
-		$hero_id = $hero_query->posts[0]->ID;
+} else {
+	// Sport scoping (the `theme` taxonomy's `sports` term — see the Sport
+	// toggle in edit.js): on, the grid (and the fallback hero below) show
+	// only sports-tagged case studies; off, sports-tagged ones are excluded.
+	// An explicitly-picked hero is always honoured as picked — this only
+	// shapes the fallback pick and the grid query. Children of the Sports
+	// term follow it in both directions (include_children default).
+	$sport_tax_query = array(
+		'taxonomy' => 'theme',
+		'field'    => 'slug',
+		'terms'    => array( 'sports' ),
+		'operator' => $sport_only ? 'IN' : 'NOT IN',
+	);
+	if ( ! $hero_id ) {
+		$hero_query = new WP_Query(
+			array(
+				'post_type'      => 'case_study',
+				'posts_per_page' => 1,
+				'orderby'        => 'menu_order',
+				'order'          => 'ASC',
+				'tax_query'      => array( $sport_tax_query ), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- small, indexed taxonomy query on a bounded post type, same cost class as the grid query below.
+			)
+		);
+		if ( $hero_query->have_posts() ) {
+			$hero_id = $hero_query->posts[0]->ID;
+		}
+		wp_reset_postdata();
 	}
-	wp_reset_postdata();
+	$query = new WP_Query(
+		array(
+			'post_type'      => 'case_study',
+			'posts_per_page' => -1,
+			'orderby'        => 'menu_order',
+			'order'          => 'ASC',
+			'post__not_in'   => $hero_id ? array( $hero_id ) : array(),
+			'tax_query'      => array( $sport_tax_query ), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- see the hero query above.
+		)
+	);
 }
+
+// Per-card data, computed up front so the filter bar (rendered before the
+// grid) can be limited to services actually present in the list.
+$cards      = array();
+$used_slugs = array();
+foreach ( $query->posts as $card_post ) {
+	$service_terms = get_the_terms( $card_post->ID, 'service' );
+	$service_slugs = array();
+	if ( ! is_wp_error( $service_terms ) && ! empty( $service_terms ) ) {
+		foreach ( $service_terms as $service_term ) {
+			$service_slugs[] = $service_term->slug;
+			foreach ( get_ancestors( $service_term->term_id, 'service' ) as $ancestor_id ) {
+				$ancestor_term = get_term( $ancestor_id, 'service' );
+				if ( $ancestor_term && ! is_wp_error( $ancestor_term ) ) {
+					$service_slugs[] = $ancestor_term->slug;
+				}
+			}
+		}
+		$service_slugs = array_unique( $service_slugs );
+	}
+	$used_slugs = array_merge( $used_slugs, $service_slugs );
+	$cards[]    = array(
+		'id'            => $card_post->ID,
+		'service_slugs' => $service_slugs,
+	);
+}
+$used_slugs = array_unique( $used_slugs );
 
 // Same fixed Vimeo app/account registration as Media Panel/Case Study Hero
 // — see those blocks' own render.php comments.
@@ -91,13 +158,18 @@ if ( ! function_exists( 'cb_identityjs2026_work_index_video_src' ) ) {
 $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'work-index' ) );
 ?>
 <div <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?>>
+	<?php if ( $title || $subtitle || $hero_id ) : ?>
 	<section class="work-index-hero">
-		<h1 class="work-index-hero__pretitle">
-			<div class="id-container"><?php echo esc_html( cb_identityjs2026_pll_string( 'Our work' ) ); ?></div>
-		</h1>
-		<h2 class="work-index-hero__pretitle-sub">
-			<div class="id-container"><?php echo esc_html( cb_identityjs2026_pll_string( 'Where experience changes everything' ) ); ?></div>
-		</h2>
+		<?php if ( $title ) : ?>
+			<h1 class="work-index-hero__pretitle">
+				<div class="id-container"><?php echo esc_html( $title ); ?></div>
+			</h1>
+		<?php endif; ?>
+		<?php if ( $subtitle ) : ?>
+			<h2 class="work-index-hero__pretitle-sub">
+				<div class="id-container"><?php echo esc_html( $subtitle ); ?></div>
+			</h2>
+		<?php endif; ?>
 		<?php if ( $hero_id ) : ?>
 			<?php
 			// No hover-video on the hero card — confirmed live it didn't
@@ -124,6 +196,7 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'work-inde
 			</a>
 		<?php endif; ?>
 	</section>
+	<?php endif; ?>
 
 	<?php if ( $show_filter_bar ) : ?>
 		<?php
@@ -134,18 +207,26 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'work-inde
 				'parent'     => 0,
 			)
 		);
+		if ( $is_curated && ! is_wp_error( $service_terms ) ) {
+			$service_terms = array_filter(
+				$service_terms,
+				static function ( $service_term ) use ( $used_slugs ) {
+					return in_array( $service_term->slug, $used_slugs, true );
+				}
+			);
+		}
 		?>
 		<?php if ( ! is_wp_error( $service_terms ) && ! empty( $service_terms ) ) : ?>
 			<div class="work-index__filter-bar">
 				<div class="id-container work-index__filter-bar-inner">
 					<span class="work-index__filter-label"><?php echo esc_html( cb_identityjs2026_pll_string( 'Filter by:' ) ); ?></span>
-					<select id="work-index-service-filter" class="work-index__filter-select">
+					<select class="work-index__filter-select" aria-label="<?php echo esc_attr( cb_identityjs2026_pll_string( 'Filter by:' ) ); ?>">
 						<option value="all"><?php echo esc_html( cb_identityjs2026_pll_string( 'All Services' ) ); ?></option>
 						<?php foreach ( $service_terms as $service_term ) : ?>
 							<option value="<?php echo esc_attr( $service_term->slug ); ?>"><?php echo esc_html( $service_term->name ); ?></option>
 						<?php endforeach; ?>
 					</select>
-					<button type="button" id="work-index-filter-reset" class="work-index__filter-reset"><?php echo esc_html( cb_identityjs2026_pll_string( 'Reset' ) ); ?></button>
+					<button type="button" class="work-index__filter-reset"><?php echo esc_html( cb_identityjs2026_pll_string( 'Reset' ) ); ?></button>
 				</div>
 			</div>
 		<?php endif; ?>
@@ -154,42 +235,16 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'work-inde
 	<div class="id-container">
 		<div class="work-index__cards">
 			<?php
-			$query = new WP_Query(
-				array(
-					'post_type'      => 'case_study',
-					'posts_per_page' => -1,
-					'orderby'        => 'menu_order',
-					'order'          => 'ASC',
-					'post__not_in'   => $hero_id ? array( $hero_id ) : array(),
-					'tax_query'      => array( $sport_tax_query ), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- see the hero query above.
-				)
-			);
-
-			while ( $query->have_posts() ) :
-				$query->the_post();
-				$post_id       = get_the_ID();
-				$service_terms = get_the_terms( $post_id, 'service' );
-				$service_slugs = array();
-				if ( ! is_wp_error( $service_terms ) && ! empty( $service_terms ) ) {
-					foreach ( $service_terms as $service_term ) {
-						$service_slugs[] = $service_term->slug;
-						foreach ( get_ancestors( $service_term->term_id, 'service' ) as $ancestor_id ) {
-							$ancestor_term = get_term( $ancestor_id, 'service' );
-							if ( $ancestor_term && ! is_wp_error( $ancestor_term ) ) {
-								$service_slugs[] = $ancestor_term->slug;
-							}
-						}
-					}
-					$service_slugs = array_unique( $service_slugs );
-				}
-
-				$card_meta = cb_identityjs2026_get_case_study_card_meta( $post_id );
+			foreach ( $cards as $card ) :
+				$post_id       = $card['id'];
+				$service_slugs = $card['service_slugs'];
+				$card_meta     = cb_identityjs2026_get_case_study_card_meta( $post_id );
 				$video_src = cb_identityjs2026_work_index_video_src( $card_meta, $vimeo_app_id );
 				?>
-				<a href="<?php echo esc_url( get_permalink() ); ?>" class="work-index__card" data-service-terms="<?php echo esc_attr( implode( ' ', $service_slugs ) ); ?>">
-					<?php if ( has_post_thumbnail() ) : ?>
+				<a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="work-index__card" data-service-terms="<?php echo esc_attr( implode( ' ', $service_slugs ) ); ?>">
+					<?php if ( has_post_thumbnail( $post_id ) ) : ?>
 						<div class="work-index__image-wrapper">
-							<?php the_post_thumbnail( 'full', array( 'class' => 'work-index__image' ) ); ?>
+							<?php echo get_the_post_thumbnail( $post_id, 'full', array( 'class' => 'work-index__image' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 						</div>
 					<?php endif; ?>
 					<?php if ( $video_src ) : ?>
@@ -197,69 +252,13 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'work-inde
 					<?php endif; ?>
 					<div class="work-index__content">
 						<div class="work-index__title">
-							<?php the_title(); ?>
+							<?php echo esc_html( get_the_title( $post_id ) ); ?>
 							<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/img/arrow-n600-solid.svg' ); ?>" width="14" height="13" alt="" />
 						</div>
 						<div class="work-index__desc"><?php echo esc_html( $card_meta['desc'] ); ?></div>
 					</div>
 				</a>
-				<?php
-			endwhile;
-			wp_reset_postdata();
-			?>
+				<?php endforeach; ?>
 		</div>
 	</div>
 </div>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-	var select = document.getElementById('work-index-service-filter');
-	var reset = document.getElementById('work-index-filter-reset');
-	if (!select) return;
-	function applyFilter() {
-		var value = select.value;
-		document.querySelectorAll('.work-index__card').forEach(function (card) {
-			var terms = (card.getAttribute('data-service-terms') || '').split(' ');
-			card.style.display = (value === 'all' || terms.indexOf(value) !== -1) ? '' : 'none';
-		});
-	}
-	select.addEventListener('change', applyFilter);
-	if (reset) {
-		reset.addEventListener('click', function () {
-			select.value = 'all';
-			applyFilter();
-		});
-	}
-});
-
-document.addEventListener('DOMContentLoaded', function () {
-	// Video hover preview: only mount the Vimeo iframe while the card is
-	// hovered/focused, so idle cards never hold a live player in memory —
-	// ported from cb-featured-work.php's own JS. Only the grid cards
-	// (.work-index__card) carry a [data-video-src] container — the hero
-	// card doesn't (see render.php's own comment on why).
-	document.querySelectorAll('[data-video-src]').forEach(function (container) {
-		var card = container.closest('a');
-		if (!card) return;
-		var src = container.getAttribute('data-video-src');
-
-		function mountVideo() {
-			if (container.querySelector('iframe')) return;
-			var iframe = document.createElement('iframe');
-			iframe.src = src;
-			iframe.frameBorder = '0';
-			iframe.allow = 'autoplay; fullscreen';
-			iframe.allowFullscreen = true;
-			container.appendChild(iframe);
-		}
-		function unmountVideo() {
-			var iframe = container.querySelector('iframe');
-			if (iframe) iframe.remove();
-		}
-
-		card.addEventListener('mouseenter', mountVideo);
-		card.addEventListener('mouseleave', unmountVideo);
-		card.addEventListener('focusin', mountVideo);
-		card.addEventListener('focusout', unmountVideo);
-	});
-});
-</script>
