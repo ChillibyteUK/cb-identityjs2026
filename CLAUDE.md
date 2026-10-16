@@ -396,12 +396,15 @@ in `wp_footer`, breadcrumb helpers). Project-coupled helpers (e.g.
 
 **Vimeo embeds** are always built with `cb_identityjs2026_vimeo_src( $id, $hash, $mode )` —
 never hand-assemble a `player.vimeo.com` URL in a block. `background` mode
-(case-study hero, card hover previews) sends `background=1` plus explicit
-`autoplay/muted/loop/controls=0`: profiled videos get the chromeless player,
-un-profiled ones ignore the first and degrade to an autoplaying loop with
-Vimeo's floating pause button, so no editor toggle is needed. Media Panel's
-hero mode uses `hero` (no `background`) because its Mute/Unmute button drives
-the Vimeo Player API.
+(case-study hero, Media Panel hero mode, card hover previews) sends
+`background=1` plus explicit `autoplay/muted/loop`: profiled videos get the
+chromeless player, un-profiled ones ignore `background` and fall back to an
+autoplaying muted loop with Vimeo's own controls, so no editor toggle is
+needed. `controls=0` is deliberately omitted so un-profiled videos keep Vimeo's native
+controls as the fallback. Sound control on hero videos is the shared Mute/Unmute button
+(`cb_identityjs2026_video_unmute_button()` in `inc/helpers.php`,
+`src/js/video-unmute.js`, `src/blocks/video-unmute.css`), which works via the
+Vimeo Player API and sits at the bottom right of the frame.
 
 ## File layout
 
@@ -421,7 +424,7 @@ inc/
   head-tags.php         Font preload + GA/GTM (logged-out only) + verification + custom script slots
   block-usage.php       [block_usage_table] QA shortcode
   utilities.php         Project-agnostic helpers, [contact_email], schema queues, breadcrumbs
-  helpers.php           Project-specific helpers: cb_identityjs2026_page_link(), cb_identityjs2026_vimeo_src() (the ONLY place Vimeo embed URLs are built — modes background/hero/player; see its docblock)
+  helpers.php           Project-specific helpers: cb_identityjs2026_page_link(), cb_identityjs2026_vimeo_src() (the ONLY place Vimeo embed URLs are built — modes background/player; see its docblock)
   posttypes.php         case_study CPT + CPT-singles-use-page.php filter
   taxonomies.php        person, theme, service, region
   news-templates.php    Insight-card renderers + span cycle (index, category-*, Post Grid)

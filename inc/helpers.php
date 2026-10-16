@@ -56,22 +56,22 @@ function cb_identityjs2026_page_link( $slug, $fragment = '' ) {
  * app_id and the player-chrome decisions live in one place.
  *
  * Modes:
- * - `background` — decorative looping video (case-study hero, card hover
- *   previews). Sends `background=1` (chromeless, no floating pause button)
- *   AND the explicit autoplay/muted/loop/controls=0 params. `background` and
- *   `controls=0` are honoured only for videos on a Vimeo account with that
- *   feature (profiled); for any other video Vimeo ignores them, and the
- *   explicit params still give an autoplaying muted loop — just with Vimeo's
- *   floating pause button. So an un-profiled video degrades gracefully with
- *   no editor-facing toggle, and gets cleaner automatically once profiled.
- * - `hero` — autoplay/muted/loop/controls=0 without `background`, for
- *   Media Panel's hero mode: its Mute/Unmute button drives the Vimeo Player
- *   API, which we haven't confirmed works under background mode.
+ * - `background` — decorative autoplaying loop (case-study hero, Media
+ *   Panel hero mode, card hover previews). Sends `background=1` (chromeless:
+ *   no controls, no floating pause button) plus explicit
+ *   autoplay/muted/loop. The Vimeo Player API still works in this mode, so
+ *   the Mute/Unmute button (cb_identityjs2026_video_unmute_button()) can
+ *   toggle sound. `background` is honoured only for videos on a Vimeo
+ *   account with that feature (profiled); for any other video it is ignored
+ *   and the explicit params still give an autoplaying muted loop, just with
+ *   Vimeo's own controls. `controls=0` is deliberately not sent: it is
+ *   redundant when `background` is honoured, and omitting it keeps Vimeo's
+ *   native controls as the fallback for un-profiled videos.
  * - `player` — a normal embed with default controls.
  *
  * @param string $vimeo_id   Vimeo video ID.
  * @param string $vimeo_hash Optional privacy hash (the `h` param).
- * @param string $mode       `background`, `hero` or `player`.
+ * @param string $mode       `background` or `player`.
  * @return string
  */
 function cb_identityjs2026_vimeo_src( $vimeo_id, $vimeo_hash = '', $mode = 'player' ) {
@@ -89,16 +89,13 @@ function cb_identityjs2026_vimeo_src( $vimeo_id, $vimeo_hash = '', $mode = 'play
 		$args = array( 'h' => $vimeo_hash ) + $args;
 	}
 
-	if ( 'background' === $mode || 'hero' === $mode ) {
-		$args += array(
-			'autoplay' => '1',
-			'muted'    => '1',
-			'loop'     => '1',
-			'controls' => '0',
-		);
-	}
 	if ( 'background' === $mode ) {
-		$args['background'] = '1';
+		$args += array(
+			'autoplay'   => '1',
+			'muted'      => '1',
+			'loop'       => '1',
+			'background' => '1',
+		);
 	}
 
 	return add_query_arg( $args, 'https://player.vimeo.com/video/' . rawurlencode( $vimeo_id ) );
@@ -118,8 +115,7 @@ function cb_identityjs2026_enqueue_vimeo_player() {
  * Mute/Unmute toggle button for a Vimeo iframe, shared by Media Panel's
  * hero mode and Case Study Hero. Wired up by src/js/video-unmute.js via the
  * Vimeo Player API (so the video must be embedded with
- * cb_identityjs2026_vimeo_src() in `hero` mode — muted autoplay, no
- * controls). Positioned at the bottom of its positioned parent; see
+ * cb_identityjs2026_vimeo_src() in `background` mode). Positioned at the bottom of its positioned parent; see
  * src/blocks/video-unmute.css.
  *
  * @param string $iframe_id ID attribute of the Vimeo iframe this controls.

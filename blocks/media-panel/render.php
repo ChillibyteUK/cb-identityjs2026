@@ -50,7 +50,7 @@ if ( 'video' === $media_type && ! $vimeo_id ) {
 }
 
 if ( 'video' === $media_type ) {
-	$video_src = cb_identityjs2026_vimeo_src( $vimeo_id, $vimeo_hash, $hero_mode ? 'hero' : 'player' );
+	$video_src = cb_identityjs2026_vimeo_src( $vimeo_id, $vimeo_hash, $hero_mode ? 'background' : 'player' );
 
 	$iframe_id = ( $attributes['anchor'] ?? '' ) ? $attributes['anchor'] . '-video' : wp_unique_id( 'media-panel-' );
 

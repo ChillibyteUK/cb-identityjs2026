@@ -64,7 +64,7 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'case-stud
 	<?php endif; ?>
 	<?php if ( $vimeo_id ) : ?>
 		<?php
-		$video_src = cb_identityjs2026_vimeo_src( $vimeo_id, $vimeo_hash, 'hero' );
+		$video_src = cb_identityjs2026_vimeo_src( $vimeo_id, $vimeo_hash, 'background' );
 		$iframe_id = wp_unique_id( 'case-study-hero-video-' );
 		?>
 		<div class="<?php echo esc_attr( $media_class ); ?>">

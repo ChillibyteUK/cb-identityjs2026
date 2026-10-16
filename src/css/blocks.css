@@ -4002,7 +4002,7 @@
 /* --- src/blocks/video-unmute.css --- */
 /*
  * Mute/Unmute button over a Vimeo iframe — shared by Media Panel (hero mode)
- * and Case Study Hero. Sits at the bottom centre of its positioned parent,
+ * and Case Study Hero. Sits at the bottom right of its positioned parent (bottom left under RTL),
  * clear of the top fade/gradient. Markup: cb_identityjs2026_video_unmute_button()
  * in inc/helpers.php; behaviour: src/js/video-unmute.js.
  */
@@ -4010,8 +4010,7 @@
 	position: absolute;
 	z-index: 2; /* above Case Study Hero's gradient overlay (z-index 1) */
 	bottom: 1.5rem;
-	left: 50%;
-	transform: translateX(-50%);
+	inset-inline-end: 1.5rem;
 	padding: 0.5rem 1rem;
 	background-color: hsl(53 36% 96% / 0.9); /* --hsl-neutral-050, confirmed identity value */
 	color: #0d0d0c; /* --col-primary-black, confirmed identity value — same hex as --col-bg */
