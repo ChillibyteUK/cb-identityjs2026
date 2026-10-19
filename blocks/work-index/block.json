@@ -6,6 +6,10 @@
 	"category": "cb-identityjs2026",
 	"icon": "grid-view",
 	"attributes": {
+		"source": { "type": "string", "default": "all" },
+		"caseStudies": { "type": "array", "default": [], "items": { "type": "number" } },
+		"title": { "type": "string", "default": "Our work" },
+		"subtitle": { "type": "string", "default": "Where experience changes everything" },
 		"heroCaseStudy": { "type": "number", "default": 0 },
 		"showFilterBar": { "type": "boolean", "default": true },
 		"sportOnly": { "type": "boolean", "default": false }

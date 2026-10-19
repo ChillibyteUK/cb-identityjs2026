@@ -1,10 +1,10 @@
 import { __ } from '@wordpress/i18n';
-import { SelectControl, ToggleControl, Button } from '@wordpress/components';
-import { COLUMN_LAYOUT_OPTIONS, emptyModule, emptyColumn, normalizeRowColumns } from './constants';
+import { SelectControl, RadioControl, Button } from '@wordpress/components';
+import { COLUMN_LAYOUT_OPTIONS, ROW_PADDING_OPTIONS, getRowPadding, emptyModule, emptyColumn, normalizeRowColumns } from './constants';
 import ModuleEditor from './ModuleEditor';
 
 /**
- * One row's own fields (column layout, has_line, has_padding) plus its
+ * One row's own fields (column layout, top/bottom padding) plus its
  * columns — each column a list of stacked modules, not a single module.
  *
  * Confirmed live against production's own cb-content-grid-v2.php: a flat
@@ -112,28 +112,31 @@ export default function RowEditor( { row, updateRow } ) {
 
 	return (
 		<div className="cb-identityjs2026-content-builder-row">
-			<SelectControl
-				label={ __( 'Column Layout', 'cb-identityjs2026' ) }
-				value={ row.columnLayout }
-				options={ COLUMN_LAYOUT_OPTIONS }
-				onChange={ ( value ) => updateRow( { columnLayout: value } ) }
-			/>
-			<div style={ { display: 'flex', gap: '12px' } }>
-				<ToggleControl
-					label={ __( 'Divider Line Above', 'cb-identityjs2026' ) }
-					checked={ row.hasLine }
-					onChange={ ( value ) => updateRow( { hasLine: value } ) }
-				/>
-				<ToggleControl
-					label={ __( 'Padding Top', 'cb-identityjs2026' ) }
-					checked={ row.hasPaddingTop }
-					onChange={ ( value ) => updateRow( { hasPaddingTop: value } ) }
-				/>
-				<ToggleControl
-					label={ __( 'Padding Bottom', 'cb-identityjs2026' ) }
-					checked={ row.hasPaddingBottom }
-					onChange={ ( value ) => updateRow( { hasPaddingBottom: value } ) }
-				/>
+			<div className="cb-identityjs2026-row-settings">
+				<div>
+					<SelectControl
+						label={ __( 'Column Layout', 'cb-identityjs2026' ) }
+						value={ row.columnLayout }
+						options={ COLUMN_LAYOUT_OPTIONS }
+						onChange={ ( value ) => updateRow( { columnLayout: value } ) }
+					/>
+				</div>
+				<div className="cb-identityjs2026-radio-inline">
+					<RadioControl
+						label={ __( 'Padding Top (rem)', 'cb-identityjs2026' ) }
+						selected={ String( getRowPadding( row, 'Top' ) ) }
+						options={ ROW_PADDING_OPTIONS }
+						onChange={ ( value ) => updateRow( { paddingTop: Number( value ) } ) }
+					/>
+				</div>
+				<div className="cb-identityjs2026-radio-inline">
+					<RadioControl
+						label={ __( 'Padding Bottom (rem)', 'cb-identityjs2026' ) }
+						selected={ String( getRowPadding( row, 'Bottom' ) ) }
+						options={ ROW_PADDING_OPTIONS }
+						onChange={ ( value ) => updateRow( { paddingBottom: Number( value ) } ) }
+					/>
+				</div>
 			</div>
 			<p className="cb-identityjs2026-editor-field__help">
 				{ __(

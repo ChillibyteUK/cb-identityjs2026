@@ -24,38 +24,6 @@ defined( 'ABSPATH' ) || exit;
 
 $mode = $attributes['mode'] ?? 'grid';
 
-// Same fixed Vimeo app/account registration as Media Panel/Case Study
-// Hero/Work Index — see those blocks' own render.php comments.
-$vimeo_app_id = 58479;
-
-/**
- * Builds a hover-preview-ready Vimeo embed src from a card's meta, or ''
- * when it has no video.
- *
- * @param array $card_meta cb_identityjs2026_get_case_study_card_meta() result.
- * @return string
- */
-if ( ! function_exists( 'cb_identityjs2026_case_study_grid_video_src' ) ) {
-	function cb_identityjs2026_case_study_grid_video_src( $card_meta, $vimeo_app_id ) {
-		if ( ! $card_meta['vimeoId'] ) {
-			return '';
-		}
-
-		return add_query_arg(
-			array(
-				'h'          => $card_meta['vimeoHash'],
-				'dnt'        => '1',
-				'badge'      => '0',
-				'player_id'  => '0',
-				'app_id'     => $vimeo_app_id,
-				'background' => '1',
-				'autoplay'   => '1',
-			),
-			'https://player.vimeo.com/video/' . rawurlencode( $card_meta['vimeoId'] )
-		);
-	}
-}
-
 /**
  * Mount-on-hover Vimeo iframe for every .case-study-grid__video on the
  * page — same pattern as cb-featured-work.php's own JS, ported. Each
@@ -129,7 +97,7 @@ if ( 'hero' === $mode ) {
 	}
 
 	$card_meta = cb_identityjs2026_get_case_study_card_meta( $hero_id );
-	$video_src = cb_identityjs2026_case_study_grid_video_src( $card_meta, $vimeo_app_id );
+	$video_src = cb_identityjs2026_vimeo_src( $card_meta['vimeoId'], $card_meta['vimeoHash'], 'background' );
 
 	$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'case-study-grid case-study-grid--hero' ) );
 	?>
@@ -465,7 +433,7 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'case-stud
 			<?php foreach ( $posts as $post_id ) : ?>
 				<?php
 				$card_meta = cb_identityjs2026_get_case_study_card_meta( $post_id );
-				$video_src = cb_identityjs2026_case_study_grid_video_src( $card_meta, $vimeo_app_id );
+				$video_src = cb_identityjs2026_vimeo_src( $card_meta['vimeoId'], $card_meta['vimeoHash'], 'background' );
 				?>
 				<a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="case-study-grid__card">
 					<?php if ( has_post_thumbnail( $post_id ) ) : ?>

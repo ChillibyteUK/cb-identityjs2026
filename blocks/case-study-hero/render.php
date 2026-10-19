@@ -3,8 +3,9 @@
  * Block template for Case Study Hero.
  *
  * Built from cb-case-study-hero. Placed at the top of a case_study post's
- * content — title comes from the post itself (get_the_title()), not a
- * field. Its `subtitle` attribute is what cb_identityjs2026_get_hero_meta()
+ * content — the h1 is the post's own title (get_the_title()) unless the
+ * optional `title` attribute is set, which overrides it for this hero only.
+ * Its `subtitle` attribute is what cb_identityjs2026_get_hero_meta()
  * (inc/case-study.php) reads for both this block's own display and every
  * card that links to this case study elsewhere (Work Index, Case Study
  * Grid) — see that function's own header comment.
@@ -31,6 +32,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+$title      = trim( (string) ( $attributes['title'] ?? '' ) );
+$title      = '' !== $title ? $title : get_the_title();
 $subtitle   = $attributes['subtitle'] ?? '';
 $vimeo_id   = $attributes['vimeoId'] ?? '';
 $vimeo_hash = $attributes['vimeoHash'] ?? '';
@@ -51,16 +54,11 @@ if ( $full_bleed ) {
 }
 $media_class = implode( ' ', $media_classes );
 
-// Same fixed Vimeo app/account registration as Media Panel — see that
-// block's own render.php comment for why this is a plain variable, not a
-// const (this file is require()'d once per block instance on the page).
-$vimeo_app_id = 58479;
-
 $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'case-study-hero' . ( $full_bleed && ( $vimeo_id || has_post_thumbnail() ) ? ' case-study-hero--bleed' : '' ) ) );
 ?>
 <section <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?>>
 	<h1 class="case-study-hero__title">
-		<div class="id-container"><?php echo esc_html( get_the_title() ); ?></div>
+		<div class="id-container"><?php echo esc_html( $title ); ?></div>
 	</h1>
 	<?php if ( $subtitle ) : ?>
 		<h2 class="case-study-hero__subtitle">
@@ -69,23 +67,13 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'case-stud
 	<?php endif; ?>
 	<?php if ( $vimeo_id ) : ?>
 		<?php
-		$video_src = add_query_arg(
-			array(
-				'h'         => $vimeo_hash,
-				'dnt'       => '1',
-				'badge'     => '0',
-				'player_id' => '0',
-				'app_id'    => $vimeo_app_id,
-				'autoplay'  => '1',
-				'muted'     => '1',
-				'loop'      => '1',
-			),
-			'https://player.vimeo.com/video/' . rawurlencode( $vimeo_id )
-		);
+		$video_src = cb_identityjs2026_vimeo_src( $vimeo_id, $vimeo_hash, 'background' );
+		$iframe_id = wp_unique_id( 'case-study-hero-video-' );
 		?>
 		<div class="<?php echo esc_attr( $media_class ); ?>">
 			<div class="case-study-hero__video-overlay"></div>
-			<iframe class="case-study-hero__video" src="<?php echo esc_url( $video_src ); ?>" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+			<iframe id="<?php echo esc_attr( $iframe_id ); ?>" class="case-study-hero__video" src="<?php echo esc_url( $video_src ); ?>" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+			<?php echo cb_identityjs2026_video_unmute_button( $iframe_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the helper. ?>
 		</div>
 	<?php elseif ( has_post_thumbnail() ) : ?>
 		<?php // No video supplied — fall back to the featured image in the same 16:9 frame. ?>

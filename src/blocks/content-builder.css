@@ -166,8 +166,7 @@
 }
 
 /*
- * When the previous row already carries bottom padding (--space-4, same as
- * a row's own top padding), that padding alone is enough visual separation.
+ * When the previous row already carries bottom padding, that padding alone is enough visual separation.
  * Adding the fixed inter-row margin on top of it as well made the row-to-row
  * gap wider than intended.
  */
@@ -176,7 +175,7 @@
 }
 
 .content-builder__row--pt {
-	padding-top: var(--space-4);
+	padding-top: var(--content-builder-row-pt, var(--space-4));
 }
 
 /*
@@ -184,18 +183,16 @@
  * the whole block (page header, previous block, etc). Between two rows in
  * the SAME block, that spacing is already provided by the previous row's
  * own bottom padding plus the fixed inter-row margin above — stacking this
- * row's top padding on top of that too was doubling the visible gap.
+ * row's top padding on top of that too was doubling the visible gap. Applies
+ * to legacy (boolean) rows only: an explicit paddingTop choice (`--pt-set`)
+ * is always honoured.
  */
-.content-builder__row + .content-builder__row.content-builder__row--pt {
+.content-builder__row + .content-builder__row.content-builder__row--pt:not(.content-builder__row--pt-set) {
 	padding-top: 0;
 }
 
 .content-builder__row--pb {
-	padding-bottom: var(--space-4);
-}
-
-.content-builder__row--has-line {
-	border-top: 1px solid var(--content-builder-line-color);
+	padding-bottom: var(--content-builder-row-pb, var(--space-5));
 }
 
 .content-builder__col {
@@ -737,4 +734,20 @@
 
 .content-builder__faq > :last-child {
 	margin-bottom: 0;
+}
+
+/*
+ * Divider module — a full-column-width rule in the same colour/weight as the
+ * section's other divider lines (row top line, h2 lines, list items): 1px
+ * solid var(--content-builder-line-color). Resets the browser/base <hr>
+ * defaults so it's a plain line with no margin of its own.
+ */
+.content-builder__divider {
+	display: block;
+	width: 100%;
+	height: 0;
+	margin: 0;
+	border: 0;
+	border-top: 1px solid var(--content-builder-line-color);
+	opacity: 1;
 }

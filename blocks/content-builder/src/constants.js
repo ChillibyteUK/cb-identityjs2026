@@ -37,6 +37,7 @@ export const MODULE_TYPE_OPTIONS = [
 	{ label: 'FAQ', value: 'faq' },
 	{ label: 'Button', value: 'button' },
 	{ label: 'Code (HTML)', value: 'code' },
+	{ label: 'Divider', value: 'divider' },
 	{ label: 'Empty', value: 'empty' },
 ];
 
@@ -128,6 +129,7 @@ export function emptyModule() {
 		buttonLinkTarget: false,
 		ctaText: '',
 		codeContent: '',
+		emptyHeight: 0,
 	};
 }
 
@@ -138,13 +140,35 @@ export function emptyColumn() {
 	};
 }
 
+/**
+ * Row top/bottom padding choices, in rem. 1.5 and 3 are the old on/off
+ * toggles' own values (--space-4 / --space-5), so rows saved with the legacy
+ * hasPaddingTop/hasPaddingBottom booleans map straight onto them.
+ */
+export const ROW_PADDING_OPTIONS = [ 0, 1.5, 3, 5 ].map( ( value ) => ( { label: String( value ), value: String( value ) } ) );
+
+/**
+ * A row's current padding in rem: the explicit paddingTop/paddingBottom if
+ * set, otherwise derived from the legacy boolean (true = 1.5 top / 3 bottom).
+ *
+ * @param {Object} row
+ * @param {'Top'|'Bottom'} side
+ * @return {number}
+ */
+export function getRowPadding( row, side ) {
+	const explicit = row[ `padding${ side }` ];
+	if ( explicit !== undefined && explicit !== null && explicit !== '' ) {
+		return Number( explicit );
+	}
+	return row[ `hasPadding${ side }` ] ? ( 'Top' === side ? 1.5 : 3 ) : 0;
+}
+
 export function emptyRow() {
 	return {
 		id: generateId(),
 		columnLayout: '12',
-		hasLine: false,
-		hasPaddingTop: true,
-		hasPaddingBottom: true,
+		paddingTop: 1.5,
+		paddingBottom: 1.5,
 		columns: [ emptyColumn() ],
 	};
 }

@@ -72,8 +72,6 @@ function cb_identityjs2026_register_pll_strings() {
 		'The page you’re looking for doesn’t exist.',
 		'Identity homepage',
 		'Home',
-		'Our work',
-		'Where experience changes everything',
 		'Filter by:',
 		'All Services',
 		'Reset',

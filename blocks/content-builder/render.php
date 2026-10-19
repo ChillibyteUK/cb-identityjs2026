@@ -529,7 +529,25 @@ if ( ! function_exists( 'cb_identityjs2026_content_builder_render_module' ) ) :
 				<?php
 				break;
 
+			case 'divider':
+				?>
+				<hr class="content-builder__divider" />
+				<?php
+				break;
+
 			case 'empty':
+				// Optional fixed height, in (decimal) rem — 0 / unset renders
+				// the original deliberately-blank column. Capped like [spc] so
+				// a typo can't blow out a layout.
+				$empty_height = min( 20, max( 0, (float) ( $module['emptyHeight'] ?? 0 ) ) );
+				if ( $empty_height > 0 ) {
+					$empty_height = rtrim( rtrim( number_format( $empty_height, 4, '.', '' ), '0' ), '.' );
+					?>
+					<div class="content-builder__empty-spacer" style="height:<?php echo esc_attr( $empty_height ); ?>rem" aria-hidden="true"></div>
+					<?php
+				}
+				break;
+
 			default:
 				break;
 		}
@@ -576,14 +594,32 @@ endif;
 
 			$row_classes = array( 'content-builder__row', $row_variant_map[ $column_layout ] ?? $row_variant_map['12'] );
 
-			if ( ! empty( $row['hasPaddingTop'] ) ) {
+			// Row padding, in rem: 0 / 1.5 / 3 / 5. Rows saved before the radio
+			// groups existed carry hasPaddingTop/hasPaddingBottom booleans instead —
+			// true maps to the old fixed values (1.5 top, 3 bottom). Only an
+			// explicit choice (`--pt-set`) is exempt from the rule that zeroes top
+			// padding on non-first rows (see content-builder.css), so legacy rows
+			// look exactly as before.
+			$row_padding = function ( $key, $legacy_key, $legacy_value ) use ( $row ) {
+				if ( isset( $row[ $key ] ) && is_numeric( $row[ $key ] ) ) {
+					$value = (float) $row[ $key ];
+					return array( in_array( $value, array( 1.5, 3.0, 5.0 ), true ) ? $value : 0.0, true );
+				}
+				return array( ! empty( $row[ $legacy_key ] ) ? $legacy_value : 0.0, false );
+			};
+			list( $pad_top, $pad_top_set )       = $row_padding( 'paddingTop', 'hasPaddingTop', 1.5 );
+			list( $pad_bottom, $pad_bottom_set ) = $row_padding( 'paddingBottom', 'hasPaddingBottom', 3.0 );
+			$row_style = '';
+			if ( $pad_top > 0 ) {
 				$row_classes[] = 'content-builder__row--pt';
+				$row_style    .= '--content-builder-row-pt:' . $pad_top . 'rem;';
+				if ( $pad_top_set ) {
+					$row_classes[] = 'content-builder__row--pt-set';
+				}
 			}
-			if ( ! empty( $row['hasPaddingBottom'] ) ) {
+			if ( $pad_bottom > 0 ) {
 				$row_classes[] = 'content-builder__row--pb';
-			}
-			if ( ! empty( $row['hasLine'] ) ) {
-				$row_classes[] = 'content-builder__row--has-line';
+				$row_style    .= '--content-builder-row-pb:' . $pad_bottom . 'rem;';
 			}
 
 			$has_h2 = false;
@@ -638,7 +674,7 @@ endif;
 			// left-to-right/top-to-bottom, same as the old flat renderer.
 			$module_counter = 0;
 			?>
-			<div class="<?php echo esc_attr( implode( ' ', $row_classes ) ); ?>">
+			<div class="<?php echo esc_attr( implode( ' ', $row_classes ) ); ?>"<?php echo $row_style ? ' style="' . esc_attr( $row_style ) . '"' : ''; ?>>
 				<?php foreach ( $columns as $column_index => $column ) : ?>
 					<div class="content-builder__col" style="--content-builder-col-span: <?php echo esc_attr( $col_span_by_index( $column_layout, $column_index ) ); ?>;">
 						<?php foreach ( ( $column['modules'] ?? array() ) as $module ) : ?>
