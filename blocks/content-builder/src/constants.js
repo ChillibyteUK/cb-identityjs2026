@@ -54,10 +54,15 @@ export const TEXT_FS_OPTIONS = [ 'fs-100', 'fs-200', 'fs-300', 'fs-400', 'fs-500
 export const LIST_FS_OPTIONS = [ 'fs-100', 'fs-200', 'fs-300', 'fs-400', 'fs-500' ].map( fsOption );
 export const STATS_FS_OPTIONS = TEXT_FS_OPTIONS;
 
+/**
+ * Applied when a module is first switched to a heading type (see
+ * ModuleEditor.js) — `showLines` / `color` are only set when present here.
+ * Existing saved modules are never touched; these only seed new ones.
+ */
 export const HEADING_DEFAULTS = {
 	h1: { fontSize: 'fs-850', fontWeight: 'fw-semibold' },
-	h2: { fontSize: 'fs-700', fontWeight: 'fw-book' },
-	h3: { fontSize: 'fs-600', fontWeight: 'fw-book' },
+	h2: { fontSize: 'fs-850', fontWeight: 'fw-light', showLines: false },
+	h3: { fontSize: 'fs-300', fontWeight: 'fw-book', color: 'white' },
 };
 
 export const IMAGE_ASPECT_RATIO_OPTIONS = [
@@ -98,10 +103,10 @@ export function emptyModule() {
 		headingColor: '',
 		headingShowLines: true,
 		textContent: '',
-		textFontSize: 'fs-300',
-		textFontWeight: 'fw-light',
+		textFontSize: 'fs-200',
+		textFontWeight: 'fw-regular',
 		listContent: '',
-		listFontSize: 'fs-100',
+		listFontSize: 'fs-200',
 		listFontWeight: 'fw-regular',
 		statsRows: [],
 		quoteText: '',

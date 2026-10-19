@@ -1012,11 +1012,10 @@
 }
 
 /*
- * When the previous row already carries bottom padding (--space-5, the same
- * value as this row's own column `gap`), that padding alone is enough
- * visual separation — matches the column gap exactly. Adding the fixed
- * inter-row margin on top of it as well made the row-to-row gap (80px)
- * wider than the column gap (48px) it should match.
+ * When the previous row already carries bottom padding (--space-4, same as
+ * a row's own top padding), that padding alone is enough visual separation.
+ * Adding the fixed inter-row margin on top of it as well made the row-to-row
+ * gap wider than intended.
  */
 .content-builder__row--pb + .content-builder__row {
 	margin-top: 0;
@@ -1038,7 +1037,7 @@
 }
 
 .content-builder__row--pb {
-	padding-bottom: var(--space-5);
+	padding-bottom: var(--space-4);
 }
 
 .content-builder__row--has-line {
@@ -1076,7 +1075,7 @@
 }
 
 .content-builder__h3 {
-	margin-bottom: 0;
+	margin-bottom: 1rem;
 }
 
 /*

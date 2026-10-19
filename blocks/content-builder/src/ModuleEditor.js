@@ -40,6 +40,12 @@ export default function ModuleEditor( { module: mod, updateModule } ) {
 					if ( [ 'h1', 'h2', 'h3' ].includes( value ) && ! mod.headingFontSize ) {
 						patch.headingFontSize = HEADING_DEFAULTS[ value ].fontSize;
 						patch.headingFontWeight = HEADING_DEFAULTS[ value ].fontWeight;
+						if ( undefined !== HEADING_DEFAULTS[ value ].showLines ) {
+							patch.headingShowLines = HEADING_DEFAULTS[ value ].showLines;
+						}
+						if ( HEADING_DEFAULTS[ value ].color && ! mod.headingColor ) {
+							patch.headingColor = HEADING_DEFAULTS[ value ].color;
+						}
 					}
 					updateModule( patch );
 				} }

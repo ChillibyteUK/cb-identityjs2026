@@ -452,7 +452,7 @@ if ( ! function_exists( 'cb_identityjs2026_content_builder_render_module' ) ) :
 					break;
 				}
 				queue_faq_schema( $faq_rows );
-				$fs_fw = cb_identityjs2026_content_builder_fs_fw_class( 'fs-300', 'fw-light' );
+				$fs_fw = cb_identityjs2026_content_builder_fs_fw_class( 'fs-200', 'fw-regular' ); // Matches the Text module's own default.
 				?>
 				<div class="content-builder__faq">
 					<?php foreach ( $faq_rows as $faq_row ) : ?>
