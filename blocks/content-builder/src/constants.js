@@ -102,7 +102,7 @@ export function emptyModule() {
 		headingFontSize: '',
 		headingFontWeight: '',
 		headingColor: '',
-		headingShowLines: true,
+		headingShowLines: false,
 		textContent: '',
 		textFontSize: 'fs-200',
 		textFontWeight: 'fw-regular',
