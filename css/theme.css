@@ -113,7 +113,7 @@
   --space-gap: var(--space-3);
 
   --img-child-page-nav-bg: none; /* Child Page Nav's background image is genuinely per-brand (confirmed: identity/coda/health each use a different file) — no generic default image to fall back to */
-  --fs-child-page-nav-item: var(--fs-h1); /* real source's --fs-850 (its own h1-equivalent rung, distinct from our --fs-h1 role token) — generic default just borrows --fs-h1 until a brand needs its own */
+  --fs-child-page-nav-item: var(--fs-700); /* health's real value in cb-identitygroup2026 (fs-700, no mobile step-down) — used for every context now; was --fs-850 */
   --fs-child-page-nav-header: var(--fs-300);
 
   --fs-cta-title: var(--fs-h2);
@@ -2091,8 +2091,8 @@ select {
 
 .about-hero__content {
 	max-width: 72rem;
-	font-size: var(--fs-400);
-	font-weight: var(--fw-regular);
+	font-size: var(--fs-500);
+	font-weight: var(--fw-light);
 	line-height: 1.25; /* real --lh-500 */
 }
 
@@ -2665,19 +2665,15 @@ select {
 	color: inherit;
 }
 
+/* Arrow size from the legacy cb-services-nav's health override (40x29, "smaller
+   than the base 62x45", client direction 2026-08-25) — used for every context
+   and breakpoint now. CSS width/height win over the SVG's own attributes. */
 .child-page-nav__item-icon {
 	display: inline-flex;
 	flex: none;
 	align-items: center;
 	width: 40px;
-	height: 37px;
-}
-
-@media (min-width: 768px) {
-	.child-page-nav__item-icon {
-		width: 65px;
-		height: 60px;
-	}
+	height: 29px;
 }
 
 .child-page-nav__item-icon svg {

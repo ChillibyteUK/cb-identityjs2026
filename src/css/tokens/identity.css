@@ -75,7 +75,7 @@
      hand from a single measured pixel value rather than read from the
      real formula directly. Corrected wherever this source disagreed;
      unchanged where it already matched. */
-  --fs-child-page-nav-item: clamp(1.875rem, 0.95rem + 1.9vw, 3.125rem); /* real --fs-850 */
+  --fs-child-page-nav-item: var(--fs-700); /* health's real size in cb-identitygroup2026, applied to every context (was --fs-850) */
   --fs-child-page-nav-header: var(--fs-300);
 
   --fs-cta-title: var(--fs-850);

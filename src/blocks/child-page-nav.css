@@ -95,19 +95,15 @@
 	color: inherit;
 }
 
+/* Arrow size from the legacy cb-services-nav's health override (40x29, "smaller
+   than the base 62x45", client direction 2026-08-25) — used for every context
+   and breakpoint now. CSS width/height win over the SVG's own attributes. */
 .child-page-nav__item-icon {
 	display: inline-flex;
 	flex: none;
 	align-items: center;
 	width: 40px;
-	height: 37px;
-}
-
-@media (min-width: 768px) {
-	.child-page-nav__item-icon {
-		width: 65px;
-		height: 60px;
-	}
+	height: 29px;
 }
 
 .child-page-nav__item-icon svg {

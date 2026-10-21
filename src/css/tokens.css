@@ -113,7 +113,7 @@
   --space-gap: var(--space-3);
 
   --img-child-page-nav-bg: none; /* Child Page Nav's background image is genuinely per-brand (confirmed: identity/coda/health each use a different file) — no generic default image to fall back to */
-  --fs-child-page-nav-item: var(--fs-h1); /* real source's --fs-850 (its own h1-equivalent rung, distinct from our --fs-h1 role token) — generic default just borrows --fs-h1 until a brand needs its own */
+  --fs-child-page-nav-item: var(--fs-700); /* health's real value in cb-identitygroup2026 (fs-700, no mobile step-down) — used for every context now; was --fs-850 */
   --fs-child-page-nav-header: var(--fs-300);
 
   --fs-cta-title: var(--fs-h2);
