@@ -56,6 +56,10 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 	} = attributes;
 	const blockProps = useBlockProps( { className: 'container cb-identityjs2026-editor-block' } );
 	const backgroundUrl = useBackgroundUrl( backgroundId );
+	// Plain Hero is just title + intro + optional parallax image (legacy CB Plain
+	// Hero has no animated title, scope choice or secondary panel), so those
+	// controls are hidden for it.
+	const isPlain = 'plain' === headerVariant;
 
 	return (
 		<EditorBlockShell blockProps={ blockProps } clientId={ clientId } title="CB Page Header" textDomain="cb-identityjs2026">
@@ -69,12 +73,12 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					{ label: 'Service (e.g. FAQs)', value: 'service' },
 					{ label: 'Plain Hero (dark, parallax image)', value: 'plain' },
 				] }
-				help={ __( 'Service is a distinctly smaller/tighter real treatment (identity\'s own Service Page Header) — confirmed live on identityglobal.com/faqs/. Plain Hero reproduces the legacy CB Plain Hero: ruled title, intro, and an optional parallax Background image (uses the full-width Background scope; Animated Title is ignored).', 'cb-identityjs2026' ) }
+				help={ __( 'Service is a distinctly smaller/tighter real treatment (identity\'s own Service Page Header) — confirmed live on identityglobal.com/faqs/. Plain Hero reproduces the legacy CB Plain Hero: a ruled title, an intro, and an optional parallax Background image — it has no animated title or secondary panel, so those fields are hidden.', 'cb-identityjs2026' ) }
 				onChange={ ( value ) => setAttributes( { headerVariant: value } ) }
 			/>
 
 			<div style={ { display: 'flex', flexWrap: 'wrap', gap: '12px' } }>
-				<div style={ { flex: '50 1 0%' } }>
+				<div style={ { flex: isPlain ? '1 1 100%' : '50 1 0%' } }>
 					<TextareaControl
 						label={ __( 'Title', 'cb-identityjs2026' ) }
 						value={ title }
@@ -82,14 +86,16 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						onChange={ ( value ) => setAttributes( { title: value } ) }
 					/>
 				</div>
-				<div style={ { flex: '50 1 0%' } }>
-					<TextareaControl
-						label={ __( 'Animated Title', 'cb-identityjs2026' ) }
-						value={ animatedTitle }
-						help={ __( 'Optional — renders below Title with a split-line animated treatment, not instead of it. One line per row, up to 3 lines (the reveal animation only has bar/rotation sets for 3).', 'cb-identityjs2026' ) }
-						onChange={ ( value ) => setAttributes( { animatedTitle: value } ) }
-					/>
-				</div>
+				{ ! isPlain && (
+					<div style={ { flex: '50 1 0%' } }>
+						<TextareaControl
+							label={ __( 'Animated Title', 'cb-identityjs2026' ) }
+							value={ animatedTitle }
+							help={ __( 'Optional — renders below Title with a split-line animated treatment, not instead of it. One line per row, up to 3 lines (the reveal animation only has bar/rotation sets for 3).', 'cb-identityjs2026' ) }
+							onChange={ ( value ) => setAttributes( { animatedTitle: value } ) }
+						/>
+					</div>
+				) }
 			</div>
 
 			<div className="cb-identityjs2026-editor-field">
@@ -147,10 +153,14 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						) }
 					/>
 				</MediaUploadCheck>
-				<p className="cb-identityjs2026-editor-field__help">{ __( 'Full-bleed photo behind the whole header, with a dark tint over it.', 'cb-identityjs2026' ) }</p>
+				<p className="cb-identityjs2026-editor-field__help">
+					{ isPlain
+						? __( 'Optional — scrolls with a parallax effect behind the title (no tint).', 'cb-identityjs2026' )
+						: __( 'Full-bleed photo behind the whole header, with a dark tint over it.', 'cb-identityjs2026' ) }
+				</p>
 			</div>
 
-			{ backgroundUrl && (
+			{ backgroundUrl && ! isPlain && (
 				<SelectControl
 					label={ __( 'Background Scope', 'cb-identityjs2026' ) }
 					value={ backgroundScope }
@@ -166,68 +176,72 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 				/>
 			) }
 
-			<SectionHeading>{ __( 'Secondary Panel', 'cb-identityjs2026' ) }</SectionHeading>
-
-			<SelectControl
-				label={ __( 'Type', 'cb-identityjs2026' ) }
-				value={ secondaryPanelType }
-				options={ [
-					{ label: 'None', value: 'none' },
-					{ label: 'Text', value: 'text' },
-					{ label: 'Quote', value: 'quote' },
-				] }
-				help={ __( 'An optional second panel below the header — plain text, a pull-quote, or nothing.', 'cb-identityjs2026' ) }
-				onChange={ ( value ) => setAttributes( { secondaryPanelType: value } ) }
-			/>
-
-			{ secondaryPanelType === 'text' && (
+			{ ! isPlain && (
 				<>
-					<div className="cb-identityjs2026-editor-field">
-						<label className="cb-identityjs2026-editor-field__label">{ __( 'Secondary Text', 'cb-identityjs2026' ) }</label>
-						<RichText
-							identifier="secondaryText"
-							tagName="div"
-							multiline="p"
-							className="cb-identityjs2026-editor-field__control"
-							aria-label={ __( 'Secondary Text', 'cb-identityjs2026' ) }
-							placeholder={ __( 'Secondary Text', 'cb-identityjs2026' ) }
-							value={ secondaryText }
-							onChange={ ( value ) => setAttributes( { secondaryText: value } ) }
-						/>
-					</div>
+					<SectionHeading>{ __( 'Secondary Panel', 'cb-identityjs2026' ) }</SectionHeading>
+
 					<SelectControl
-						label={ __( 'Secondary Text Font Size', 'cb-identityjs2026' ) }
-						value={ secondaryTextFontSize }
-						options={ TEXT_FS_OPTIONS }
-						help={ __( 'Real content sets this per page (e.g. fs-400) rather than relying on one fixed size — pick to match.', 'cb-identityjs2026' ) }
-						onChange={ ( value ) => setAttributes( { secondaryTextFontSize: value } ) }
+						label={ __( 'Type', 'cb-identityjs2026' ) }
+						value={ secondaryPanelType }
+						options={ [
+							{ label: 'None', value: 'none' },
+							{ label: 'Text', value: 'text' },
+							{ label: 'Quote', value: 'quote' },
+						] }
+						help={ __( 'An optional second panel below the header — plain text, a pull-quote, or nothing.', 'cb-identityjs2026' ) }
+						onChange={ ( value ) => setAttributes( { secondaryPanelType: value } ) }
 					/>
-				</>
-			) }
 
-			{ secondaryPanelType === 'quote' && (
-				<>
-					<TextareaControl
-						label={ __( 'Quote', 'cb-identityjs2026' ) }
-						value={ quote }
-						onChange={ ( value ) => setAttributes( { quote: value } ) }
-					/>
-					<div style={ { display: 'flex', flexWrap: 'wrap', gap: '12px' } }>
-						<div style={ { flex: '50 1 0%' } }>
-							<TextControl
-								label={ __( 'Quote Author', 'cb-identityjs2026' ) }
-								value={ quoteAuthor }
-								onChange={ ( value ) => setAttributes( { quoteAuthor: value } ) }
+					{ secondaryPanelType === 'text' && (
+						<>
+							<div className="cb-identityjs2026-editor-field">
+								<label className="cb-identityjs2026-editor-field__label">{ __( 'Secondary Text', 'cb-identityjs2026' ) }</label>
+								<RichText
+									identifier="secondaryText"
+									tagName="div"
+									multiline="p"
+									className="cb-identityjs2026-editor-field__control"
+									aria-label={ __( 'Secondary Text', 'cb-identityjs2026' ) }
+									placeholder={ __( 'Secondary Text', 'cb-identityjs2026' ) }
+									value={ secondaryText }
+									onChange={ ( value ) => setAttributes( { secondaryText: value } ) }
+								/>
+							</div>
+							<SelectControl
+								label={ __( 'Secondary Text Font Size', 'cb-identityjs2026' ) }
+								value={ secondaryTextFontSize }
+								options={ TEXT_FS_OPTIONS }
+								help={ __( 'Real content sets this per page (e.g. fs-400) rather than relying on one fixed size — pick to match.', 'cb-identityjs2026' ) }
+								onChange={ ( value ) => setAttributes( { secondaryTextFontSize: value } ) }
 							/>
-						</div>
-						<div style={ { flex: '50 1 0%' } }>
-							<TextControl
-								label={ __( 'Quote Company', 'cb-identityjs2026' ) }
-								value={ quoteCompany }
-								onChange={ ( value ) => setAttributes( { quoteCompany: value } ) }
+						</>
+					) }
+
+					{ secondaryPanelType === 'quote' && (
+						<>
+							<TextareaControl
+								label={ __( 'Quote', 'cb-identityjs2026' ) }
+								value={ quote }
+								onChange={ ( value ) => setAttributes( { quote: value } ) }
 							/>
-						</div>
-					</div>
+							<div style={ { display: 'flex', flexWrap: 'wrap', gap: '12px' } }>
+								<div style={ { flex: '50 1 0%' } }>
+									<TextControl
+										label={ __( 'Quote Author', 'cb-identityjs2026' ) }
+										value={ quoteAuthor }
+										onChange={ ( value ) => setAttributes( { quoteAuthor: value } ) }
+									/>
+								</div>
+								<div style={ { flex: '50 1 0%' } }>
+									<TextControl
+										label={ __( 'Quote Company', 'cb-identityjs2026' ) }
+										value={ quoteCompany }
+										onChange={ ( value ) => setAttributes( { quoteCompany: value } ) }
+									/>
+								</div>
+							</div>
+						</>
+					) }
 				</>
 			) }
 		</EditorBlockShell>

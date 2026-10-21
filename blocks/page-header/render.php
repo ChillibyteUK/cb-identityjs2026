@@ -46,7 +46,8 @@
  * `headerVariant: 'plain'` reproduces cb-identitygroup2026's CB Plain Hero (dark
  * background, full-bleed ruled h1, 8-of-12 intro, optional parallax background
  * image with a bigger title and no tint) — see page-header.css's .page-header--plain.
- * It ignores Animated Title and always uses the full-scope background.
+ * It ignores Animated Title and the secondary panel (their fields are hidden in
+ * the editor) and always uses the full-scope background.
  *
  * @package cb-identityjs2026
  */
@@ -172,7 +173,9 @@ $plain_attrs = $plain_has_image ? ' data-hero-parallax style="' . esc_attr( '--h
 		</div>
 	</div>
 	<?php endif; ?>
-	<?php if ( 'text' === $secondary_panel_type && $secondary_text ) : ?>
+	<?php if ( $is_plain ) : ?>
+		<?php // Plain Hero has no secondary panel (its field is hidden in the editor). ?>
+	<?php elseif ( 'text' === $secondary_panel_type && $secondary_text ) : ?>
 		<div class="<?php echo $panel_class_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- already esc_attr()'d above. ?>">
 			<div class="id-container">
 				<div class="page-header__panel-text <?php echo esc_attr( $secondary_text_font_size ); ?>"><?php echo do_shortcode( wp_kses_post( $secondary_text ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_kses_post() sanitizes first; do_shortcode() only expands already-registered, trusted shortcodes against that sanitized result. ?></div>

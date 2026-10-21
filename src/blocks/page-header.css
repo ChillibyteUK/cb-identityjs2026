@@ -409,6 +409,22 @@
 	color: var(--col-text);
 }
 
+/* Wrapping/width as health in cb-identitygroup2026: balanced line breaks, and
+   capped at 66% of the container from 1400px so a long title doesn't stretch
+   the full width. The span is the block, so its top rule (image variant) is
+   capped with it, as in health. */
+.page-header__plain-title h1 span {
+	display: block;
+	max-width: 100%;
+	text-wrap: balance;
+}
+
+@media (min-width: 1400px) {
+	.page-header__plain-title h1 span {
+		max-width: 66%;
+	}
+}
+
 .page-header--plain-has-image .page-header__plain-title {
 	padding-top: 4rem;
 	border: 0;
