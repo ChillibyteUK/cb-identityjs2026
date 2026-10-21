@@ -1,0 +1,22 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cb-identityjs2026/about-hero",
+	"title": "CB About Hero",
+	"category": "cb-identityjs2026",
+	"icon": "cover-image",
+	"attributes": {
+		"backgroundId": { "type": "number", "default": 0 },
+		"overlayImageId": { "type": "number", "default": 0 },
+		"title": { "type": "string", "default": "" },
+		"intro": { "type": "string", "default": "" },
+		"content": { "type": "string", "default": "" }
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"align": true
+	},
+	"editorScript": "file:./build/index.js",
+	"render": "file:./render.php"
+}

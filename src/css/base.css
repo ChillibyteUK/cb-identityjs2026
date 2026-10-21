@@ -169,6 +169,11 @@ ol {
 	transform: translateY(24px);
 }
 
+/* Plain fade — same reveal, no vertical movement (see scroll-animate.js). */
+.js [data-animate="fade"] {
+	opacity: 0;
+}
+
 /*
  * "Lede" RichText format (see blocks/_editor-formats/src/index.js) — an
  * editor toggles this per-selection, typically a RichText field's first

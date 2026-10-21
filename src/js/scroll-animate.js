@@ -5,7 +5,9 @@
  * loads GSAP + ScrollTrigger for Home Intro's own animation (see
  * inc/enqueue.php), so this reuses those instead of a second library.
  *
- * Usage: add `data-animate="fade-up"` to any element, optionally
+ * Usage: add `data-animate="fade-up"` to any element (or `data-animate="fade"`
+ * for a plain opacity fade with no vertical movement — About Hero's content
+ * band uses it, since a translating band exposes the background behind it), optionally
  * `data-animate-delay="100"` (milliseconds — matches the old theme's own
  * per-row `$c += 100` delay convention, e.g. About Detail/Service Detail's
  * rows) for a staggered reveal across a list. Self-guarding: no-ops
@@ -15,7 +17,7 @@
 import { recordInitError } from './record-init-error';
 
 export function initScrollAnimate() {
-	const elements = document.querySelectorAll('[data-animate="fade-up"]');
+	const elements = document.querySelectorAll('[data-animate="fade-up"], [data-animate="fade"]');
 	if (!elements.length) return;
 
 	// base.css hides these elements (opacity: 0) under .js by default, so
@@ -80,7 +82,7 @@ export function initScrollAnimate() {
 			// painted at its normal (visible) styles, which is the exact flash
 			// this whole CSS-first approach exists to avoid.
 			window.gsap.to(el, {
-				y: 0,
+				...( 'fade' === el.dataset.animate ? {} : { y: 0 } ),
 				opacity: 1,
 				duration: 0.6,
 				delay,

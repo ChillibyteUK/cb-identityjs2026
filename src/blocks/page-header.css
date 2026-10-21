@@ -334,3 +334,120 @@
 		grid-column: 1 / -1;
 	}
 }
+
+/* ---------------------------------------------------------------------
+ * Plain variant (headerVariant: 'plain') — reproduces cb-identitygroup2026's
+ * CB Plain Hero. Dark background, a full-bleed ruled h1 (rules run edge to
+ * edge, text sits in the container), an intro in the left 8 of 12, and an
+ * optional parallax background image (no tint) that also makes the title
+ * larger and drops its bottom rule. Values are the legacy ones; rule colour
+ * is identity's real --hsl-neutral-050 at 50%, as in the Service variant.
+ * --------------------------------------------------------------------- */
+
+/* The legacy hero sat below an in-flow header, so its 4rem top padding was
+   visible space under the nav. Identity's header is fixed and overlays the
+   page, so that 4rem has to start below the header: nav height (~60px
+   desktop, 62px once the nav collapses — measured live, see #masthead in
+   site/identity.css) + 4rem. */
+.page-header--plain {
+	--page-header-nav-offset: 60px;
+	padding-block: calc(var(--page-header-nav-offset) + 4rem) 10rem;
+	background-color: var(--col-bg);
+}
+
+@media (max-width: 991.98px) {
+	.page-header--plain {
+		--page-header-nav-offset: 62px;
+	}
+}
+
+.page-header--plain > * {
+	position: relative;
+	z-index: 1;
+}
+
+.page-header--plain-has-image {
+	padding-block-end: 4rem;
+	overflow: hidden;
+}
+
+.page-header--plain-has-image::before {
+	content: "";
+	position: absolute;
+	inset: -3rem 0;
+	z-index: 0;
+	background-image: var(--hero-bg);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	transform: translateY(var(--hero-parallax-y, 0px));
+	will-change: transform;
+}
+
+.page-header__plain-title {
+	border-block: 1px solid hsl(53 36% 96% / 0.5);
+}
+
+.page-header__plain-title h1,
+.page-header__plain-body {
+	padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+	.page-header__plain-title h1,
+	.page-header__plain-body {
+		padding-inline: var(--space-5);
+	}
+}
+
+.page-header__plain-title h1 {
+	margin: 0;
+	font-family: var(--ff-heading);
+	font-size: var(--fs-850);
+	font-weight: var(--fw-book);
+	line-height: 1.1;
+	color: var(--col-text);
+}
+
+.page-header--plain-has-image .page-header__plain-title {
+	padding-top: 4rem;
+	border: 0;
+}
+
+.page-header--plain-has-image .page-header__plain-title h1 span {
+	display: block;
+	border-top: 1px solid hsl(53 36% 96% / 0.5);
+	font-size: var(--fs-900);
+	font-weight: var(--fw-book);
+}
+
+.page-header__plain-body {
+	padding-block: 3rem;
+}
+
+/* The intro's size is the paragraphs' own unless an fs-* class was chosen in
+   the editor — :not([class*="fs-"]) lets that choice win, as in the default variant. */
+.page-header__plain-intro:not([class*="fs-"]) {
+	font-size: var(--fs-400);
+	font-weight: var(--fw-book);
+	line-height: 1.5;
+	letter-spacing: -0.005em;
+	text-wrap: pretty;
+}
+
+.page-header__plain-intro:not([class*="fs-"]) p:first-of-type {
+	font-size: var(--fs-600);
+	font-weight: var(--fw-light);
+	letter-spacing: -0.01em;
+}
+
+.page-header--plain-has-image .page-header__plain-intro:not([class*="fs-"]) p {
+	font-size: var(--fs-500);
+	font-weight: var(--fw-light);
+}
+
+@media (min-width: 768px) {
+	.page-header__plain-intro {
+		max-width: 66.6667%; /* the legacy col-md-8 */
+	}
+}

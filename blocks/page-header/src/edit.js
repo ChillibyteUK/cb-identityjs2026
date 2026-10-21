@@ -67,8 +67,9 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 				options={ [
 					{ label: 'Default (About)', value: 'default' },
 					{ label: 'Service (e.g. FAQs)', value: 'service' },
+					{ label: 'Plain Hero (dark, parallax image)', value: 'plain' },
 				] }
-				help={ __( 'Service is a distinctly smaller/tighter real treatment (identity\'s own Service Page Header) — confirmed live on identityglobal.com/faqs/.', 'cb-identityjs2026' ) }
+				help={ __( 'Service is a distinctly smaller/tighter real treatment (identity\'s own Service Page Header) — confirmed live on identityglobal.com/faqs/. Plain Hero reproduces the legacy CB Plain Hero: ruled title, intro, and an optional parallax Background image (uses the full-width Background scope; Animated Title is ignored).', 'cb-identityjs2026' ) }
 				onChange={ ( value ) => setAttributes( { headerVariant: value } ) }
 			/>
 

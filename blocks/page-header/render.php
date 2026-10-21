@@ -43,6 +43,11 @@
  * paragraph/rest-paragraph CSS split that couldn't be overridden per
  * instance.
  *
+ * `headerVariant: 'plain'` reproduces cb-identitygroup2026's CB Plain Hero (dark
+ * background, full-bleed ruled h1, 8-of-12 intro, optional parallax background
+ * image with a bigger title and no tint) — see page-header.css's .page-header--plain.
+ * It ignores Animated Title and always uses the full-scope background.
+ *
  * @package cb-identityjs2026
  */
 
@@ -71,7 +76,10 @@ $background_url = $background_id ? wp_get_attachment_image_url( $background_id, 
 // no backgroundScope attribute at all and fall through to 'full' here,
 // keeping their current whole-block rendering exactly as before this was
 // added.
-$background_is_full      = $background_url && 'full' === $background_scope;
+$is_plain                = 'plain' === $header_variant;
+$plain_has_image         = $is_plain && $background_url && 'full' === $background_scope;
+// The plain variant draws its own parallax image (below), not the fixed full-scope one.
+$background_is_full      = ! $is_plain && $background_url && 'full' === $background_scope;
 $background_is_secondary = $background_url && 'secondary' === $background_scope;
 
 $instance_id = wp_unique_id( 'page-header-' );
@@ -86,6 +94,12 @@ if ( $animated_title ) {
 if ( 'service' === $header_variant ) {
 	$root_classes[] = 'page-header--service';
 }
+if ( $is_plain ) {
+	$root_classes[] = 'page-header--plain';
+}
+if ( $plain_has_image ) {
+	$root_classes[] = 'page-header--plain-has-image';
+}
 
 $panel_classes = array( 'page-header__panel' );
 if ( $background_is_secondary ) {
@@ -94,7 +108,12 @@ if ( $background_is_secondary ) {
 $panel_class_attr = esc_attr( implode( ' ', $panel_classes ) );
 
 $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $root_classes ) ) );
+// Parallax (src/js/hero-parallax.js) + the image itself, as a custom property on the section.
+$plain_attrs = $plain_has_image ? ' data-hero-parallax style="' . esc_attr( '--hero-bg: url(' . esc_url_raw( $background_url ) . ');' ) . '"' : '';
 ?>
+<?php if ( $plain_has_image ) : ?>
+	<link rel="preload" as="image" href="<?php echo esc_url( $background_url ); ?>" fetchpriority="high">
+<?php endif; ?>
 <?php if ( $background_is_full ) : ?>
 	<style>
 		#<?php echo esc_attr( $instance_id ); ?> {
@@ -108,7 +127,19 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( '
 		}
 	</style>
 <?php endif; ?>
-<section id="<?php echo esc_attr( $instance_id ); ?>" <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?>>
+<section id="<?php echo esc_attr( $instance_id ); ?>" <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?><?php echo $plain_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from esc_attr()/esc_url_raw() above. ?>>
+	<?php if ( $is_plain ) : ?>
+		<?php if ( $title ) : ?>
+			<div class="page-header__plain-title">
+				<h1 class="id-container"><span class="hero-animate"><?php echo wp_kses_post( nl2br( esc_html( $title ) ) ); ?></span></h1>
+			</div>
+		<?php endif; ?>
+		<?php if ( $intro_text ) : ?>
+			<div class="id-container page-header__plain-body">
+				<div class="page-header__intro page-header__plain-intro hero-animate hero-animate--delay-1 <?php echo esc_attr( $intro_text_font_size ); ?>"><?php echo do_shortcode( wp_kses_post( $intro_text ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_kses_post() sanitizes first; do_shortcode() only expands already-registered, trusted shortcodes against that sanitized result. ?></div>
+			</div>
+		<?php endif; ?>
+	<?php else : ?>
 	<div class="page-header__top">
 		<div class="id-container">
 			<?php if ( $title ) : ?>
@@ -140,6 +171,7 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( '
 			<?php endif; ?>
 		</div>
 	</div>
+	<?php endif; ?>
 	<?php if ( 'text' === $secondary_panel_type && $secondary_text ) : ?>
 		<div class="<?php echo $panel_class_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- already esc_attr()'d above. ?>">
 			<div class="id-container">

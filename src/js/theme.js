@@ -10,6 +10,7 @@ import { initTitleBarRevealAnimate } from './title-bar-reveal-animate';
 import { initScrollAnimate } from './scroll-animate';
 import { initLenis } from './lenis-init';
 import { initFeatureOverlayParallax } from './feature-overlay-parallax';
+import { initHeroParallax } from './hero-parallax';
 import { initContentBuilderParallax, initContentBuilderImageHeights } from './content-builder';
 import { initWorkIndex } from './work-index';
 import { initVideoUnmute } from './video-unmute';
@@ -40,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	safeInit(initTitleBarRevealAnimate, '.page-header__animated-title', '.page-header');
 	safeInit(initScrollAnimate);
 	safeInit(initFeatureOverlayParallax);
+	safeInit(initHeroParallax);
 	safeInit(initStatCountUp);
 	safeInit(initContentBuilderParallax);
 	safeInit(initContentBuilderImageHeights);

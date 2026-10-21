@@ -1,0 +1,23 @@
+/*
+ * Reveal for parallax hero backgrounds (About Hero, Page Header's Plain
+ * variant — anything with data-hero-parallax). The ::before image paints at
+ * its CSS default offset first and jumps when src/js/hero-parallax.js applies
+ * the real one, so it stays invisible until the script sets data-hero-ready,
+ * then fades in. If the script never runs the keyframe below reveals it after
+ * 2s regardless, so the image can't stay hidden. Scoped under .js so a no-JS
+ * visitor sees the image straight away.
+ */
+[data-hero-parallax]::before {
+	transition: opacity 0.6s ease-out;
+}
+
+.js [data-hero-parallax]:not([data-hero-ready])::before {
+	opacity: 0;
+	animation: hero-bg-failsafe 0s 2s forwards;
+}
+
+@keyframes hero-bg-failsafe {
+	to {
+		opacity: 1;
+	}
+}

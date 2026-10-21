@@ -227,7 +227,7 @@ safe to run on every page regardless of brand or template.
   three-bar title timeline used by Home Intro and Page Header's animated title;
   `home-intro-animate.js` is now only a shim), `scroll-animate.js`
   (`data-animate="fade-up"` — the project's AOS replacement),
-  `feature-overlay-parallax.js`, `content-builder.js` (background parallax +
+  `feature-overlay-parallax.js`, `hero-parallax.js` (`data-hero-parallax` → `--hero-parallax-y`, used by About Hero and Page Header's Plain variant; `.hero-animate` is the matching page-load fade-in, CSS only), `content-builder.js` (background parallax +
   image heights), `stat-count-up.js` (`data-stat-target`).
 - **Work Index:** `work-index.js` — per-block-instance service filter and hover-video mount (scoped, so several instances can share a page).
 - **Smooth scroll:** `lenis-init.js`, ported verbatim from the live site's own
@@ -346,14 +346,14 @@ see MULTI-BRAND.md.
 
 ## Blocks
 
-27 native blocks under `blocks/`: brand-grid, case-study-grid, case-study-hero (optional Title field overrides the post title as the h1),
+28 native blocks under `blocks/`: about-hero (ported from the legacy `cb-about-hero`: full-viewport hero, title between two rules, intro, optional parallax background + 60% overlay image, translucent Content band using `--col-overlay-colour`; dark only), brand-grid, case-study-grid, case-study-hero (optional Title field overrides the post title as the h1),
 child-page-nav, contact-directory, contact-form (Gravity Forms shortcode),
 content-builder (rows of many module types, optional background parallax; a `divider` module draws a full-width line in the section line colour; rows have Padding Top/Bottom radio groups of 0 / 1.5 / 3 / 5 rem (`paddingTop`/`paddingBottom`; legacy `hasPaddingTop`/`hasPaddingBottom` booleans map to 1.5 / 3, and new rows default to 3 / 3); the `empty` module takes a decimal-rem `emptyHeight`, default 0),
 cta (picks a Site-Wide Settings CTA), detail-list, faq (feeds the aggregated
 FAQPage schema), feature-overlay, file-list, home-intro, innovation-header,
 leadership, logo-marquee (site-wide or per-block logos), media-panel
 (image or Vimeo; `fullWidth`/`fullBleed`/`heroMode`), page-header (animated
-title, secondary-panel variants), page-header-alt, post-grid (`filterGroups`:
+title, secondary-panel variants; `headerVariant: 'plain'` reproduces the legacy CB Plain Hero — dark, full-bleed ruled h1, 8-of-12 intro, optional parallax background with a bigger title), page-header-alt, post-grid (`filterGroups`:
 several taxonomies at once, OR within a group, AND across groups), push-panel,
 section-title, service-grid, stat-block (count-up), testimonial, and
 work-index (client-side service filter; editable `title` (h1) and `subtitle` (h2), a Display `all`/`curated` choice — curated is a hand-picked ordered list via `PostTypeMultiPicker`, with no auto hero and a filter limited to services present in the list).

@@ -1,0 +1,30 @@
+/*
+ * .hero-animate — page-load fade-in for hero titles/intros (About Hero, Page
+ * Header's Plain variant). Ported from cb-identitygroup2026's _animations.scss.
+ * Shared utility, not tied to one block; lives here only because src/blocks/*.css
+ * is what gets concatenated into the theme CSS. Only runs when the visitor
+ * hasn't asked for reduced motion, so the text is simply visible otherwise.
+ */
+@media (prefers-reduced-motion: no-preference) {
+	@keyframes hero-fade {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	.hero-animate {
+		opacity: 0;
+		animation: hero-fade 0.7s ease-out forwards;
+	}
+
+	.hero-animate--delay-1 {
+		animation-delay: 0.15s;
+	}
+
+	.hero-animate--delay-2 {
+		animation-delay: 0.3s;
+	}
+}

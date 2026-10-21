@@ -441,7 +441,9 @@
 	 * loads GSAP + ScrollTrigger for Home Intro's own animation (see
 	 * inc/enqueue.php), so this reuses those instead of a second library.
 	 *
-	 * Usage: add `data-animate="fade-up"` to any element, optionally
+	 * Usage: add `data-animate="fade-up"` to any element (or `data-animate="fade"`
+	 * for a plain opacity fade with no vertical movement — About Hero's content
+	 * band uses it, since a translating band exposes the background behind it), optionally
 	 * `data-animate-delay="100"` (milliseconds — matches the old theme's own
 	 * per-row `$c += 100` delay convention, e.g. About Detail/Service Detail's
 	 * rows) for a staggered reveal across a list. Self-guarding: no-ops
@@ -449,7 +451,7 @@
 	 * element in the DOM.
 	 */
 	function initScrollAnimate() {
-	  const elements = document.querySelectorAll('[data-animate="fade-up"]');
+	  const elements = document.querySelectorAll('[data-animate="fade-up"], [data-animate="fade"]');
 	  if (!elements.length) return;
 
 	  // base.css hides these elements (opacity: 0) under .js by default, so
@@ -510,7 +512,9 @@
 	      // painted at its normal (visible) styles, which is the exact flash
 	      // this whole CSS-first approach exists to avoid.
 	      window.gsap.to(el, {
-	        y: 0,
+	        ...('fade' === el.dataset.animate ? {} : {
+	          y: 0
+	        }),
 	        opacity: 1,
 	        duration: 0.6,
 	        delay,
@@ -590,6 +594,50 @@
 	      }
 	    });
 	  });
+	}
+
+	/**
+	 * Background-image parallax for hero blocks — any element with
+	 * `data-hero-parallax` (About Hero, Page Header's Plain variant) gets
+	 * `--hero-parallax-y` swung from -120px to +120px across its scroll
+	 * traversal, the same 240px range as the legacy per-instance inline scripts
+	 * (cb-about-hero / cb-plain-hero) this replaces. Same ScrollTrigger-scrub
+	 * approach as feature-overlay-parallax.js. Self-guarding: no-ops without
+	 * gsap/ScrollTrigger or without any matching element, and the image is simply
+	 * static under reduced motion.
+	 */
+	function initHeroParallax() {
+	  const elements = document.querySelectorAll('[data-hero-parallax]');
+	  if (!elements.length) return;
+
+	  // The background image stays hidden (src/blocks/hero-parallax.css) until this
+	  // has put it at its real parallax offset — otherwise it paints at 0 first and
+	  // visibly jumps once GSAP applies the offset. A CSS failsafe reveals it anyway
+	  // if this never runs.
+	  const reveal = () => requestAnimationFrame(() => {
+	    elements.forEach(el => el.setAttribute('data-hero-ready', ''));
+	  });
+	  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	  if (prefersReducedMotion || typeof window.gsap === 'undefined' || typeof window.ScrollTrigger === 'undefined') {
+	    reveal();
+	    return;
+	  }
+	  window.gsap.registerPlugin(window.ScrollTrigger);
+	  elements.forEach(el => {
+	    window.gsap.fromTo(el, {
+	      '--hero-parallax-y': '-120px'
+	    }, {
+	      '--hero-parallax-y': '120px',
+	      ease: 'none',
+	      scrollTrigger: {
+	        trigger: el,
+	        start: 'top bottom',
+	        end: 'bottom top',
+	        scrub: true
+	      }
+	    });
+	  });
+	  reveal();
 	}
 
 	/**
@@ -789,6 +837,7 @@
 	  safeInit(initTitleBarRevealAnimate, '.page-header__animated-title', '.page-header');
 	  safeInit(initScrollAnimate);
 	  safeInit(initFeatureOverlayParallax);
+	  safeInit(initHeroParallax);
 	  safeInit(initStatCountUp);
 	  safeInit(initContentBuilderParallax);
 	  safeInit(initContentBuilderImageHeights);
