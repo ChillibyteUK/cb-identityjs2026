@@ -5406,7 +5406,7 @@ select {
 }
 
 .page-header__plain-title h1 {
-	margin: 0;
+	margin-block: 0; /* not `margin: 0` — the h1 is also an .id-container, whose auto inline margins centre it */
 	font-family: var(--ff-heading);
 	font-size: var(--fs-850);
 	font-weight: var(--fw-book);
