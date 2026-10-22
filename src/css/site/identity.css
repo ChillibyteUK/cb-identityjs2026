@@ -725,7 +725,7 @@
   font-weight: var(--fw-light);
   line-height: var(--lh-heading);
   border-bottom: 1px solid var(--col-border);
-  margin-bottom: 2rem;
+  margin-bottom: 4rem;
   padding-block: var(--space-4) 0.5rem;
 }
 
