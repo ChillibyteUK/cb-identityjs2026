@@ -76,6 +76,9 @@
 	font-weight: var(--fw-regular);
 	line-height: var(--lh-body); /* real --lh-100, 1.55, same value already used by this token */
 	text-wrap: balance;
+	p {
+		text-wrap: balance;
+	}
 }
 
 .service-grid__content p:last-child {
