@@ -33,18 +33,14 @@ $careers_link_text    = $attributes['careersLinkText'] ?? '';
 $careers_link_target  = $attributes['careersLinkTarget'] ?? '_self';
 
 $background_url = $background_id ? wp_get_attachment_image_url( $background_id, 'full' ) : '';
-$instance_id    = wp_unique_id( 'page-header-alt-' );
-
-$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'page-header-alt' ) );
+// Anchor-aware id + the background photo as an inline custom property (no <style> keyed to a generated id).
+$wrapper_args = array( 'class' => 'page-header-alt' );
+if ( $background_url ) {
+	$wrapper_args['style'] = '--bg-url: url(\'' . esc_url( $background_url ) . '\');';
+}
+list( $instance_id, $wrapper_attributes ) = cb_identityjs2026_block_wrapper( $attributes, 'page-header-alt-', $wrapper_args );
 ?>
-<?php if ( $background_url ) : ?>
-	<style>
-		#<?php echo esc_attr( $instance_id ); ?> {
-			--bg-url: url('<?php echo esc_url( $background_url ); ?>');
-		}
-	</style>
-<?php endif; ?>
-<section id="<?php echo esc_attr( $instance_id ); ?>" <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?>>
+<section <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?>>
 	<div class="page-header-alt__top">
 		<div class="page-header-alt__top-overlay"></div>
 		<div class="id-container">

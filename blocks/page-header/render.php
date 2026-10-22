@@ -83,8 +83,6 @@ $plain_has_image         = $is_plain && $background_url && 'full' === $backgroun
 $background_is_full      = ! $is_plain && $background_url && 'full' === $background_scope;
 $background_is_secondary = $background_url && 'secondary' === $background_scope;
 
-$instance_id = wp_unique_id( 'page-header-' );
-
 $root_classes = array( 'page-header' );
 if ( $background_is_full ) {
 	$root_classes[] = 'page-header--has-background';
@@ -108,27 +106,27 @@ if ( $background_is_secondary ) {
 }
 $panel_class_attr = esc_attr( implode( ' ', $panel_classes ) );
 
-$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $root_classes ) ) );
-// Parallax (src/js/hero-parallax.js) + the image itself, as a custom property on the section.
-$plain_attrs = $plain_has_image ? ' data-hero-parallax style="' . esc_attr( '--hero-bg: url(' . esc_url_raw( $background_url ) . ');' ) . '"' : '';
+// The background photos are inline custom properties (no <style> keyed to a
+// generated id), and the element id comes from cb_identityjs2026_block_wrapper()
+// so the editor's HTML anchor is honoured instead of fighting a hardcoded id.
+$wrapper_args = array( 'class' => implode( ' ', $root_classes ) );
+if ( $background_is_full ) {
+	$wrapper_args['style'] = '--bg-url: url(\'' . esc_url( $background_url ) . '\');';
+} elseif ( $plain_has_image ) {
+	$wrapper_args['style'] = '--hero-bg: url(' . esc_url_raw( $background_url ) . ');';
+}
+list( $instance_id, $wrapper_attributes ) = cb_identityjs2026_block_wrapper( $attributes, 'page-header-', $wrapper_args );
+
+// Parallax hook (src/js/hero-parallax.js) for the plain variant's image.
+$plain_attrs = $plain_has_image ? ' data-hero-parallax' : '';
+
+// Secondary-only background: the panel's own custom property.
+$panel_style_attr = $background_is_secondary ? ' style="' . esc_attr( '--panel-bg-url: url(\'' . esc_url( $background_url ) . '\');' ) . '"' : '';
 ?>
 <?php if ( $plain_has_image ) : ?>
 	<link rel="preload" as="image" href="<?php echo esc_url( $background_url ); ?>" fetchpriority="high">
 <?php endif; ?>
-<?php if ( $background_is_full ) : ?>
-	<style>
-		#<?php echo esc_attr( $instance_id ); ?> {
-			--bg-url: url('<?php echo esc_url( $background_url ); ?>');
-		}
-	</style>
-<?php elseif ( $background_is_secondary ) : ?>
-	<style>
-		#<?php echo esc_attr( $instance_id ); ?> .page-header__panel {
-			--panel-bg-url: url('<?php echo esc_url( $background_url ); ?>');
-		}
-	</style>
-<?php endif; ?>
-<section id="<?php echo esc_attr( $instance_id ); ?>" <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?><?php echo $plain_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from esc_attr()/esc_url_raw() above. ?>>
+<section <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?><?php echo $plain_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from esc_attr()/esc_url_raw() above. ?>>
 	<?php if ( $is_plain ) : ?>
 		<?php if ( $title ) : ?>
 			<div class="page-header__plain-title">
@@ -176,13 +174,13 @@ $plain_attrs = $plain_has_image ? ' data-hero-parallax style="' . esc_attr( '--h
 	<?php if ( $is_plain ) : ?>
 		<?php // Plain Hero has no secondary panel (its field is hidden in the editor). ?>
 	<?php elseif ( 'text' === $secondary_panel_type && $secondary_text ) : ?>
-		<div class="<?php echo $panel_class_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- already esc_attr()'d above. ?>">
+		<div class="<?php echo $panel_class_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- already esc_attr()'d above. ?>"<?php echo $panel_style_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from esc_attr()/esc_url() above. ?>>
 			<div class="id-container">
 				<div class="page-header__panel-text <?php echo esc_attr( $secondary_text_font_size ); ?>"><?php echo do_shortcode( wp_kses_post( $secondary_text ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_kses_post() sanitizes first; do_shortcode() only expands already-registered, trusted shortcodes against that sanitized result. ?></div>
 			</div>
 		</div>
 	<?php elseif ( 'quote' === $secondary_panel_type && $quote ) : ?>
-		<div class="<?php echo $panel_class_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- already esc_attr()'d above. ?>">
+		<div class="<?php echo $panel_class_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- already esc_attr()'d above. ?>"<?php echo $panel_style_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from esc_attr()/esc_url() above. ?>>
 			<div class="id-container">
 				<blockquote class="page-header__quote"><?php echo wp_kses_post( nl2br( esc_html( $quote ) ) ); ?></blockquote>
 				<?php if ( $quote_author ) : ?>

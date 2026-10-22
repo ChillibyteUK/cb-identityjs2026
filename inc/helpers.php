@@ -132,3 +132,34 @@ function cb_identityjs2026_video_unmute_button( $iframe_id ) {
 		esc_html( cb_identityjs2026_pll_string( 'Unmute' ) )
 	);
 }
+
+/**
+ * A block instance's element id and its wrapper attributes, resolved together.
+ *
+ * Blocks that declare `supports.anchor` get their anchor printed as the
+ * wrapper's `id` by get_block_wrapper_attributes(). A render.php that also
+ * hardcodes its own generated id on the element ends up with two `id`
+ * attributes; browsers keep the first and drop the second, so the editor's
+ * HTML anchor silently never worked. Use this instead: the anchor, when set,
+ * is the id (and is returned for any #id CSS/JS hook the block needs);
+ * otherwise a unique generated id is added to the wrapper attributes so those
+ * hooks still have something to point at. Never print an `id` of your own on
+ * the same element.
+ *
+ * @param array  $attributes The block's $attributes.
+ * @param string $prefix     Prefix for the generated id, e.g. 'cta-'.
+ * @param array  $extra      Extra wrapper attributes (class, style, ...).
+ * @return array [ string $instance_id, string $wrapper_attributes ]
+ */
+function cb_identityjs2026_block_wrapper( array $attributes, $prefix, array $extra = array() ) {
+	$anchor = trim( (string) ( $attributes['anchor'] ?? '' ) );
+
+	if ( '' === $anchor ) {
+		$instance_id = wp_unique_id( $prefix );
+		$extra['id'] = $instance_id;
+	} else {
+		$instance_id = $anchor;
+	}
+
+	return array( $instance_id, get_block_wrapper_attributes( $extra ) );
+}

@@ -52,6 +52,23 @@
 	font-display: swap;
 }
 
+/* Anchor jumps (#hash links, the editor's HTML anchor on any block): the header is
+   fixed, so a target scrolled flush to the top would sit underneath it. Reserve its
+   height — ~60px, 62px once the nav collapses (measured live, see #masthead below) —
+   plus the WP admin bar when it's showing (the variable is 0 otherwise) and 1rem of
+   air. scroll-padding on the root applies to every anchor target, no per-block
+   markers needed. */
+html {
+	--site-header-height: 60px;
+	scroll-padding-top: calc(var(--wp-admin--admin-bar--height, 0px) + var(--site-header-height) + 1rem);
+}
+
+@media (max-width: 991.98px) {
+	html {
+		--site-header-height: 62px;
+	}
+}
+
 #masthead {
 	background-color: var(--col-bg); /* solid at rest — confirmed against live identityglobal.com computed style at scroll position 0 */
 	padding-block: var(--space-2); /* real header has its own py-2 (8px) on top of .navbar's own 8px padding — measured total height 59.89px live vs 48px without this */

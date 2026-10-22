@@ -33,8 +33,6 @@ $cta_link_target = ! empty( $attributes['ctaLinkTarget'] );
 $cta_intro       = trim( (string) ( $attributes['ctaIntro'] ?? '' ) );
 $block_height    = absint( $attributes['blockHeight'] ?? 0 );
 
-$instance_id = wp_unique_id( 'feature-overlay-' );
-
 $section_classes = array( 'feature-overlay' );
 if ( 'Hero' === $presentation ) {
 	$section_classes[] = 'feature-overlay--hero';
@@ -82,10 +80,9 @@ if ( $title_font_size_slug ) {
 $title_font_weight = $attributes['style']['typography']['fontWeight'] ?? '';
 $title_style        = $title_font_weight ? sprintf( 'font-weight: %s;', esc_attr( $title_font_weight ) ) : '';
 
-$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $section_classes ) ) );
+list( $instance_id, $wrapper_attributes ) = cb_identityjs2026_block_wrapper( $attributes, 'feature-overlay-', array( 'class' => implode( ' ', $section_classes ) ) );
 ?>
 <section
-	id="<?php echo esc_attr( $instance_id ); ?>"
 	<?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?>
 	<?php echo $section_style ? 'style="' . esc_attr( $section_style ) . '"' : ''; ?>
 >

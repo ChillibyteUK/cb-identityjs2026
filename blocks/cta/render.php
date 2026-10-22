@@ -33,18 +33,14 @@ $image_id    = absint( $cta['image'] ?? 0 );
 
 $background_url = $bg_id ? wp_get_attachment_image_url( $bg_id, 'full' ) : '';
 
-$instance_id = wp_unique_id( 'cta-' );
-
-$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'cta' ) );
+// Anchor-aware id + the background photo as an inline custom property (no <style> keyed to a generated id).
+$wrapper_args = array( 'class' => 'cta' );
+if ( $background_url ) {
+	$wrapper_args['style'] = '--cta-bg-url: url(\'' . esc_url( $background_url ) . '\');';
+}
+list( $instance_id, $wrapper_attributes ) = cb_identityjs2026_block_wrapper( $attributes, 'cta-', $wrapper_args );
 ?>
-<?php if ( $background_url ) : ?>
-	<style>
-		#<?php echo esc_attr( $instance_id ); ?> {
-			--cta-bg-url: url('<?php echo esc_url( $background_url ); ?>');
-		}
-	</style>
-<?php endif; ?>
-<section id="<?php echo esc_attr( $instance_id ); ?>" <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?>>
+<section <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?>>
 	<div class="id-container cta__row">
 		<div class="cta__media-col">
 			<?php if ( $image_id ) : ?>

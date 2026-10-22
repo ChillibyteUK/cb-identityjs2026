@@ -111,9 +111,7 @@ $section_style = implode( ' ', $style_declarations );
 // an array, and this project's other blocks don't read it at all — plain
 // wp_unique_id() is what Feature Overlay etc. already use, matching that
 // same established pattern instead of porting the ACF-specific mechanism.
-$instance_id = wp_unique_id( 'content-builder-' );
-
-$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $section_classes ) ) );
+list( $instance_id, $wrapper_attributes ) = cb_identityjs2026_block_wrapper( $attributes, 'content-builder-', array( 'class' => implode( ' ', $section_classes ) ) );
 
 /**
  * One newline-per-item textarea value into a list of trimmed, non-empty
@@ -558,7 +556,6 @@ if ( ! function_exists( 'cb_identityjs2026_content_builder_render_module' ) ) :
 endif;
 ?>
 <section
-	id="<?php echo esc_attr( $instance_id ); ?>"
 	<?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?>
 	<?php echo $section_style ? 'style="' . esc_attr( $section_style ) . '"' : ''; ?>
 >

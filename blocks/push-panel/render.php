@@ -35,14 +35,17 @@ $link_target        = ! empty( $attributes['linkTarget'] );
 $background_url = $background_id ? wp_get_attachment_image_url( $background_id, 'full' ) : '';
 $is_text        = 'text' === $left_content_type;
 
-$instance_id = wp_unique_id( 'push-panel-' );
-
 $root_classes = array( 'push-panel' );
 if ( $background_url ) {
 	$root_classes[] = 'push-panel--has-bg';
 }
 
-$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $root_classes ) ) );
+// Anchor-aware id + the background photo as inline styles (no <style> keyed to a generated id).
+$wrapper_args = array( 'class' => implode( ' ', $root_classes ) );
+if ( $background_url ) {
+	$wrapper_args['style'] = 'background-image: url(\'' . esc_url( $background_url ) . '\'); background-size: cover; background-position: center; background-attachment: fixed;';
+}
+list( $instance_id, $wrapper_attributes ) = cb_identityjs2026_block_wrapper( $attributes, 'push-panel-', $wrapper_args );
 
 // Overlay tint: an editor's own colour choice (native picker, palette-only —
 // disable-custom-colors is on theme-wide, so this is always a plain slug)
@@ -61,17 +64,7 @@ if ( $overlay_slug ) {
 
 $arrow = ( 'identity' === cb_identityjs2026_get_site() && ! $background_url ) ? 'arrow-wh.svg' : 'arrow-g400.svg';
 ?>
-<?php if ( $background_url ) : ?>
-	<style>
-		#<?php echo esc_attr( $instance_id ); ?> {
-			background-image: url('<?php echo esc_url( $background_url ); ?>');
-			background-size: cover;
-			background-position: center;
-			background-attachment: fixed;
-		}
-	</style>
-<?php endif; ?>
-<section id="<?php echo esc_attr( $instance_id ); ?>" <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?>>
+<section <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?>>
 	<?php if ( $background_url ) : ?>
 		<div class="<?php echo esc_attr( implode( ' ', $overlay_classes ) ); ?>"></div>
 	<?php endif; ?>
