@@ -33,13 +33,16 @@ const TAXONOMY_OPTIONS = [
 ];
 
 export default function Edit( { attributes, setAttributes, clientId } ) {
-	const { mode, heroCaseStudy, count, taxonomyFilter, selectedServices, selectedThemes } = attributes;
+	const { mode, heroCaseStudy, count, taxonomyFilter, selectedServices, selectedThemes, selectedRegions } = attributes;
 	const blockProps = useBlockProps( { className: 'container cb-identityjs2026-editor-block' } );
 
-	const { serviceTerms, hasResolvedServices, themeTerms, hasResolvedThemes } = useSelect( ( select ) => {
+	const { serviceTerms, hasResolvedServices, themeTerms, hasResolvedThemes, regionTerms, hasResolvedRegions } = useSelect( ( select ) => {
 		const serviceQuery = { per_page: -1, orderby: 'name', order: 'asc', _fields: [ 'id', 'name' ] };
 		const themeQuery = { per_page: -1, orderby: 'name', order: 'asc', _fields: [ 'id', 'name' ] };
+		const regionQuery = { per_page: -1, orderby: 'name', order: 'asc', _fields: [ 'id', 'name' ] };
 		return {
+			regionTerms: select( coreStore ).getEntityRecords( 'taxonomy', 'region', regionQuery ),
+			hasResolvedRegions: select( coreStore ).hasFinishedResolution( 'getEntityRecords', [ 'taxonomy', 'region', regionQuery ] ),
 			serviceTerms: select( coreStore ).getEntityRecords( 'taxonomy', 'service', serviceQuery ),
 			hasResolvedServices: select( coreStore ).hasFinishedResolution( 'getEntityRecords', [ 'taxonomy', 'service', serviceQuery ] ),
 			themeTerms: select( coreStore ).getEntityRecords( 'taxonomy', 'theme', themeQuery ),
@@ -59,6 +62,13 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 			? selectedThemes.filter( ( existing ) => existing !== id )
 			: [ ...selectedThemes, id ];
 		setAttributes( { selectedThemes: next } );
+	}
+
+	function toggleRegion( id ) {
+		const next = selectedRegions.includes( id )
+			? selectedRegions.filter( ( existing ) => existing !== id )
+			: [ ...selectedRegions, id ];
+		setAttributes( { selectedRegions: next } );
 	}
 
 	return (
@@ -109,7 +119,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 			) }
 
 			{ 'grid' === mode && (
-				<div className="cb-identityjs2026-editor-field-row cb-identityjs2026-editor-field-row--2col">
+				<div className="cb-identityjs2026-editor-field-row cb-identityjs2026-editor-field-row--3col">
 					<div className="cb-identityjs2026-editor-field">
 						<label className="cb-identityjs2026-editor-field__label">{ __( 'Services', 'cb-identityjs2026' ) }</label>
 						<p className="cb-identityjs2026-editor-field__help">
@@ -156,6 +166,32 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 										label={ term.name }
 										checked={ selectedThemes.includes( term.id ) }
 										onChange={ () => toggleTheme( term.id ) }
+									/>
+								) ) }
+							</div>
+						) }
+					</div>
+
+					<div className="cb-identityjs2026-editor-field">
+						<label className="cb-identityjs2026-editor-field__label">{ __( 'Regions', 'cb-identityjs2026' ) }</label>
+						<p className="cb-identityjs2026-editor-field__help">
+							{ __(
+								'Filters the grid to work tagged with the chosen region(s), on any page (combined with Services/Themes if picked). On a case study page, picking a region replaces the auto-matched related work, as picking a Service does.',
+								'cb-identityjs2026'
+							) }
+						</p>
+						{ ! hasResolvedRegions ? (
+							<Spinner />
+						) : ! ( regionTerms ?? [] ).length ? (
+							<p className="cb-identityjs2026-editor-field__help">{ __( 'No terms found.', 'cb-identityjs2026' ) }</p>
+						) : (
+							<div className="cb-identityjs2026-term-checklist">
+								{ regionTerms.map( ( term ) => (
+									<CheckboxControl
+										key={ term.id }
+										label={ term.name }
+										checked={ selectedRegions.includes( term.id ) }
+										onChange={ () => toggleRegion( term.id ) }
 									/>
 								) ) }
 							</div>

@@ -232,6 +232,7 @@ if ( 'auto' === $mode ) {
 
 	$selected_services = array_filter( array_map( 'absint', $attributes['selectedServices'] ?? array() ) );
 	$selected_themes   = array_filter( array_map( 'absint', $attributes['selectedThemes'] ?? array() ) );
+	$selected_regions  = array_filter( array_map( 'absint', $attributes['selectedRegions'] ?? array() ) );
 
 	// Real production algorithm (cb-identitygroup2026/blocks/cb-related-
 	// work.php), confirmed by direct comparison against
@@ -247,7 +248,9 @@ if ( 'auto' === $mode ) {
 	// manually-set single term that only ever NARROWS that service match
 	// (AND) — it is never itself an auto-match against the current post's
 	// theme terms. $selected_themes here plays that same narrowing role.
-	if ( $is_case_study_page && ! $selected_services ) {
+	// A manually-picked Region, like a manually-picked Service, overrides the
+	// auto-match: the editor asked for that region's work, not "related to this page".
+	if ( $is_case_study_page && ! $selected_services && ! $selected_regions ) {
 		$auto_service_id = cb_identityjs2026_get_primary_service_term_id( get_the_ID() );
 
 		if ( $auto_service_id ) {
@@ -377,6 +380,16 @@ if ( 'auto' === $mode ) {
 				'taxonomy' => 'theme',
 				'field'    => 'term_id',
 				'terms'    => $selected_themes,
+			);
+		}
+
+		// Region — same manual-filter treatment as Theme: narrows the grid on any
+		// page, combined (AND) with whatever Services/Themes are also picked.
+		if ( $selected_regions ) {
+			$tax_query[] = array(
+				'taxonomy' => 'region',
+				'field'    => 'term_id',
+				'terms'    => $selected_regions,
 			);
 		}
 

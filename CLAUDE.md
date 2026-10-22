@@ -346,7 +346,7 @@ see MULTI-BRAND.md.
 
 ## Blocks
 
-28 native blocks under `blocks/`: about-hero (ported from the legacy `cb-about-hero`: full-viewport hero, title between two rules, intro, optional parallax background + 60% overlay image, translucent Content band using `--col-overlay-colour`; dark only), brand-grid, case-study-grid, case-study-hero (optional Title field overrides the post title as the h1),
+28 native blocks under `blocks/`: about-hero (ported from the legacy `cb-about-hero`: full-viewport hero, title between two rules, intro, optional parallax background + 60% overlay image, translucent Content band using `--col-overlay-colour`; dark only), brand-grid, case-study-grid (Grid mode filters by `selectedServices`/`selectedThemes`/`selectedRegions` — AND across taxonomies; Auto mode matches the page's own terms, or its slug to a term slug, in theme/service/region), case-study-hero (optional Title field overrides the post title as the h1),
 child-page-nav, contact-directory, contact-form (Gravity Forms shortcode),
 content-builder (rows of many module types, optional background parallax; a `divider` module draws a full-width line in the section line colour; rows have Padding Top/Bottom radio groups of 0 / 1.5 / 3 / 5 rem (`paddingTop`/`paddingBottom`; legacy `hasPaddingTop`/`hasPaddingBottom` booleans map to 1.5 / 3, and new rows default to 3 / 3); the `empty` module takes a decimal-rem `emptyHeight`, default 0),
 cta (picks a Site-Wide Settings CTA), detail-list, faq (feeds the aggregated

@@ -11,7 +11,8 @@
 		"count": { "type": "number", "default": 4 },
 		"taxonomyFilter": { "type": "string", "default": "none" },
 		"selectedServices": { "type": "array", "default": [], "items": { "type": "number" } },
-		"selectedThemes": { "type": "array", "default": [], "items": { "type": "number" } }
+		"selectedThemes": { "type": "array", "default": [], "items": { "type": "number" } },
+		"selectedRegions": { "type": "array", "default": [], "items": { "type": "number" } }
 	},
 	"supports": {
 		"anchor": true,
