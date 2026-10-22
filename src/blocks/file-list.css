@@ -60,5 +60,7 @@
 
 .file-list__item-icon {
 	flex-shrink: 0;
+	width: 40px; /* same arrow size as Child Page Nav (legacy health's 40x29) — CSS wins over the img's own attributes */
+	height: 29px;
 	color: var(--col-accent);
 }

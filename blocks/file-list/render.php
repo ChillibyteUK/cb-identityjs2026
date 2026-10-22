@@ -59,7 +59,7 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'file-list
 			data-animate-delay="<?php echo esc_attr( $index * 100 ); ?>"
 		>
 			<span class="file-list__item-title"><?php echo esc_html( trim( (string) $row['title'] ) ); ?></span>
-			<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/img/arrow-wh.svg' ); ?>" width="65" height="60" alt="" class="file-list__item-icon" />
+			<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/img/arrow-wh.svg' ); ?>" width="40" height="29" alt="" class="file-list__item-icon" />
 		</a>
 	<?php endforeach; ?>
 </section>

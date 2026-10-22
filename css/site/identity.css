@@ -628,12 +628,21 @@
  * --col-border, --col-neutral-600 → #939287 literal (same convention as
  * .insight-type-grid__date above — not otherwise tokenised).
  *
- * --_colour is the per-category accent (press purple, insight lime),
- * consumed by the category label, standfirst, and h2s.
+ * --_colour is the per-category accent (press purple, insight lime), used for
+ * the category label only; the standfirst, h2s and links use the white
+ * --_first-colour / --_text-colour / --_link below.
  */
 .single-blog {
   background-color: var(--col-bg);
   color: var(--col-text);
+  /* Text colours default to white in every post. --_colour (the per-category
+     accent) now only colours the category label — it used to colour the
+     standfirst, h2s and links too, which made insight posts lime throughout.
+     Split out as separate custom properties, as the legacy health context does. */
+  --_text-colour: var(--col-text);
+  --_first-colour: var(--col-text);
+  --_link: var(--col-text);
+  --_link-hover: #aeada1; /* col-neutral-500, confirmed — same value the footer link hover uses */
 }
 
 .single-blog.post-press {
@@ -706,7 +715,7 @@
    :not([class*="post-date"]) excludes the date row's own .container, which
    shares the .post-content ancestor. */
 .single-blog .post-content .container:first-of-type:not([class*="post-date"]) {
-  color: var(--_colour);
+  color: var(--_first-colour);
   font-size: var(--fs-500);
   font-weight: var(--fw-light);
   line-height: var(--lh-heading);
@@ -715,31 +724,45 @@
   padding-block: 1rem 0.5rem;
 }
 
+/* h2s: a single top line and more room, as in the legacy health context
+   (cb-identitygroup2026's .single-blog h2 — border-top only, padding-block
+   0.75rem 1.5rem, margin-block 2rem). */
 .single-blog .post-content h2 {
   border-top: 1px solid var(--col-border);
-  border-bottom: 1px solid var(--col-border);
-  color: var(--_colour);
+  color: var(--_text-colour);
   font-size: var(--fs-600);
   font-weight: var(--fw-book);
-  margin-block: 2rem;
-  padding-block: 0.25rem;
+  /* 3.5rem above, not 2rem: in the legacy theme every post paragraph carries 1.5rem
+     of bottom padding on top of the h2's own 2rem margin, so the text-to-line gap
+     above an h2 is 3.5rem (measured 56px on identityhealth.com). That padding isn't
+     applied to paragraphs here, so it's folded into the h2's top margin instead. */
+  margin-block: 3.5rem 2rem;
+  padding-block: 0.75rem 1.5rem;
+}
+
+/* An h2 straight after the standfirst: the standfirst's own bottom line already
+   separates them, so drop the h2's top line and the extra gap instead of
+   doubling up (same rule as the legacy theme). */
+.single-blog .post-content .container:first-of-type:not([class*="post-date"]):has(> p:first-of-type) + .container:has(> h2) > h2 {
+  border-top: 0;
+  margin-top: -2rem;
 }
 
 /* Adapted from the shared theme's own post-content link treatment (which
    keyed off per-site --_link vars this theme doesn't carry): category
    colour + underline, same hover behaviour. */
 .single-blog .post-content a {
-  color: var(--_colour);
+  color: var(--_link);
   text-decoration: underline;
   text-decoration-thickness: 0.05em;
   text-underline-offset: 0.2em;
-  text-decoration-color: var(--_colour);
+  text-decoration-color: var(--_link);
   transition: color var(--transition), text-decoration-color var(--transition);
 }
 
 .single-blog .post-content a:hover {
-  color: var(--col-text);
-  text-decoration-color: var(--col-text);
+  color: var(--_link-hover);
+  text-decoration-color: var(--_link-hover);
 }
 
 /*# sourceMappingURL=identity.css.map */
