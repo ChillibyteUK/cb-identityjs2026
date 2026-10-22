@@ -696,6 +696,7 @@
   font-weight: var(--fw-book);
   color: var(--col-text);
   line-height: var(--lh-heading);
+  text-wrap: pretty;
 }
 
 .single-blog .post-date-row {
@@ -725,7 +726,7 @@
   line-height: var(--lh-heading);
   border-bottom: 1px solid var(--col-border);
   margin-bottom: 2rem;
-  padding-block: 1rem 0.5rem;
+  padding-block: var(--space-4) 0.5rem;
 }
 
 /* h2s: a single top line and more room, as in the legacy health context
