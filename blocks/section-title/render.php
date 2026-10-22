@@ -54,18 +54,21 @@ if ( $background_url ) {
 	$root_classes[] = 'section-title--has-background';
 }
 
-$instance_id = wp_unique_id( 'section-title-' );
+// The block's HTML anchor (supports.anchor) arrives as the `id` that
+// get_block_wrapper_attributes() prints — so this <section> must not carry a
+// second, hardcoded id of its own (it used to: a generated section-title-N
+// id sat before the wrapper attributes, the browser kept that first one and
+// ignored the anchor, so #anchor links never landed). The background photo
+// is passed as an inline custom property for the same reason: the old
+// <style>#section-title-N { ... }</style> needed that generated id.
+$wrapper_args = array( 'class' => implode( ' ', $root_classes ) );
+if ( $background_url ) {
+	$wrapper_args['style'] = '--bg-url: url(\'' . esc_url( $background_url ) . '\');';
+}
 
-$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $root_classes ) ) );
+$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 ?>
-<?php if ( $background_url ) : ?>
-	<style>
-		#<?php echo esc_attr( $instance_id ); ?> {
-			--bg-url: url('<?php echo esc_url( $background_url ); ?>');
-		}
-	</style>
-<?php endif; ?>
-<section id="<?php echo esc_attr( $instance_id ); ?>" <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?>>
+<section <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?>>
 	<div class="id-container">
 		<h2 class="section-title__text"><?php echo esc_html( $title ); ?></h2>
 	</div>
