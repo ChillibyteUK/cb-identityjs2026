@@ -217,6 +217,30 @@ if ( 'auto' === $mode ) {
 	if ( empty( $posts ) ) {
 		return;
 	}
+} elseif ( 'curated' === $mode ) {
+	// Hand-picked, ordered list (the Case Studies picker) — same idea as Work
+	// Index's curated mode. Shows every pick, in the order picked, so Count
+	// doesn't apply. Unpublished/deleted picks drop out; the case study this
+	// grid is sitting on is never listed in its own "related work".
+	$curated_ids = array_values( array_unique( array_filter( array_map( 'absint', (array) ( $attributes['caseStudies'] ?? array() ) ) ) ) );
+	if ( is_singular( 'case_study' ) ) {
+		$curated_ids = array_values( array_diff( $curated_ids, array( get_the_ID() ) ) );
+	}
+	$posts = array();
+	if ( $curated_ids ) {
+		$curated_query = new WP_Query(
+			array(
+				'post_type'      => 'case_study',
+				'post_status'    => 'publish',
+				'posts_per_page' => -1,
+				'post__in'       => $curated_ids,
+				'orderby'        => 'post__in',
+				'fields'         => 'ids',
+			)
+		);
+		$posts = $curated_query->posts;
+		wp_reset_postdata();
+	}
 } else {
 	// Viewing this grid ON a case study's own page shouldn't ever list that
 	// same case study among its "related work" — confirmed against

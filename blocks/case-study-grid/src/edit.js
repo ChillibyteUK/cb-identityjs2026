@@ -5,6 +5,7 @@ import { useSelect } from '@wordpress/data';
 import { store as coreStore } from '@wordpress/core-data';
 import EditorBlockShell from '../../_shared/EditorBlockShell';
 import PostTypePicker from '../../_shared/PostTypePicker';
+import PostTypeMultiPicker from '../../_shared/PostTypeMultiPicker';
 
 /**
  * Built from cb-featured-work + cb-related-work (Work by Region / Work
@@ -19,6 +20,9 @@ import PostTypePicker from '../../_shared/PostTypePicker';
  *   `selectedServices` picker (real source's own `services` field —
  *   always the Service taxonomy specifically, not configurable, matching
  *   production exactly).
+ * - curated: a hand-picked, ordered list of case studies (`caseStudies`, via
+ *   PostTypeMultiPicker — same control as Work Index's curated mode); shows every
+ *   pick in order, Count doesn't apply.
  * - auto: derives relevance from the CURRENT post's own terms in
  *   `taxonomyFilter` — generalises Related Work's service-specific
  *   two-pass (Yoast-primary-term match, then general fill) plus its
@@ -33,7 +37,7 @@ const TAXONOMY_OPTIONS = [
 ];
 
 export default function Edit( { attributes, setAttributes, clientId } ) {
-	const { mode, heroCaseStudy, count, taxonomyFilter, selectedServices, selectedThemes, selectedRegions } = attributes;
+	const { mode, heroCaseStudy, count, taxonomyFilter, selectedServices, selectedThemes, selectedRegions, caseStudies } = attributes;
 	const blockProps = useBlockProps( { className: 'container cb-identityjs2026-editor-block' } );
 
 	const { serviceTerms, hasResolvedServices, themeTerms, hasResolvedThemes, regionTerms, hasResolvedRegions } = useSelect( ( select ) => {
@@ -80,6 +84,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					{ label: 'Hero', value: 'hero' },
 					{ label: 'Grid', value: 'grid' },
 					{ label: 'Auto (relevant to this page)', value: 'auto' },
+					{ label: 'Curated (hand-picked, in order)', value: 'curated' },
 				] }
 				onChange={ ( value ) => setAttributes( { mode: value } ) }
 			/>
@@ -91,6 +96,17 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					value={ heroCaseStudy }
 					onChange={ ( id ) => setAttributes( { heroCaseStudy: id } ) }
 					help={ __( 'Optional — defaults to the most recent case study.', 'cb-identityjs2026' ) }
+				/>
+			) }
+
+			{ 'curated' === mode && (
+				<PostTypeMultiPicker
+					label={ __( 'Case Studies', 'cb-identityjs2026' ) }
+					addLabel={ __( 'Add case study', 'cb-identityjs2026' ) }
+					postType="case_study"
+					value={ caseStudies }
+					onChange={ ( ids ) => setAttributes( { caseStudies: ids } ) }
+					help={ __( 'Shown in this order. Every pick is shown — Count doesn’t apply. On a case study page, that case study is left out of its own list.', 'cb-identityjs2026' ) }
 				/>
 			) }
 
