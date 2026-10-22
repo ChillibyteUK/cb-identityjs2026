@@ -2188,11 +2188,11 @@
  * Real source values: color: var(--col-white) (this project's --col-text
  * on identity context — #ffffff, exact match), item hover background
  * var(--col-neutral-1100), list bottom padding 6rem, item padding-block
- * 0.75rem .5rem, item font-size --fs-700 (now --fs-600, see .file-list__item-title), item border rgba(255,255,255,.4)
+ * 0.75rem .5rem, item font-size --fs-700 (now --fs-500, see .file-list__item-title), item border rgba(255,255,255,.4)
  * (this project's --col-border) on every item except the last
  * (`&:not(:last-child)` — a single-item list has no border at all). Per
- * the user's explicit direction, title is --fw-regular (the real
- * source's own rung was --fs-700, since dropped to --fs-600), not the spec's --fs-body/--fw-bold simplification.
+ * the user's explicit direction, title is --fw-light (was --fw-regular; the real
+ * source's own rung was --fs-700, since dropped to --fs-500), not the spec's --fs-body/--fw-bold simplification.
  */
 
 .file-list {
@@ -2231,8 +2231,8 @@
 }
 
 .file-list__item-title {
-	font-size: var(--fs-600);
-	font-weight: var(--fw-regular);
+	font-size: var(--fs-500);
+	font-weight: var(--fw-light);
 	color: var(--col-text);
 }
 
