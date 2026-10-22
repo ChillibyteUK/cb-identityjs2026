@@ -629,18 +629,18 @@
  * .insight-type-grid__date above — not otherwise tokenised).
  *
  * --_colour is the per-category accent (press purple, insight lime), used for
- * the category label only; the standfirst, h2s and links use the white
- * --_first-colour / --_text-colour / --_link below.
+ * the category label and the standfirst (--_first-colour); the h2s and links use
+ * the white --_text-colour / --_link below.
  */
 .single-blog {
   background-color: var(--col-bg);
   color: var(--col-text);
-  /* Text colours default to white in every post. --_colour (the per-category
-     accent) now only colours the category label — it used to colour the
-     standfirst, h2s and links too, which made insight posts lime throughout.
-     Split out as separate custom properties, as the legacy health context does. */
+  /* h2s and links default to white in every post. --_colour (the per-category
+     accent) colours the category label and the standfirst — it used to colour the
+     h2s and links too, which made insight posts lime throughout. Split out as
+     separate custom properties, as the legacy health context does. */
   --_text-colour: var(--col-text);
-  --_first-colour: var(--col-text);
+  --_first-colour: var(--_colour); /* standfirst keeps the category accent (insight lime-400, press purple) */
   --_link: var(--col-text);
   --_link-hover: #aeada1; /* col-neutral-500, confirmed — same value the footer link hover uses */
 }
