@@ -82,6 +82,7 @@
   --col-button-bg: var(--col-accent);
   --col-button-text: #ffffff;
   --col-border: rgba(0, 0, 0, 0.4);
+  --col-page-header-rule: var(--col-border); /* the hairline rules in Page Header's Plain / About variants — a role token so a context (e.g. Health's dark-on-light) can override it */
   --col-overlay-colour: rgba(0, 0, 0, 0.5);
   --col-overlay-light: rgba(255, 255, 255, 0.2);
   --col-overlay-dark: rgba(0, 0, 0, 0.2);

@@ -330,6 +330,12 @@
           "origin": "theme"
         },
         {
+          "name": "page-header-rule",
+          "slug": "page-header-rule",
+          "color": "hsl(53 36% 96% / 0.5)",
+          "origin": "theme"
+        },
+        {
           "name": "overlay-colour",
           "slug": "overlay-colour",
           "color": "rgba(47, 19, 186, 0.8)",

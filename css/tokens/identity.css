@@ -104,6 +104,7 @@
   --col-button-bg: #e03030;
   --col-button-text: #ffffff;
   --col-border: rgba(255, 255, 255, 0.4);
+  --col-page-header-rule: hsl(53 36% 96% / 0.5); /* real --hsl-neutral-050 at 50% — the Service/Plain/About header rules */
 
   --col-overlay-colour: rgba(47, 19, 186, 0.8);
   --col-overlay-light: rgba(255, 255, 255, 0.2);

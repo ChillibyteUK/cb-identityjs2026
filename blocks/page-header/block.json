@@ -18,7 +18,8 @@
 		"quoteAuthor": { "type": "string", "default": "" },
 		"quoteCompany": { "type": "string", "default": "" },
 		"backgroundId": { "type": "number", "default": 0 },
-		"backgroundScope": { "type": "string", "default": "full" }
+		"backgroundScope": { "type": "string", "default": "full" },
+		"overlayId": { "type": "number", "default": 0 }
 	},
 	"supports": {
 		"anchor": true,

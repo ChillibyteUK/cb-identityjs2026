@@ -53,6 +53,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 		quoteCompany,
 		backgroundId,
 		backgroundScope,
+		overlayId,
 	} = attributes;
 	const blockProps = useBlockProps( { className: 'container cb-identityjs2026-editor-block' } );
 	const backgroundUrl = useBackgroundUrl( backgroundId );
@@ -60,6 +61,12 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 	// Hero has no animated title, scope choice or secondary panel), so those
 	// controls are hidden for it.
 	const isPlain = 'plain' === headerVariant;
+	// The About variant (full-height hero, ported from the legacy About Hero) is
+	// likewise just title + intro + background (+ overlay image) + an optional text
+	// band: no animated title, scope choice or quote panel.
+	const isAbout = 'about-hero' === headerVariant;
+	const isSimple = isPlain || isAbout;
+	const overlayUrl = useBackgroundUrl( overlayId );
 
 	return (
 		<EditorBlockShell blockProps={ blockProps } clientId={ clientId } title="CB Page Header" textDomain="cb-identityjs2026">
@@ -72,13 +79,14 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					{ label: 'Default (About)', value: 'default' },
 					{ label: 'Service (e.g. FAQs)', value: 'service' },
 					{ label: 'Plain Hero (dark, parallax image)', value: 'plain' },
+					{ label: 'About (full-height hero)', value: 'about-hero' },
 				] }
-				help={ __( 'Service is a distinctly smaller/tighter real treatment (identity\'s own Service Page Header) — confirmed live on identityglobal.com/faqs/. Plain Hero reproduces the legacy CB Plain Hero: a ruled title, an intro, and an optional parallax Background image — it has no animated title or secondary panel, so those fields are hidden.', 'cb-identityjs2026' ) }
+				help={ __( 'Service is a distinctly smaller/tighter real treatment (identity\'s own Service Page Header) — confirmed live on identityglobal.com/faqs/. Plain Hero reproduces the legacy CB Plain Hero: a ruled title, an intro, and an optional parallax Background image. About (full-height hero) reproduces the legacy About Hero: a full-screen hero with the title between two rules, an optional Overlay Image, and the Secondary Text as a band at the bottom. Neither has an animated title or quote panel, so those fields are hidden.', 'cb-identityjs2026' ) }
 				onChange={ ( value ) => setAttributes( { headerVariant: value } ) }
 			/>
 
 			<div style={ { display: 'flex', flexWrap: 'wrap', gap: '12px' } }>
-				<div style={ { flex: isPlain ? '1 1 100%' : '50 1 0%' } }>
+				<div style={ { flex: isSimple ? '1 1 100%' : '50 1 0%' } }>
 					<TextareaControl
 						label={ __( 'Title', 'cb-identityjs2026' ) }
 						value={ title }
@@ -86,7 +94,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						onChange={ ( value ) => setAttributes( { title: value } ) }
 					/>
 				</div>
-				{ ! isPlain && (
+				{ ! isSimple && (
 					<div style={ { flex: '50 1 0%' } }>
 						<TextareaControl
 							label={ __( 'Animated Title', 'cb-identityjs2026' ) }
@@ -154,13 +162,40 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					/>
 				</MediaUploadCheck>
 				<p className="cb-identityjs2026-editor-field__help">
-					{ isPlain
+					{ isSimple
 						? __( 'Optional — scrolls with a parallax effect behind the title (no tint).', 'cb-identityjs2026' )
 						: __( 'Full-bleed photo behind the whole header, with a dark tint over it.', 'cb-identityjs2026' ) }
 				</p>
 			</div>
 
-			{ backgroundUrl && ! isPlain && (
+			{ isAbout && (
+				<div className="cb-identityjs2026-editor-field">
+					<label className="cb-identityjs2026-editor-field__label">{ __( 'Overlay Image', 'cb-identityjs2026' ) }</label>
+					<MediaUploadCheck>
+						<MediaUpload
+							onSelect={ ( media ) => setAttributes( { overlayId: media.id } ) }
+							allowedTypes={ [ 'image' ] }
+							value={ overlayId }
+							render={ ( { open } ) => (
+								<div className="cb-identityjs2026-editor-field__control">
+									{ overlayUrl && <img src={ overlayUrl } alt="" style={ { maxWidth: '200px', display: 'block', marginBottom: '8px' } } /> }
+									<Button variant="secondary" onClick={ open }>
+										{ overlayUrl ? __( 'Replace Overlay Image', 'cb-identityjs2026' ) : __( 'Select Overlay Image', 'cb-identityjs2026' ) }
+									</Button>
+									{ overlayUrl && (
+										<Button variant="tertiary" isDestructive onClick={ () => setAttributes( { overlayId: 0 } ) }>
+											{ __( 'Remove', 'cb-identityjs2026' ) }
+										</Button>
+									) }
+								</div>
+							) }
+						/>
+					</MediaUploadCheck>
+					<p className="cb-identityjs2026-editor-field__help">{ __( 'Optional — drawn over the background at 60% opacity.', 'cb-identityjs2026' ) }</p>
+				</div>
+			) }
+
+			{ backgroundUrl && ! isSimple && (
 				<SelectControl
 					label={ __( 'Background Scope', 'cb-identityjs2026' ) }
 					value={ backgroundScope }
@@ -178,7 +213,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 
 			{ ! isPlain && (
 				<>
-					<SectionHeading>{ __( 'Secondary Panel', 'cb-identityjs2026' ) }</SectionHeading>
+					<SectionHeading>{ isAbout ? __( 'Secondary Text (bottom band)', 'cb-identityjs2026' ) : __( 'Secondary Panel', 'cb-identityjs2026' ) }</SectionHeading>
 
 					<SelectControl
 						label={ __( 'Type', 'cb-identityjs2026' ) }
@@ -186,7 +221,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						options={ [
 							{ label: 'None', value: 'none' },
 							{ label: 'Text', value: 'text' },
-							{ label: 'Quote', value: 'quote' },
+							...( isAbout ? [] : [ { label: 'Quote', value: 'quote' } ] ),
 						] }
 						help={ __( 'An optional second panel below the header — plain text, a pull-quote, or nothing.', 'cb-identityjs2026' ) }
 						onChange={ ( value ) => setAttributes( { secondaryPanelType: value } ) }
@@ -217,7 +252,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						</>
 					) }
 
-					{ secondaryPanelType === 'quote' && (
+					{ ! isAbout && secondaryPanelType === 'quote' && (
 						<>
 							<TextareaControl
 								label={ __( 'Quote', 'cb-identityjs2026' ) }

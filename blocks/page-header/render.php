@@ -43,6 +43,13 @@
  * paragraph/rest-paragraph CSS split that couldn't be overridden per
  * instance.
  *
+ * `headerVariant: 'about-hero'` is the full-height About hero (ported from the
+ * legacy cb-about-hero): 100vh section, title between two rules and the intro
+ * bottom-aligned over an optional parallax background (+ optional overlay image
+ * at 60%), with the secondary text as a translucent band at the bottom. It
+ * ignores Animated Title, the quote panel and the secondary-only background scope
+ * (their fields are hidden in the editor).
+ *
  * `headerVariant: 'plain'` reproduces cb-identitygroup2026's CB Plain Hero (dark
  * background, full-bleed ruled h1, 8-of-12 intro, optional parallax background
  * image with a bigger title and no tint) — see page-header.css's .page-header--plain.
@@ -66,6 +73,7 @@ $quote                = $attributes['quote'] ?? '';
 $quote_author         = $attributes['quoteAuthor'] ?? '';
 $quote_company        = $attributes['quoteCompany'] ?? '';
 $background_id        = absint( $attributes['backgroundId'] ?? 0 );
+$overlay_id           = absint( $attributes['overlayId'] ?? 0 );
 $background_scope     = $attributes['backgroundScope'] ?? 'full';
 
 $background_url = $background_id ? wp_get_attachment_image_url( $background_id, 'full' ) : '';
@@ -78,10 +86,12 @@ $background_url = $background_id ? wp_get_attachment_image_url( $background_id, 
 // keeping their current whole-block rendering exactly as before this was
 // added.
 $is_plain                = 'plain' === $header_variant;
+$is_about                = 'about-hero' === $header_variant;
+$about_has_image         = $is_about && $background_url && 'full' === $background_scope;
 $plain_has_image         = $is_plain && $background_url && 'full' === $background_scope;
 // The plain variant draws its own parallax image (below), not the fixed full-scope one.
-$background_is_full      = ! $is_plain && $background_url && 'full' === $background_scope;
-$background_is_secondary = $background_url && 'secondary' === $background_scope;
+$background_is_full      = ! $is_plain && ! $is_about && $background_url && 'full' === $background_scope;
+$background_is_secondary = ! $is_about && $background_url && 'secondary' === $background_scope;
 
 $root_classes = array( 'page-header' );
 if ( $background_is_full ) {
@@ -99,6 +109,12 @@ if ( $is_plain ) {
 if ( $plain_has_image ) {
 	$root_classes[] = 'page-header--plain-has-image';
 }
+if ( $is_about ) {
+	$root_classes[] = 'page-header--about-hero';
+}
+if ( $about_has_image ) {
+	$root_classes[] = 'page-header--about-hero-has-image';
+}
 
 $panel_classes = array( 'page-header__panel' );
 if ( $background_is_secondary ) {
@@ -112,22 +128,49 @@ $panel_class_attr = esc_attr( implode( ' ', $panel_classes ) );
 $wrapper_args = array( 'class' => implode( ' ', $root_classes ) );
 if ( $background_is_full ) {
 	$wrapper_args['style'] = '--bg-url: url(\'' . esc_url( $background_url ) . '\');';
-} elseif ( $plain_has_image ) {
+} elseif ( $plain_has_image || $about_has_image ) {
 	$wrapper_args['style'] = '--hero-bg: url(' . esc_url_raw( $background_url ) . ');';
 }
 list( $instance_id, $wrapper_attributes ) = cb_identityjs2026_block_wrapper( $attributes, 'page-header-', $wrapper_args );
 
 // Parallax hook (src/js/hero-parallax.js) for the plain variant's image.
-$plain_attrs = $plain_has_image ? ' data-hero-parallax' : '';
+$plain_attrs = ( $plain_has_image || $about_has_image ) ? ' data-hero-parallax' : '';
 
 // Secondary-only background: the panel's own custom property.
 $panel_style_attr = $background_is_secondary ? ' style="' . esc_attr( '--panel-bg-url: url(\'' . esc_url( $background_url ) . '\');' ) . '"' : '';
 ?>
-<?php if ( $plain_has_image ) : ?>
+<?php if ( $plain_has_image || $about_has_image ) : ?>
 	<link rel="preload" as="image" href="<?php echo esc_url( $background_url ); ?>" fetchpriority="high">
 <?php endif; ?>
 <section <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() already escapes. ?><?php echo $plain_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from esc_attr()/esc_url_raw() above. ?>>
-	<?php if ( $is_plain ) : ?>
+	<?php if ( $is_about ) : ?>
+		<div class="page-header__about-top">
+			<?php if ( $overlay_id ) : ?>
+				<div class="page-header__about-overlay-image-wrap">
+					<?php echo wp_get_attachment_image( $overlay_id, 'full', false, array( 'class' => 'page-header__about-overlay-image', 'alt' => '' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				</div>
+			<?php endif; ?>
+			<div class="id-container page-header__about-container">
+				<div class="page-header__about-top-inner">
+					<?php if ( $title ) : ?>
+						<hr class="page-header__about-rule">
+						<h1 class="page-header__about-title hero-animate"><?php echo wp_kses_post( nl2br( esc_html( $title ) ) ); ?></h1>
+						<hr class="page-header__about-rule">
+					<?php endif; ?>
+					<?php if ( $intro_text ) : ?>
+						<div class="page-header__intro page-header__about-intro hero-animate hero-animate--delay-1 <?php echo esc_attr( $intro_text_font_size ); ?>"><?php echo do_shortcode( wp_kses_post( $intro_text ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_kses_post() sanitizes first; do_shortcode() only expands already-registered, trusted shortcodes against that sanitized result. ?></div>
+					<?php endif; ?>
+				</div>
+			</div>
+		</div>
+		<?php if ( 'text' === $secondary_panel_type && $secondary_text ) : ?>
+			<div class="page-header__about-band" data-animate="fade">
+				<div class="id-container page-header__about-container page-header__about-container--band">
+					<div class="page-header__about-content <?php echo esc_attr( $secondary_text_font_size ); ?>"><?php echo do_shortcode( wp_kses_post( $secondary_text ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_kses_post() sanitizes first; do_shortcode() only expands already-registered, trusted shortcodes against that sanitized result. ?></div>
+				</div>
+			</div>
+		<?php endif; ?>
+	<?php elseif ( $is_plain ) : ?>
 		<?php if ( $title ) : ?>
 			<div class="page-header__plain-title">
 				<h1 class="id-container"><span class="hero-animate"><?php echo wp_kses_post( nl2br( esc_html( $title ) ) ); ?></span></h1>
@@ -171,8 +214,8 @@ $panel_style_attr = $background_is_secondary ? ' style="' . esc_attr( '--panel-b
 		</div>
 	</div>
 	<?php endif; ?>
-	<?php if ( $is_plain ) : ?>
-		<?php // Plain Hero has no secondary panel (its field is hidden in the editor). ?>
+	<?php if ( $is_plain || $is_about ) : ?>
+		<?php // Plain Hero has no secondary panel, and About draws its own band above (their fields are hidden/handled in the editor). ?>
 	<?php elseif ( 'text' === $secondary_panel_type && $secondary_text ) : ?>
 		<div class="<?php echo $panel_class_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- already esc_attr()'d above. ?>"<?php echo $panel_style_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from esc_attr()/esc_url() above. ?>>
 			<div class="id-container">

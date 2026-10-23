@@ -89,7 +89,7 @@
 	border-block: 1px solid var(--col-border);
 	font-family: var(--ff-heading);
 	font-size: var(--fs-page-header-title);
-	font-weight: var(--fw-light);
+	font-weight: var(--fw-semibold); /* Health's h1 weight, applied to this block's titles only (client request) */
 	line-height: 1;
 	color: var(--col-text);
 }
@@ -103,7 +103,7 @@
 .page-header--has-animated-title .page-header__title {
 	padding-block-end: 0.5rem;
 	font-size: var(--fs-900);
-	font-weight: var(--fw-semi);
+	font-weight: var(--fw-semibold);
 }
 
 /* Service Page Header variant (headerVariant: 'service') — confirmed live
@@ -116,9 +116,9 @@
 .page-header--service .page-header__title {
 	padding-block: 0.25rem 0;
 	margin-bottom: 2rem;
-	border-block-color: hsl(53 36% 96% / 0.5);
+	border-block-color: var(--col-page-header-rule);
 	font-size: var(--fs-850);
-	font-weight: var(--fw-book);
+	font-weight: var(--fw-semibold);
 }
 
 /* The animated split-line title (Region Page Header's real treatment) sits
@@ -385,7 +385,7 @@
 }
 
 .page-header__plain-title {
-	border-block: 1px solid hsl(53 36% 96% / 0.5);
+	border-block: 1px solid var(--col-page-header-rule);
 }
 
 .page-header__plain-title h1,
@@ -404,7 +404,7 @@
 	margin-block: 0; /* not `margin: 0` — the h1 is also an .id-container, whose auto inline margins centre it */
 	font-family: var(--ff-heading);
 	font-size: var(--fs-850);
-	font-weight: var(--fw-book);
+	font-weight: var(--fw-semibold);
 	line-height: 1.1;
 	color: var(--col-text);
 }
@@ -431,10 +431,17 @@
 }
 
 .page-header--plain-has-image .page-header__plain-title h1 span {
-	display: block;
-	border-top: 1px solid hsl(53 36% 96% / 0.5);
 	font-size: var(--fs-900);
-	font-weight: var(--fw-book);
+	font-weight: var(--fw-semibold);
+}
+
+/* The rule above the title runs the full container width; the title text keeps
+   its own 66% cap and balanced wrapping (client request — it used to be the
+   span's border-top, so it was capped with the text). */
+.page-header--plain-has-image .page-header__plain-title h1::before {
+	content: "";
+	display: block;
+	border-top: 1px solid var(--col-page-header-rule);
 }
 
 .page-header__plain-body {
@@ -465,5 +472,162 @@
 @media (min-width: 768px) {
 	.page-header__plain-intro {
 		max-width: 66.6667%; /* the legacy col-md-8 */
+	}
+}
+
+/* ---------------------------------------------------------------------
+ * About variant (headerVariant: 'about-hero') — the full-height About hero,
+ * ported from the legacy cb-about-hero (cb-identitygroup2026, newest copy)
+ * and moved here from the standalone About Hero block. 100vh flex column;
+ * title between two rules and the intro bottom-aligned; optional parallax
+ * background (translateY from --hero-parallax-y, src/js/hero-parallax.js, no
+ * tint) with an optional overlay image at 60%; the secondary text is a
+ * translucent band pinned to the bottom (--col-overlay-colour for now).
+ * Colours are role tokens (--col-text, --col-page-header-rule) so a context
+ * like Health can flip them in its own CSS; there is no light/dark option.
+ * --------------------------------------------------------------------- */
+
+.page-header--about-hero {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	background-color: var(--col-bg);
+	color: var(--col-text);
+}
+
+.page-header--about-hero-has-image {
+	overflow: hidden;
+}
+
+.page-header--about-hero-has-image::before {
+	content: "";
+	position: absolute;
+	inset: -3rem 0;
+	z-index: 0;
+	background-image: var(--hero-bg);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	transform: translateY(var(--hero-parallax-y, 0px));
+	will-change: transform;
+}
+
+.page-header__about-top {
+	position: relative;
+	z-index: 1;
+	flex: 1 1 auto;
+	min-height: 0;
+	display: flex;
+	align-items: flex-end;
+	overflow: hidden;
+}
+
+.page-header__about-container {
+	padding-inline: var(--space-4);
+	padding-block: var(--space-5);
+}
+
+@media (min-width: 768px) {
+	.page-header__about-container {
+		padding-inline: var(--space-5);
+	}
+}
+
+.page-header__about-top-inner {
+	position: relative;
+	z-index: 2;
+	padding-top: clamp(4rem, 14vh, 9rem);
+	padding-bottom: clamp(4rem, 10vh, 7rem);
+}
+
+.page-header__about-overlay-image-wrap {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	opacity: 0.6;
+	pointer-events: none;
+}
+
+.page-header__about-overlay-image {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.page-header__about-rule {
+	height: 0;
+	margin: 0;
+	border: 0;
+	border-top: 1px solid var(--col-page-header-rule);
+	opacity: 1;
+}
+
+.page-header__about-title {
+	max-width: 100%;
+	margin-block: clamp(1rem, 2vw, 1.75rem);
+	font-family: var(--ff-heading);
+	font-size: var(--fs-900);
+	font-weight: var(--fw-semibold);
+	line-height: 0.95;
+	letter-spacing: -0.03em; /* real --ls--30 */
+	text-wrap: balance;
+	color: var(--col-text);
+}
+
+/* Capped at a fraction of the container only above xxl (1400px) — full width,
+   no premature wrapping, on anything smaller (legacy, 2026-08-28). */
+@media (min-width: 1400px) {
+	.page-header__about-title {
+		max-width: 66%;
+	}
+}
+
+/* The intro's size is the editor's fs-* choice when there is one, else the legacy fs-500. */
+.page-header__about-intro {
+	max-width: 66rem;
+	margin-top: clamp(3rem, 7vh, 5rem);
+	line-height: 1.25; /* real --lh-500 */
+	letter-spacing: -0.005em; /* real --ls--5 */
+	text-wrap: wrap;
+}
+
+.page-header__about-intro:not([class*="fs-"]) {
+	font-size: var(--fs-500);
+}
+
+.page-header__about-intro p:last-child {
+	margin-bottom: 0;
+}
+
+.page-header__about-band {
+	position: relative;
+	z-index: 1;
+	margin-top: auto;
+	background-color: var(--col-overlay-colour);
+}
+
+.page-header__about-content {
+	max-width: 72rem;
+	font-weight: var(--fw-light);
+	line-height: 1.25; /* real --lh-500 */
+}
+
+.page-header__about-content:not([class*="fs-"]) {
+	font-size: var(--fs-500);
+}
+
+.page-header__about-content p:last-child {
+	margin-bottom: 0;
+}
+
+@media (max-width: 991.98px) {
+	.page-header__about-top {
+		min-height: 58vh;
+	}
+
+	.page-header__about-intro:not([class*="fs-"]) {
+		font-size: var(--fs-300);
 	}
 }
