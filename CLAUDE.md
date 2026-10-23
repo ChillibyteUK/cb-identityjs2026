@@ -95,6 +95,16 @@ component, see below), and per-block BEM classes (`.insight-type-grid__card`,
   palette slug `text` to `body-text` — WP's own `has-text-color` marker class
   collides with a `text` slug and silently breaks every colour choice. Don't
   rename it back.)
+- **Type size and leading are paired, one rung each.** `src/css/tokens.css`
+  carries the unified theme's `--lh-50 … --lh-900` ladder to match `--fs-50 …
+  --fs-900` (bigger type, tighter lines: fs-200 → 1.5, fs-400 → 1.3, fs-500 →
+  1.25, fs-700 → 1.15, fs-850 → 1.1, fs-900 → 1). Anything that sets a
+  font-size from the scale should set the same-numbered `--lh-N` beside it:
+  the `.fs-*` utilities (content-builder.css) do, as do the h1–h3 roles
+  (`--lh-heading-h1`, `--lh-h2`, `--lh-h3`, re-paired per brand in
+  `tokens/{brand}.css`) and the block rules. Deliberate exceptions keep their
+  own leading (labels and stat numbers at 1, quotes, display titles). Don't
+  hand-write a literal like `1.25` next to a rung size.
 - **Breakpoints are the one exception to "tokens live in CSS."** A CSS
   custom property can't be read inside an `@media` condition, so breakpoints
   live in `src/build/tokens.config.js` (sm 576, md 768, lg 992, xl 1200, xxl

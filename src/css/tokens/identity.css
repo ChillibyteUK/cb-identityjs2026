@@ -37,6 +37,9 @@
   --ff-body: "Suisse", Arial, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
 
   --fs-h1: clamp(1.4375rem, 0.9rem + 1.4vw, 2.25rem); /* fs-700 — DISPUTED, see MULTI-BRAND.md-style flag: sourced from the stale cb-identity2025, the current cb-identitygroup2026 base h1{} rule uses --fs-850/--fw-book instead. Needs a proper re-audit before anything else trusts this. */
+  --lh-heading-h1: var(--lh-700); /* paired with --fs-h1's fs-700 rung */
+  --lh-h2: var(--lh-500); /* paired with --fs-h2's fs-500 rung */
+  --lh-h3: var(--lh-600); /* paired with --fs-h3's fs-600 rung */
   --fs-h2: clamp(1.1875rem, 0.9rem + 1vw, 1.751rem); /* fs-500 — same caveat as --fs-h1 above */
   --fs-h3: clamp(1.3125rem, 0.9rem + 1.2vw, 1.999rem); /* fs-600 — confirmed directly by the user ("h3 is generally fs-600"); only the literal clamp() value inherits the same stale-source caveat, not the role mapping itself */
   --fs-subtitle: clamp(1.4444rem, 1.25rem + 0.9vw, 1.75rem); /* fs-500, confirmed current in cb-identitygroup2026/_tokens.scss — same rung as h2, different role name */

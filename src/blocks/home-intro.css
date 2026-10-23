@@ -166,6 +166,7 @@
 .home-intro__content {
 	font-family: var(--ff-body);
 	font-size: var(--fs-subtitle);
+	line-height: var(--lh-500);
 	font-weight: var(--fw-light);
 	color: var(--col-text);
 	text-wrap: pretty;

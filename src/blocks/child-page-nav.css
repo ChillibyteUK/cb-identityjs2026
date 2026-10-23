@@ -46,6 +46,7 @@
 	color: var(--col-accent);
 	font-family: var(--ff-heading);
 	font-size: var(--fs-child-page-nav-header);
+	line-height: var(--lh-300);
 	font-weight: var(--fw-regular);
 }
 
@@ -61,6 +62,7 @@
 	color: var(--col-text);
 	font-family: var(--ff-heading);
 	font-size: var(--fs-child-page-nav-item);
+	line-height: var(--lh-700);
 	font-weight: var(--fw-light);
 	text-decoration: none;
 	transition: background-color var(--transition);

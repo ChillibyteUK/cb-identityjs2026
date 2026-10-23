@@ -33,17 +33,18 @@
  * themes), replicated here exactly rather than trusting the raw tokens.
  * --------------------------------------------------------------------- */
 
-.fs-50 { font-size: var(--fs-50); }
-.fs-100 { font-size: var(--fs-100); }
-.fs-200 { font-size: var(--fs-200); }
-.fs-300 { font-size: var(--fs-300); }
-.fs-400 { font-size: var(--fs-400); }
-.fs-500 { font-size: var(--fs-500); }
-.fs-600 { font-size: var(--fs-600); line-height: 1.2; }
-.fs-700 { font-size: var(--fs-700); }
-.fs-850 { font-size: var(--fs-850); }
-.fs-875 { font-size: var(--fs-875); }
-.fs-900 { font-size: var(--fs-900); }
+/* Each size carries its paired leading (--lh-N, see tokens.css): bigger type, tighter lines. */
+.fs-50 { font-size: var(--fs-50); line-height: var(--lh-50); }
+.fs-100 { font-size: var(--fs-100); line-height: var(--lh-100); }
+.fs-200 { font-size: var(--fs-200); line-height: var(--lh-200); }
+.fs-300 { font-size: var(--fs-300); line-height: var(--lh-300); }
+.fs-400 { font-size: var(--fs-400); line-height: var(--lh-400); }
+.fs-500 { font-size: var(--fs-500); line-height: var(--lh-500); }
+.fs-600 { font-size: var(--fs-600); line-height: var(--lh-600); }
+.fs-700 { font-size: var(--fs-700); line-height: var(--lh-700); }
+.fs-850 { font-size: var(--fs-850); line-height: var(--lh-850); }
+.fs-875 { font-size: var(--fs-875); line-height: var(--lh-875); }
+.fs-900 { font-size: var(--fs-900); line-height: var(--lh-900); }
 
 .fw-light { font-weight: var(--fw-light); }
 .fw-regular { font-weight: var(--fw-regular); }
@@ -290,6 +291,7 @@
  */
 .content-builder__text .cb-lede {
 	font-size: var(--fs-400);
+	line-height: var(--lh-400);
 	font-weight: var(--fw-light);
 }
 
@@ -386,6 +388,7 @@
 
 .service-parents li {
 	font-size: var(--fs-body);
+	line-height: var(--lh-100);
 	font-weight: var(--fw-light);
 	border-top: 1px solid var(--col-border);
 }
@@ -496,6 +499,7 @@
 	padding: 0.75rem 0;
 	border-top: 1px solid var(--content-builder-line-color);
 	font-size: var(--fs-500);
+	line-height: var(--lh-500);
 	font-weight: var(--fw-light);
 	letter-spacing: -0.01em;
 	color: inherit;
@@ -671,27 +675,32 @@
 .content-builder__qa-question {
 	margin: 0;
 	font-size: var(--fs-500);
+	line-height: var(--lh-500);
 	font-weight: var(--fw-semi);
 	letter-spacing: -0.02em;
 }
 
 .content-builder__qa-question--first {
 	font-size: var(--fs-600);
+	line-height: var(--lh-600);
 	letter-spacing: normal;
 	color: var(--col-purple-300);
 }
 
 .content-builder__qa-question--large {
 	font-size: var(--fs-900);
+	line-height: var(--lh-900);
 }
 
 .content-builder__qa-answer {
 	font-size: var(--fs-400);
+	line-height: var(--lh-400);
 	font-weight: var(--fw-regular);
 }
 
 .content-builder__qa-answer--first {
 	font-size: var(--fs-500);
+	line-height: var(--lh-500);
 	font-weight: var(--fw-light);
 	color: var(--col-purple-300);
 }
@@ -725,6 +734,7 @@
 	padding-block: 0.75rem;
 	color: inherit;
 	font-size: var(--fs-detail-list-title);
+	line-height: var(--lh-700);
 	font-weight: var(--fw-light);
 }
 

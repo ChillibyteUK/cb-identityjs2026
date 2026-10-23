@@ -336,6 +336,7 @@ html {
 .footer__colophon {
 	color: var(--col-text-muted);
 	font-size: var(--fs-small);
+	line-height: var(--lh-50);
 }
 
 /*
@@ -474,6 +475,7 @@ html {
 	padding-inline: var(--space-4);
 	font-family: var(--ff-heading);
 	font-size: var(--fs-700);
+	line-height: var(--lh-700);
 	font-weight: var(--fw-semibold);
 	color: var(--col-text);
 }
@@ -596,6 +598,7 @@ html {
 	/* neutral-100, confirmed live — not otherwise tokenised in this theme. */
 	border-block-end: 1px solid #f8f7f0;
 	font-size: var(--fs-50);
+	line-height: var(--lh-50);
 	font-weight: var(--fw-regular);
 	text-transform: uppercase;
 	color: var(--col-text);
@@ -615,6 +618,7 @@ html {
 	align-items: center;
 	gap: var(--space-2);
 	font-size: var(--fs-50);
+	line-height: var(--lh-50);
 	text-transform: uppercase;
 	/* neutral-600, confirmed live — not otherwise tokenised in this theme. */
 	color: #939287;
@@ -749,6 +753,7 @@ html {
   border-top: 1px solid var(--col-border);
   color: var(--_text-colour);
   font-size: var(--fs-600);
+  line-height: var(--lh-600);
   font-weight: var(--fw-book);
   /* 3.5rem above, not 2rem: in the legacy theme every post paragraph carries 1.5rem
      of bottom padding on top of the h2's own 2rem margin, so the text-to-line gap

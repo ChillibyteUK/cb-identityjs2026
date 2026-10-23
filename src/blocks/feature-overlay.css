@@ -77,6 +77,7 @@
 .feature-overlay__content {
 	max-width: 64rem;
 	font-size: var(--fs-feature-overlay-content);
+	line-height: var(--lh-500);
 	font-weight: var(--fw-light);
 	letter-spacing: var(--ls-feature-overlay-content);
 	text-wrap: balance;
@@ -120,6 +121,6 @@
 	font-size: var(--fs-feature-overlay-cta-intro);
 	font-weight: var(--fw-regular);
 	letter-spacing: -0.005em;
-	line-height: var(--lh-body);
+	line-height: var(--lh-400);
 	text-wrap: balance;
 }

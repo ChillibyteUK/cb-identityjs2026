@@ -145,6 +145,7 @@
 	gap: var(--space-3);
 	font-family: var(--ff-heading);
 	font-size: var(--fs-700);
+	line-height: var(--lh-700);
 	font-weight: var(--fw-semibold);
 	color: var(--col-text);
 }
@@ -152,6 +153,7 @@
 .work-index-hero__desc {
 	margin-block-start: var(--space-2);
 	font-size: var(--fs-600);
+	line-height: var(--lh-600);
 	font-weight: var(--fw-light);
 	/* neutral-500, confirmed live — not otherwise tokenised in this theme. */
 	color: #aeada1;
@@ -208,6 +210,7 @@
 	color: var(--col-text);
 	text-transform: uppercase;
 	font-size: var(--fs-small);
+	line-height: var(--lh-50);
 }
 
 .work-index__filter-select {
@@ -265,6 +268,7 @@
 	color: var(--col-accent);
 	font-family: var(--ff-body);
 	font-size: var(--fs-body);
+	line-height: var(--lh-100);
 	cursor: pointer;
 	transition: color var(--transition), background-color var(--transition);
 }

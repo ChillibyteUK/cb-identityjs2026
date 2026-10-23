@@ -103,6 +103,7 @@
 .page-header--has-animated-title .page-header__title {
 	padding-block-end: 0.5rem;
 	font-size: var(--fs-900);
+	line-height: var(--lh-900);
 	font-weight: var(--fw-semibold);
 }
 
@@ -118,6 +119,7 @@
 	margin-bottom: 2rem;
 	border-block-color: var(--col-page-header-rule);
 	font-size: var(--fs-850);
+	line-height: var(--lh-850);
 	font-weight: var(--fw-semibold);
 }
 
@@ -208,9 +210,15 @@
 .page-header__intro {
 	font-family: var(--ff-body);
 	font-weight: var(--fw-light);
-	line-height: var(--lh-page-header-intro);
 	color: var(--col-text);
 	text-wrap: balance;
+}
+
+/* Leading: the editor's fs-* class (intro / secondary text size) brings its own paired
+   --lh-N; the flat default only applies when none was chosen. */
+.page-header__intro:not([class*="fs-"]),
+.page-header__panel-text:not([class*="fs-"]) {
+	line-height: var(--lh-page-header-intro);
 }
 
 @media (min-width: 768px) {
@@ -296,7 +304,6 @@
 	margin-block-end: 0.5em;
 	font-family: var(--ff-body);
 	font-weight: var(--fw-light);
-	line-height: var(--lh-page-header-intro);
 	color: var(--col-text);
 	text-wrap: balance;
 }
@@ -314,6 +321,7 @@
 	margin: 0 0 var(--space-4);
 	font-family: var(--ff-heading);
 	font-size: var(--fs-h3);
+	line-height: var(--lh-600);
 	font-weight: var(--fw-heading);
 	color: var(--col-heading);
 }
@@ -321,6 +329,7 @@
 .page-header__quote-author,
 .page-header__quote-company {
 	font-size: var(--fs-small);
+	line-height: var(--lh-50);
 	font-weight: var(--fw-body);
 	color: var(--col-text-muted);
 }
@@ -432,6 +441,7 @@
 
 .page-header--plain-has-image .page-header__plain-title h1 span {
 	font-size: var(--fs-900);
+	line-height: var(--lh-900);
 	font-weight: var(--fw-semibold);
 }
 
@@ -453,19 +463,21 @@
 .page-header__plain-intro:not([class*="fs-"]) {
 	font-size: var(--fs-400);
 	font-weight: var(--fw-book);
-	line-height: 1.5;
+	line-height: var(--lh-400);
 	letter-spacing: -0.005em;
 	text-wrap: pretty;
 }
 
 .page-header__plain-intro:not([class*="fs-"]) p:first-of-type {
 	font-size: var(--fs-600);
+	line-height: var(--lh-600);
 	font-weight: var(--fw-light);
 	letter-spacing: -0.01em;
 }
 
 .page-header--plain-has-image .page-header__plain-intro:not([class*="fs-"]) p {
 	font-size: var(--fs-500);
+	line-height: var(--lh-500);
 	font-weight: var(--fw-light);
 }
 
@@ -588,13 +600,13 @@
 .page-header__about-intro {
 	max-width: 66rem;
 	margin-top: clamp(3rem, 7vh, 5rem);
-	line-height: 1.25; /* real --lh-500 */
 	letter-spacing: -0.005em; /* real --ls--5 */
 	text-wrap: wrap;
 }
 
 .page-header__about-intro:not([class*="fs-"]) {
 	font-size: var(--fs-500);
+	line-height: var(--lh-500);
 }
 
 .page-header__about-intro p:last-child {
@@ -611,11 +623,11 @@
 .page-header__about-content {
 	max-width: 72rem;
 	font-weight: var(--fw-light);
-	line-height: 1.25; /* real --lh-500 */
 }
 
 .page-header__about-content:not([class*="fs-"]) {
 	font-size: var(--fs-500);
+	line-height: var(--lh-500);
 }
 
 .page-header__about-content p:last-child {
@@ -629,5 +641,6 @@
 
 	.page-header__about-intro:not([class*="fs-"]) {
 		font-size: var(--fs-300);
+		line-height: var(--lh-300);
 	}
 }

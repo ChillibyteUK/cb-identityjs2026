@@ -211,6 +211,7 @@
 /* Real source's own .stat-hero__cta-title: fs-400/fw-regular. */
 .stat-block--column .stat-block__cta-message {
 	font-size: var(--fs-400);
+	line-height: var(--lh-400);
 	font-weight: var(--fw-regular);
 	color: #fff;
 }
@@ -219,6 +220,7 @@
 .stat-block--column .stat-block__intro {
 	margin-block-end: 1.5rem;
 	font-size: var(--fs-100);
+	line-height: var(--lh-100);
 	font-weight: var(--fw-regular);
 	color: #fff;
 }
@@ -251,6 +253,7 @@
 
 .stat-block__intro {
 	font-size: var(--fs-small);
+	line-height: var(--lh-50);
 	font-weight: var(--fw-regular);
 	color: var(--col-text-muted);
 }
@@ -272,6 +275,7 @@
    color rgb(255,255,255)). */
 .stat-block__descriptor {
 	font-size: var(--fs-400);
+	line-height: var(--lh-400);
 	font-weight: var(--fw-light);
 	color: #fff;
 	text-wrap: pretty;
@@ -287,6 +291,7 @@
 
 .stat-block__cta-message {
 	font-size: var(--fs-body);
+	line-height: var(--lh-100);
 	color: var(--col-text);
 }
 

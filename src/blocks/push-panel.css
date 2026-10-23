@@ -7,7 +7,7 @@
  * container padding-block 48px (py-5, --space-5), inner row padding-block
  * 24px (py-4, --space-4), 24px-per-side column gutter (g-5, 48px total —
  * --space-5), title 50px/300 weight (real --fs-850/--fw-light), desc
- * 22px/300 weight/33px line-height (real --fs-400/--fw-light/1.5), link
+ * 22px/300 weight (real --fs-400/--fw-light); leading was the flat 1.5 (33px) and is now the paired --lh-400, link
  * white/weight 500 (literal, matches the real source's own hardcoded
  * override, not a token).
  *
@@ -65,6 +65,7 @@
 	margin: 0 0 0.75em;
 	font-family: var(--ff-heading);
 	font-size: var(--fs-push-panel-title);
+	line-height: var(--lh-850);
 	font-weight: var(--fw-light);
 	color: inherit;
 }
@@ -74,7 +75,7 @@
 	   below, confirmed only by re-reading _cb_pushthrough.scss itself (the
 	   real live instance found has no left_content to measure against). */
 	font-size: var(--fs-push-panel-left-content);
-	line-height: 1.5;
+	line-height: var(--lh-500);
 	font-weight: var(--fw-light);
 }
 
@@ -100,7 +101,7 @@
 	border-block-end: 1px solid var(--col-border);
 	font-size: var(--fs-push-panel-desc);
 	font-weight: var(--fw-light);
-	line-height: 1.5;
+	line-height: var(--lh-400);
 }
 
 /* text-wrap: balance has to target the inner <p> directly — RichText's
@@ -124,6 +125,7 @@
 	margin-block: 2rem 0.5rem;
 	color: var(--col-text);
 	font-size: var(--fs-push-panel-link);
+	   line-height: var(--lh-500);
 	font-weight: 600; /* real source's literal 500 was the Semibold typo — corrected to the real 600 face */
 	text-decoration: none;
 	transition: color var(--transition);

@@ -9,10 +9,10 @@
  * --fs-700 — identity has no override, falls through to the shared base
  * scale, cross-checked identical across idtravel/health's own rows in
  * cb-site-tokens.php), description font-size 22px (real --fs-400, same
- * fallthrough), description line-height 34.1px = exactly 1.55 × 22px,
- * matching this project's own --lh-body token (the real source doesn't
- * set it explicitly either — it's relying on the same ambient body
- * line-height coda's/idtravel's/identity's shared base already uses).
+ * fallthrough). Description leading used to be the ambient body 1.55
+ * (34.1px at 22px, as the old identityglobal.com rendered it); it's now the
+ * fs-400 rung's own --lh-400 (1.3) — the size/leading ladder the client asked
+ * to carry across every text size, as on Health/Travel.
  *
  * "Bullet List" layout built from cb-details.php/_cb_details.scss — no
  * live instance currently uses this mode, so it's sourced from the real
@@ -95,6 +95,7 @@
 	padding-block: 0.75rem;
 	color: inherit;
 	font-size: var(--fs-detail-list-title);
+	line-height: var(--lh-700);
 	font-weight: var(--fw-light);
 }
 
@@ -106,6 +107,7 @@
    control (see detail-list/src/edit.js's own docblock). */
 .detail-list__item--intro .detail-list__title {
 	font-size: var(--fs-detail-list-intro-title);
+	line-height: var(--lh-700);
 }
 
 .detail-list__description {
@@ -113,7 +115,7 @@
 	padding-block: 0.75rem;
 	font-size: var(--fs-detail-list-description);
 	font-weight: var(--fw-light);
-	line-height: var(--lh-body);
+	line-height: var(--lh-400);
 	text-wrap: balance;
 }
 
@@ -125,6 +127,7 @@
 	padding-block: 0.75rem;
 	border-top: 1px solid var(--col-detail-list-bullet-border);
 	font-size: var(--fs-detail-list-bullet);
+	line-height: var(--lh-500);
 	font-weight: var(--fw-book);
 }
 

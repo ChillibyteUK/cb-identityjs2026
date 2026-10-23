@@ -52,6 +52,7 @@
 	   wrapper, not the styled child" mistake already made once this
 	   session on Page Header's __intro vs __intro-text. */
 	font-size: var(--fs-brand-grid-intro);
+	line-height: var(--lh-850);
 	font-weight: var(--fw-light);
 }
 
@@ -150,12 +151,14 @@
 	margin: 0 0 1rem;
 	border-block-end: 1px solid var(--col-border);
 	font-size: var(--fs-brand-grid-name);
+	line-height: var(--lh-50);
 	font-weight: var(--fw-light);
 	text-transform: uppercase;
 }
 
 .brand-grid__strap {
 	font-size: var(--fs-brand-grid-strap);
+	line-height: var(--lh-300);
 	font-weight: 600; /* real source's literal 500 was the Semibold typo — corrected to the real 600 face */
 }
 
@@ -169,6 +172,7 @@
 	padding-block-start: 1.5rem;
 	border-block-start: 1px solid var(--col-border);
 	font-size: var(--fs-brand-grid-last);
+	line-height: var(--lh-500);
 	color: var(--col-accent);
 }
 

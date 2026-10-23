@@ -108,6 +108,43 @@
 
   --lh-heading: 1.2;
   --lh-body: 1.5;
+
+  /* Line-height ladder, one rung per --fs-* rung — the unified theme's own
+     (cb-identitygroup2026 _tokens.scss): as the type size goes up the leading
+     comes down. Anything that sets a font-size from the --fs-* scale pairs it
+     with the same-numbered --lh-* (see .fs-* in content-builder.css, the h1-h3
+     roles below, and every block rule that sets a rung size). */
+  --lh-50: 1.4;
+  --lh-100: 1.55;
+  --lh-200: 1.5;
+  --lh-300: 1.4;
+  --lh-400: 1.3;
+  --lh-500: 1.25;
+  --lh-600: 1.2;
+  --lh-700: 1.15;
+  --lh-850: 1.1;
+  --lh-875: 1.05;
+  --lh-900: 1;
+
+  /* Letter-spacing scale from the same unified-theme source. Tokens only for now —
+     nothing is paired to a size yet (legacy: h1 --ls--15, h2 --ls--10, h3 --ls--5). */
+  --ls--40: -0.04em;
+  --ls--30: -0.03em;
+  --ls--25: -0.025em;
+  --ls--20: -0.02em;
+  --ls--15: -0.015em;
+  --ls--10: -0.01em;
+  --ls--5: -0.005em;
+  --ls-10: 0.01em;
+  --ls-20: 0.02em;
+
+  /* Heading roles' leading, paired with each role's size (--fs-h1/h2/h3).
+     --lh-heading-h1 was referenced by base.css but never defined, so h1 silently
+     inherited the body's 1.55. Generic defaults here; a brand re-pairs them with
+     whatever rung it maps the role to (see tokens/identity.css). */
+  --lh-heading-h1: var(--lh-850);
+  --lh-h2: var(--lh-heading);
+  --lh-h3: var(--lh-heading);
   --ls-label: 0.05em;
 
   --space-section: var(--space-5);
@@ -204,9 +241,11 @@ h1 {
 }
 h2 {
 	font-size: var(--fs-h2);
+	line-height: var(--lh-h2);
 }
 h3 {
 	font-size: var(--fs-h3);
+	line-height: var(--lh-h3);
 }
 h4 {
 	font-size: var(--fs-h4);
@@ -2015,6 +2054,7 @@ select {
 	   wrapper, not the styled child" mistake already made once this
 	   session on Page Header's __intro vs __intro-text. */
 	font-size: var(--fs-brand-grid-intro);
+	line-height: var(--lh-850);
 	font-weight: var(--fw-light);
 }
 
@@ -2113,12 +2153,14 @@ select {
 	margin: 0 0 1rem;
 	border-block-end: 1px solid var(--col-border);
 	font-size: var(--fs-brand-grid-name);
+	line-height: var(--lh-50);
 	font-weight: var(--fw-light);
 	text-transform: uppercase;
 }
 
 .brand-grid__strap {
 	font-size: var(--fs-brand-grid-strap);
+	line-height: var(--lh-300);
 	font-weight: 600; /* real source's literal 500 was the Semibold typo — corrected to the real 600 face */
 }
 
@@ -2132,6 +2174,7 @@ select {
 	padding-block-start: 1.5rem;
 	border-block-start: 1px solid var(--col-border);
 	font-size: var(--fs-brand-grid-last);
+	line-height: var(--lh-500);
 	color: var(--col-accent);
 }
 
@@ -2250,6 +2293,7 @@ select {
 	gap: var(--space-2);
 	font-family: var(--ff-heading);
 	font-size: var(--fs-400);
+	line-height: var(--lh-400);
 	font-weight: var(--fw-book);
 	color: var(--col-text);
 }
@@ -2261,6 +2305,7 @@ select {
 .case-study-grid__desc {
 	margin-block-start: var(--space-2);
 	font-size: var(--fs-body);
+	line-height: var(--lh-100);
 	/* col-text-muted per the spec's own token binding — this theme doesn't
 	   have that exact token yet, so using the same neutral-500 literal
 	   already confirmed live for Work Index's own card descriptions
@@ -2466,6 +2511,7 @@ select {
 	color: var(--col-accent);
 	font-family: var(--ff-heading);
 	font-size: var(--fs-child-page-nav-header);
+	line-height: var(--lh-300);
 	font-weight: var(--fw-regular);
 }
 
@@ -2481,6 +2527,7 @@ select {
 	color: var(--col-text);
 	font-family: var(--ff-heading);
 	font-size: var(--fs-child-page-nav-item);
+	line-height: var(--lh-700);
 	font-weight: var(--fw-light);
 	text-decoration: none;
 	transition: background-color var(--transition);
@@ -2622,6 +2669,7 @@ select {
 
 .contact-directory--locations .contact-directory__group-name {
 	font-size: var(--fs-700);
+	line-height: var(--lh-700);
 }
 
 .contact-directory__entry-detail {
@@ -2654,6 +2702,7 @@ select {
 	display: block;
 	color: var(--col-accent);
 	font-size: var(--fs-300);
+	line-height: var(--lh-300);
 	font-weight: var(--fw-light);
 	text-decoration: none;
 }
@@ -2707,6 +2756,7 @@ select {
 	border-block: 1px solid var(--col-border);
 	color: var(--col-text);
 	font-size: var(--fs-900);
+	line-height: var(--lh-900);
 	font-weight: var(--fw-semi);
 }
 
@@ -2775,6 +2825,7 @@ select {
 .contact-form .gform_confirmation_message {
 	color: var(--col-accent);
 	font-size: var(--fs-500);
+	line-height: var(--lh-500);
 }
 
 /*
@@ -2834,17 +2885,18 @@ select {
  * themes), replicated here exactly rather than trusting the raw tokens.
  * --------------------------------------------------------------------- */
 
-.fs-50 { font-size: var(--fs-50); }
-.fs-100 { font-size: var(--fs-100); }
-.fs-200 { font-size: var(--fs-200); }
-.fs-300 { font-size: var(--fs-300); }
-.fs-400 { font-size: var(--fs-400); }
-.fs-500 { font-size: var(--fs-500); }
-.fs-600 { font-size: var(--fs-600); line-height: 1.2; }
-.fs-700 { font-size: var(--fs-700); }
-.fs-850 { font-size: var(--fs-850); }
-.fs-875 { font-size: var(--fs-875); }
-.fs-900 { font-size: var(--fs-900); }
+/* Each size carries its paired leading (--lh-N, see tokens.css): bigger type, tighter lines. */
+.fs-50 { font-size: var(--fs-50); line-height: var(--lh-50); }
+.fs-100 { font-size: var(--fs-100); line-height: var(--lh-100); }
+.fs-200 { font-size: var(--fs-200); line-height: var(--lh-200); }
+.fs-300 { font-size: var(--fs-300); line-height: var(--lh-300); }
+.fs-400 { font-size: var(--fs-400); line-height: var(--lh-400); }
+.fs-500 { font-size: var(--fs-500); line-height: var(--lh-500); }
+.fs-600 { font-size: var(--fs-600); line-height: var(--lh-600); }
+.fs-700 { font-size: var(--fs-700); line-height: var(--lh-700); }
+.fs-850 { font-size: var(--fs-850); line-height: var(--lh-850); }
+.fs-875 { font-size: var(--fs-875); line-height: var(--lh-875); }
+.fs-900 { font-size: var(--fs-900); line-height: var(--lh-900); }
 
 .fw-light { font-weight: var(--fw-light); }
 .fw-regular { font-weight: var(--fw-regular); }
@@ -3091,6 +3143,7 @@ select {
  */
 .content-builder__text .cb-lede {
 	font-size: var(--fs-400);
+	line-height: var(--lh-400);
 	font-weight: var(--fw-light);
 }
 
@@ -3187,6 +3240,7 @@ select {
 
 .service-parents li {
 	font-size: var(--fs-body);
+	line-height: var(--lh-100);
 	font-weight: var(--fw-light);
 	border-top: 1px solid var(--col-border);
 }
@@ -3297,6 +3351,7 @@ select {
 	padding: 0.75rem 0;
 	border-top: 1px solid var(--content-builder-line-color);
 	font-size: var(--fs-500);
+	line-height: var(--lh-500);
 	font-weight: var(--fw-light);
 	letter-spacing: -0.01em;
 	color: inherit;
@@ -3472,27 +3527,32 @@ select {
 .content-builder__qa-question {
 	margin: 0;
 	font-size: var(--fs-500);
+	line-height: var(--lh-500);
 	font-weight: var(--fw-semi);
 	letter-spacing: -0.02em;
 }
 
 .content-builder__qa-question--first {
 	font-size: var(--fs-600);
+	line-height: var(--lh-600);
 	letter-spacing: normal;
 	color: var(--col-purple-300);
 }
 
 .content-builder__qa-question--large {
 	font-size: var(--fs-900);
+	line-height: var(--lh-900);
 }
 
 .content-builder__qa-answer {
 	font-size: var(--fs-400);
+	line-height: var(--lh-400);
 	font-weight: var(--fw-regular);
 }
 
 .content-builder__qa-answer--first {
 	font-size: var(--fs-500);
+	line-height: var(--lh-500);
 	font-weight: var(--fw-light);
 	color: var(--col-purple-300);
 }
@@ -3526,6 +3586,7 @@ select {
 	padding-block: 0.75rem;
 	color: inherit;
 	font-size: var(--fs-detail-list-title);
+	line-height: var(--lh-700);
 	font-weight: var(--fw-light);
 }
 
@@ -3662,10 +3723,10 @@ select {
  * --fs-700 — identity has no override, falls through to the shared base
  * scale, cross-checked identical across idtravel/health's own rows in
  * cb-site-tokens.php), description font-size 22px (real --fs-400, same
- * fallthrough), description line-height 34.1px = exactly 1.55 × 22px,
- * matching this project's own --lh-body token (the real source doesn't
- * set it explicitly either — it's relying on the same ambient body
- * line-height coda's/idtravel's/identity's shared base already uses).
+ * fallthrough). Description leading used to be the ambient body 1.55
+ * (34.1px at 22px, as the old identityglobal.com rendered it); it's now the
+ * fs-400 rung's own --lh-400 (1.3) — the size/leading ladder the client asked
+ * to carry across every text size, as on Health/Travel.
  *
  * "Bullet List" layout built from cb-details.php/_cb_details.scss — no
  * live instance currently uses this mode, so it's sourced from the real
@@ -3748,6 +3809,7 @@ select {
 	padding-block: 0.75rem;
 	color: inherit;
 	font-size: var(--fs-detail-list-title);
+	line-height: var(--lh-700);
 	font-weight: var(--fw-light);
 }
 
@@ -3759,6 +3821,7 @@ select {
    control (see detail-list/src/edit.js's own docblock). */
 .detail-list__item--intro .detail-list__title {
 	font-size: var(--fs-detail-list-intro-title);
+	line-height: var(--lh-700);
 }
 
 .detail-list__description {
@@ -3766,7 +3829,7 @@ select {
 	padding-block: 0.75rem;
 	font-size: var(--fs-detail-list-description);
 	font-weight: var(--fw-light);
-	line-height: var(--lh-body);
+	line-height: var(--lh-400);
 	text-wrap: balance;
 }
 
@@ -3778,6 +3841,7 @@ select {
 	padding-block: 0.75rem;
 	border-top: 1px solid var(--col-detail-list-bullet-border);
 	font-size: var(--fs-detail-list-bullet);
+	line-height: var(--lh-500);
 	font-weight: var(--fw-book);
 }
 
@@ -3844,6 +3908,7 @@ select {
   padding-block: 0.75rem;
   color: inherit;
   font-size: var(--fs-detail-list-title);
+  line-height: var(--lh-700);
   font-weight: var(--fw-light);
 }
 
@@ -3936,6 +4001,7 @@ select {
 .feature-overlay__content {
 	max-width: 64rem;
 	font-size: var(--fs-feature-overlay-content);
+	line-height: var(--lh-500);
 	font-weight: var(--fw-light);
 	letter-spacing: var(--ls-feature-overlay-content);
 	text-wrap: balance;
@@ -3979,7 +4045,7 @@ select {
 	font-size: var(--fs-feature-overlay-cta-intro);
 	font-weight: var(--fw-regular);
 	letter-spacing: -0.005em;
-	line-height: var(--lh-body);
+	line-height: var(--lh-400);
 	text-wrap: balance;
 }
 
@@ -4040,6 +4106,7 @@ select {
 
 .file-list__item-title {
 	font-size: var(--fs-500);
+	line-height: var(--lh-500);
 	font-weight: var(--fw-light);
 	color: var(--col-text);
 }
@@ -4277,6 +4344,7 @@ select {
 .home-intro__content {
 	font-family: var(--ff-body);
 	font-size: var(--fs-subtitle);
+	line-height: var(--lh-500);
 	font-weight: var(--fw-light);
 	color: var(--col-text);
 	text-wrap: pretty;
@@ -4358,12 +4426,13 @@ select {
 	max-width: 75%; /* real source's col-md-9 (9 of 12 columns) */
 	font-size: var(--fs-700);
 	font-weight: var(--fw-light);
-	line-height: 1.5;
+	line-height: var(--lh-700);
 	text-wrap: balance;
 }
 
 .innovation-header__intro-text p:not(:first-of-type) {
 	font-size: var(--fs-500);
+	line-height: var(--lh-500);
 }
 
 @media (max-width: 767.98px) {
@@ -4390,7 +4459,7 @@ select {
 	margin-bottom: 0.75em;
 	font-size: var(--fs-900);
 	font-weight: var(--fw-light);
-	line-height: 1.2; /* real --lh-600 */
+	line-height: var(--lh-600);
 	letter-spacing: -0.04em; /* real --ls--40 */
 	text-wrap: balance;
 	color: var(--col-purple-400);
@@ -4466,6 +4535,7 @@ select {
 	max-width: 60ch; /* real w-constrained's own --width:60ch */
 	padding-block: var(--space-5);
 	font-size: var(--fs-500);
+	line-height: var(--lh-500);
 	font-weight: var(--fw-regular);
 }
 
@@ -4498,6 +4568,7 @@ select {
 	padding-block: 0.25rem 0;
 	border-block: 1px solid var(--leadership-line-color);
 	font-size: var(--fs-500);
+	line-height: var(--lh-500);
 	font-weight: var(--fw-book);
 }
 
@@ -4506,6 +4577,7 @@ select {
 	padding-block: 0.25rem 0;
 	border-block-end: 1px solid var(--leadership-line-color);
 	font-size: var(--fs-300);
+	line-height: var(--lh-300);
 	font-weight: var(--fw-regular);
 	opacity: 0.75;
 }
@@ -4514,7 +4586,7 @@ select {
 	margin-bottom: var(--space-6);
 	font-size: var(--fs-400);
 	font-weight: var(--fw-regular);
-	line-height: 1.3; /* real --lh-400 */
+	line-height: var(--lh-400);
 }
 
 /* --- src/blocks/logo-marquee.css --- */
@@ -4709,7 +4781,7 @@ select {
 
 .page-header-alt__intro-text {
 	font-size: var(--fs-700);
-	line-height: 1.5;
+	line-height: var(--lh-700);
 	text-wrap: balance;
 }
 
@@ -4721,6 +4793,7 @@ select {
 
 .page-header-alt__intro-text p:not(:first-of-type) {
 	font-size: var(--fs-500);
+	line-height: var(--lh-500);
 }
 
 .page-header-alt__intro-text a {
@@ -4756,17 +4829,19 @@ select {
 	margin-bottom: 0.5em;
 	font-size: var(--fs-500);
 	font-weight: var(--fw-light);
-	line-height: 1.5;
+	line-height: var(--lh-500);
 	color: var(--col-text);
 	text-wrap: balance;
 }
 
 .page-header-alt__panel-text h2 {
 	font-size: var(--fs-800);
+	line-height: var(--lh-700);
 }
 
 .page-header-alt__panel-text .cb-heading {
 	font-size: var(--fs-800);
+	line-height: var(--lh-700);
 	margin-block: 0;
 }
 
@@ -4824,6 +4899,7 @@ select {
 	color: var(--col-text);
 	font-family: var(--ff-heading);
 	font-size: var(--fs-850);
+	line-height: var(--lh-850);
 	font-weight: var(--fw-light);
 }
 
@@ -4832,7 +4908,7 @@ select {
 	padding-bottom: var(--space-4);
 	border-bottom: 1px solid var(--col-border);
 	font-size: var(--fs-500);
-	line-height: 1.5;
+	line-height: var(--lh-500);
 }
 
 .page-header-alt__careers-link {
@@ -4841,6 +4917,7 @@ select {
 	gap: var(--space-3);
 	color: var(--col-text);
 	font-size: var(--fs-500);
+	line-height: var(--lh-500);
 	font-weight: var(--fw-semi);
 	text-decoration: none;
 	transition: color var(--transition);
@@ -4956,6 +5033,7 @@ select {
 .page-header--has-animated-title .page-header__title {
 	padding-block-end: 0.5rem;
 	font-size: var(--fs-900);
+	line-height: var(--lh-900);
 	font-weight: var(--fw-semibold);
 }
 
@@ -4971,6 +5049,7 @@ select {
 	margin-bottom: 2rem;
 	border-block-color: var(--col-page-header-rule);
 	font-size: var(--fs-850);
+	line-height: var(--lh-850);
 	font-weight: var(--fw-semibold);
 }
 
@@ -5061,9 +5140,15 @@ select {
 .page-header__intro {
 	font-family: var(--ff-body);
 	font-weight: var(--fw-light);
-	line-height: var(--lh-page-header-intro);
 	color: var(--col-text);
 	text-wrap: balance;
+}
+
+/* Leading: the editor's fs-* class (intro / secondary text size) brings its own paired
+   --lh-N; the flat default only applies when none was chosen. */
+.page-header__intro:not([class*="fs-"]),
+.page-header__panel-text:not([class*="fs-"]) {
+	line-height: var(--lh-page-header-intro);
 }
 
 @media (min-width: 768px) {
@@ -5149,7 +5234,6 @@ select {
 	margin-block-end: 0.5em;
 	font-family: var(--ff-body);
 	font-weight: var(--fw-light);
-	line-height: var(--lh-page-header-intro);
 	color: var(--col-text);
 	text-wrap: balance;
 }
@@ -5167,6 +5251,7 @@ select {
 	margin: 0 0 var(--space-4);
 	font-family: var(--ff-heading);
 	font-size: var(--fs-h3);
+	line-height: var(--lh-600);
 	font-weight: var(--fw-heading);
 	color: var(--col-heading);
 }
@@ -5174,6 +5259,7 @@ select {
 .page-header__quote-author,
 .page-header__quote-company {
 	font-size: var(--fs-small);
+	line-height: var(--lh-50);
 	font-weight: var(--fw-body);
 	color: var(--col-text-muted);
 }
@@ -5285,6 +5371,7 @@ select {
 
 .page-header--plain-has-image .page-header__plain-title h1 span {
 	font-size: var(--fs-900);
+	line-height: var(--lh-900);
 	font-weight: var(--fw-semibold);
 }
 
@@ -5306,19 +5393,21 @@ select {
 .page-header__plain-intro:not([class*="fs-"]) {
 	font-size: var(--fs-400);
 	font-weight: var(--fw-book);
-	line-height: 1.5;
+	line-height: var(--lh-400);
 	letter-spacing: -0.005em;
 	text-wrap: pretty;
 }
 
 .page-header__plain-intro:not([class*="fs-"]) p:first-of-type {
 	font-size: var(--fs-600);
+	line-height: var(--lh-600);
 	font-weight: var(--fw-light);
 	letter-spacing: -0.01em;
 }
 
 .page-header--plain-has-image .page-header__plain-intro:not([class*="fs-"]) p {
 	font-size: var(--fs-500);
+	line-height: var(--lh-500);
 	font-weight: var(--fw-light);
 }
 
@@ -5441,13 +5530,13 @@ select {
 .page-header__about-intro {
 	max-width: 66rem;
 	margin-top: clamp(3rem, 7vh, 5rem);
-	line-height: 1.25; /* real --lh-500 */
 	letter-spacing: -0.005em; /* real --ls--5 */
 	text-wrap: wrap;
 }
 
 .page-header__about-intro:not([class*="fs-"]) {
 	font-size: var(--fs-500);
+	line-height: var(--lh-500);
 }
 
 .page-header__about-intro p:last-child {
@@ -5464,11 +5553,11 @@ select {
 .page-header__about-content {
 	max-width: 72rem;
 	font-weight: var(--fw-light);
-	line-height: 1.25; /* real --lh-500 */
 }
 
 .page-header__about-content:not([class*="fs-"]) {
 	font-size: var(--fs-500);
+	line-height: var(--lh-500);
 }
 
 .page-header__about-content p:last-child {
@@ -5482,6 +5571,7 @@ select {
 
 	.page-header__about-intro:not([class*="fs-"]) {
 		font-size: var(--fs-300);
+		line-height: var(--lh-300);
 	}
 }
 
@@ -5495,7 +5585,7 @@ select {
  * container padding-block 48px (py-5, --space-5), inner row padding-block
  * 24px (py-4, --space-4), 24px-per-side column gutter (g-5, 48px total —
  * --space-5), title 50px/300 weight (real --fs-850/--fw-light), desc
- * 22px/300 weight/33px line-height (real --fs-400/--fw-light/1.5), link
+ * 22px/300 weight (real --fs-400/--fw-light); leading was the flat 1.5 (33px) and is now the paired --lh-400, link
  * white/weight 500 (literal, matches the real source's own hardcoded
  * override, not a token).
  *
@@ -5553,6 +5643,7 @@ select {
 	margin: 0 0 0.75em;
 	font-family: var(--ff-heading);
 	font-size: var(--fs-push-panel-title);
+	line-height: var(--lh-850);
 	font-weight: var(--fw-light);
 	color: inherit;
 }
@@ -5562,7 +5653,7 @@ select {
 	   below, confirmed only by re-reading _cb_pushthrough.scss itself (the
 	   real live instance found has no left_content to measure against). */
 	font-size: var(--fs-push-panel-left-content);
-	line-height: 1.5;
+	line-height: var(--lh-500);
 	font-weight: var(--fw-light);
 }
 
@@ -5588,7 +5679,7 @@ select {
 	border-block-end: 1px solid var(--col-border);
 	font-size: var(--fs-push-panel-desc);
 	font-weight: var(--fw-light);
-	line-height: 1.5;
+	line-height: var(--lh-400);
 }
 
 /* text-wrap: balance has to target the inner <p> directly — RichText's
@@ -5612,6 +5703,7 @@ select {
 	margin-block: 2rem 0.5rem;
 	color: var(--col-text);
 	font-size: var(--fs-push-panel-link);
+	   line-height: var(--lh-500);
 	font-weight: 600; /* real source's literal 500 was the Semibold typo — corrected to the real 600 face */
 	text-decoration: none;
 	transition: color var(--transition);
@@ -5788,7 +5880,7 @@ select {
 	margin-bottom: 0.75rem;
 	font-size: var(--fs-500);
 	font-weight: var(--fw-light);
-	line-height: 1.25; /* real --lh-500 */
+	line-height: var(--lh-500);
 	letter-spacing: -0.01em; /* real --ls--10 */
 	text-wrap: balance;
 }
@@ -6104,6 +6196,7 @@ select {
 /* Real source's own .stat-hero__cta-title: fs-400/fw-regular. */
 .stat-block--column .stat-block__cta-message {
 	font-size: var(--fs-400);
+	line-height: var(--lh-400);
 	font-weight: var(--fw-regular);
 	color: #fff;
 }
@@ -6112,6 +6205,7 @@ select {
 .stat-block--column .stat-block__intro {
 	margin-block-end: 1.5rem;
 	font-size: var(--fs-100);
+	line-height: var(--lh-100);
 	font-weight: var(--fw-regular);
 	color: #fff;
 }
@@ -6144,6 +6238,7 @@ select {
 
 .stat-block__intro {
 	font-size: var(--fs-small);
+	line-height: var(--lh-50);
 	font-weight: var(--fw-regular);
 	color: var(--col-text-muted);
 }
@@ -6165,6 +6260,7 @@ select {
    color rgb(255,255,255)). */
 .stat-block__descriptor {
 	font-size: var(--fs-400);
+	line-height: var(--lh-400);
 	font-weight: var(--fw-light);
 	color: #fff;
 	text-wrap: pretty;
@@ -6180,6 +6276,7 @@ select {
 
 .stat-block__cta-message {
 	font-size: var(--fs-body);
+	line-height: var(--lh-100);
 	color: var(--col-text);
 }
 
@@ -6225,7 +6322,7 @@ select {
 	margin-bottom: 0.75em;
 	font-size: var(--fs-850);
 	font-weight: var(--fw-light);
-	line-height: 1.2; /* real --lh-600 */
+	line-height: var(--lh-600);
 	letter-spacing: -0.04em; /* real --ls--40 */
 	text-wrap: balance;
 }
@@ -6234,6 +6331,7 @@ select {
    step down one more rung so they don't overrun the layout. */
 .testimonial__quote--long {
 	font-size: var(--fs-700);
+	line-height: var(--lh-700);
 	letter-spacing: -0.015em; /* real --ls--15 */
 }
 
@@ -6259,6 +6357,7 @@ select {
 @media (max-width: 767.98px) {
 	.testimonial__quote {
 		font-size: var(--fs-700);
+		line-height: var(--lh-700);
 	}
 }
 
@@ -6344,6 +6443,7 @@ select {
 	border: none;
 	border-radius: 2rem;
 	font-size: var(--fs-small);
+	line-height: var(--lh-50);
 	cursor: pointer;
 }
 
@@ -6511,6 +6611,7 @@ select {
 	gap: var(--space-3);
 	font-family: var(--ff-heading);
 	font-size: var(--fs-700);
+	line-height: var(--lh-700);
 	font-weight: var(--fw-semibold);
 	color: var(--col-text);
 }
@@ -6518,6 +6619,7 @@ select {
 .work-index-hero__desc {
 	margin-block-start: var(--space-2);
 	font-size: var(--fs-600);
+	line-height: var(--lh-600);
 	font-weight: var(--fw-light);
 	/* neutral-500, confirmed live — not otherwise tokenised in this theme. */
 	color: #aeada1;
@@ -6574,6 +6676,7 @@ select {
 	color: var(--col-text);
 	text-transform: uppercase;
 	font-size: var(--fs-small);
+	line-height: var(--lh-50);
 }
 
 .work-index__filter-select {
@@ -6631,6 +6734,7 @@ select {
 	color: var(--col-accent);
 	font-family: var(--ff-body);
 	font-size: var(--fs-body);
+	line-height: var(--lh-100);
 	cursor: pointer;
 	transition: color var(--transition), background-color var(--transition);
 }
