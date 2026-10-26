@@ -42,14 +42,15 @@
 	}
 }
 
-.page-header__top > .id-container,
-.page-header__panel > .id-container {
+.page-header__top>.id-container,
+.page-header__panel>.id-container {
 	padding-inline: var(--space-4);
 }
 
 @media (min-width: 768px) {
-	.page-header__top > .id-container,
-	.page-header__panel > .id-container {
+
+	.page-header__top>.id-container,
+	.page-header__panel>.id-container {
 		padding-inline: var(--space-5);
 	}
 
@@ -60,8 +61,8 @@
 	 * grid do the column math is simpler and self-documenting vs.
 	 * reverse-engineering Bootstrap's row/col gutter arithmetic into a
 	 * one-off calc() percentage. */
-	.page-header__top > .id-container,
-	.page-header__panel > .id-container {
+	.page-header__top>.id-container,
+	.page-header__panel>.id-container {
 		display: grid;
 		grid-template-columns: repeat(12, 1fr);
 		gap: var(--grid-gutter);
@@ -89,9 +90,11 @@
 	border-block: 1px solid var(--col-border);
 	font-family: var(--ff-heading);
 	font-size: var(--fs-page-header-title);
-	font-weight: var(--fw-semibold); /* Health's h1 weight, applied to this block's titles only (client request) */
+	font-weight: var(--fw-semibold);
+	/* Health's h1 weight, applied to this block's titles only (client request) */
 	line-height: 1;
 	color: var(--col-text);
+	text-wrap: pretty;
 }
 
 /* Region Page Header's real H1 differs from About's — confirmed against
@@ -211,7 +214,7 @@
 	font-family: var(--ff-body);
 	font-weight: var(--fw-light);
 	color: var(--col-text);
-	text-wrap: balance;
+	text-wrap: pretty;
 }
 
 /* Leading: the editor's fs-* class (intro / secondary text size) brings its own paired
@@ -305,7 +308,7 @@
 	font-family: var(--ff-body);
 	font-weight: var(--fw-light);
 	color: var(--col-text);
-	text-wrap: balance;
+	text-wrap: pretty;
 }
 
 @media (min-width: 768px) {
@@ -335,6 +338,7 @@
 }
 
 @media (min-width: 768px) {
+
 	/* No narrower column in the real source for these — full width, same
 	   as before .page-header__panel > .id-container became a grid. */
 	.page-header__quote,
@@ -370,7 +374,7 @@
 	}
 }
 
-.page-header--plain > * {
+.page-header--plain>* {
 	position: relative;
 	z-index: 1;
 }
@@ -403,6 +407,7 @@
 }
 
 @media (min-width: 768px) {
+
 	.page-header__plain-title h1,
 	.page-header__plain-body {
 		padding-inline: var(--space-5);
@@ -410,7 +415,8 @@
 }
 
 .page-header__plain-title h1 {
-	margin-block: 0; /* not `margin: 0` — the h1 is also an .id-container, whose auto inline margins centre it */
+	margin-block: 0;
+	/* not `margin: 0` — the h1 is also an .id-container, whose auto inline margins centre it */
 	font-family: var(--ff-heading);
 	font-size: var(--fs-850);
 	font-weight: var(--fw-semibold);
@@ -483,7 +489,8 @@
 
 @media (min-width: 768px) {
 	.page-header__plain-intro {
-		max-width: 66.6667%; /* the legacy col-md-8 */
+		max-width: 66.6667%;
+		/* the legacy col-md-8 */
 	}
 }
 
@@ -583,7 +590,8 @@
 	font-size: var(--fs-900);
 	font-weight: var(--fw-semibold);
 	line-height: 0.95;
-	letter-spacing: -0.03em; /* real --ls--30 */
+	letter-spacing: -0.03em;
+	/* real --ls--30 */
 	text-wrap: balance;
 	color: var(--col-text);
 }
@@ -600,7 +608,8 @@
 .page-header__about-intro {
 	max-width: 66rem;
 	margin-top: clamp(3rem, 7vh, 5rem);
-	letter-spacing: -0.005em; /* real --ls--5 */
+	letter-spacing: -0.005em;
+	/* real --ls--5 */
 	text-wrap: wrap;
 }
 

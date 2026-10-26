@@ -27,14 +27,15 @@
 /* .id-container isn't a direct child of .innovation-header — it's nested
    inside __top/__quote-wrapper (same selector-nesting mistake already made
    once this session on Feature Overlay). */
-.innovation-header__top > .id-container,
-.innovation-header__quote-wrapper > .id-container {
+.innovation-header__top>.id-container,
+.innovation-header__quote-wrapper>.id-container {
 	padding-inline: var(--space-4);
 }
 
 @media (min-width: 768px) {
-	.innovation-header__top > .id-container,
-	.innovation-header__quote-wrapper > .id-container {
+
+	.innovation-header__top>.id-container,
+	.innovation-header__quote-wrapper>.id-container {
 		padding-inline: var(--space-5);
 	}
 }
@@ -61,16 +62,18 @@
 	padding-top: 0.25rem;
 	border-block: 1px solid rgba(255, 255, 255, 0.4);
 	font-size: var(--fs-850);
-	font-weight: var(--fw-book); /* real SCSS says --fw-semi (500), live confirmed 450 — see render.php's own note */
+	font-weight: var(--fw-book);
+	/* real SCSS says --fw-semi (500), live confirmed 450 — see render.php's own note */
 	line-height: 1;
 }
 
 .innovation-header__intro-text {
-	max-width: 75%; /* real source's col-md-9 (9 of 12 columns) */
+	max-width: 75%;
+	/* real source's col-md-9 (9 of 12 columns) */
 	font-size: var(--fs-700);
 	font-weight: var(--fw-light);
 	line-height: var(--lh-700);
-	text-wrap: balance;
+	text-wrap: pretty;
 }
 
 .innovation-header__intro-text p:not(:first-of-type) {
@@ -103,7 +106,8 @@
 	font-size: var(--fs-900);
 	font-weight: var(--fw-light);
 	line-height: var(--lh-600);
-	letter-spacing: -0.04em; /* real --ls--40 */
+	letter-spacing: -0.04em;
+	/* real --ls--40 */
 	text-wrap: balance;
 	color: var(--col-purple-400);
 }
