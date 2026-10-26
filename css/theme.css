@@ -2832,10 +2832,8 @@ select {
 /* ---------------------------------------------------------------------
  * fs-* and fw-* utility scale — the real system's own literal rung classes,
  * consumed directly by every module's per-instance Font Size/Weight
- * select. "fw-book" and "fw-semibold" both resolve to --fw-semi (600),
- * NOT their own distinct --fw-book (450)/--fw-semibold (600) tokens — a
- * confirmed, deliberate block-local override in the real source (both
- * themes), replicated here exactly rather than trusting the raw tokens.
+ * select. Each utility uses its matching weight token so Book remains 450
+ * and Semibold remains 600.
  * --------------------------------------------------------------------- */
 
 /* Each size carries its paired leading (--lh-N, see tokens.css): bigger type, tighter lines. */
@@ -2853,10 +2851,8 @@ select {
 
 .fw-light { font-weight: var(--fw-light); }
 .fw-regular { font-weight: var(--fw-regular); }
-.fw-book,
-.fw-semibold {
-	font-weight: var(--fw-semi);
-}
+.fw-book { font-weight: var(--fw-book); }
+.fw-semibold { font-weight: var(--fw-semibold); }
 
 /* ---------------------------------------------------------------------
  * Root, background image + parallax, line colour
