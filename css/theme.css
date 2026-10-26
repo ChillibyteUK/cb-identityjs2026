@@ -15,7 +15,7 @@
   --fw-regular: 400;
   --fw-book: 450;
   --fw-semibold: 600;
-  --fw-semi: 600; /* same real Semibold face as --fw-semibold: the 500 this token carried in cb-identity2025/_tokens.scss was the original typo (SuisseIntl-SemiBold.woff2 declared at font-weight 500 instead of 600), carried over into cb-identitygroup2026's _tokens.scss. No 500 face exists — 300/400/450/600 is the full scale. */
+  --fw-semi: 600; /* same real Semibold face as --fw-semibold; no 500 face exists — 300/400/450/600 is the full scale. */
 
   /* Rung font-size scale — the real system's own literal fs-* naming
      (content builder modules and similar per-instance size/weight ACF
@@ -403,55 +403,8 @@ ol {
 	font-weight: var(--fw-heading, 600);
 }
 /*
- * Real self-hosted SuisseIntl font files — confirmed live on
- * identityglobal.com/about/ (2026-09-22): 4 weights declared
- * (Light/Regular/Book/Semibold, matching cb-identitygroup2026's own real
- * _typography.scss exactly), with Light/Regular/Semibold preloaded via
- * <link rel="preload"> on the real page. The .woff2 files themselves were
- * already sitting in this theme's own fonts/ directory, unused — this
- * file was the missing piece (src/css/typography.css was an empty stub,
- * already @imported by theme.css, never filled in).
- *
- * font-display: swap — matches the real site's own value exactly.
- * `optional` and `block` were both tried and reverted: what was actually
- * being reported as "FOUT" turned out to be the Detail List scroll-reveal
- * animation's own initial-state flash (see scroll-animate.js), not a font
- * swap at all — reverted to the real, verified value instead of chasing
- * the wrong cause with an unverified deviation.
+ * Font faces are brand-specific and belong in src/css/site/{brand}.css.
  */
-
-@font-face {
-	font-family: "Suisse";
-	src: url("../fonts/SuisseIntl-Light.woff2") format("woff2");
-	font-weight: 300;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: "Suisse";
-	src: url("../fonts/SuisseIntl-Regular.woff2") format("woff2");
-	font-weight: 400;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: "Suisse";
-	src: url("../fonts/SuisseIntl-Book.woff2") format("woff2");
-	font-weight: 450;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: "Suisse";
-	src: url("../fonts/SuisseIntl-Semibold.woff2") format("woff2");
-	font-weight: 600;
-	font-style: normal;
-	font-display: swap;
-}
-
 /*
  * Structural grid container rules. The actual `.col-*` / `.col-md-*` span
  * classes are generated (see src/build/generate-utilities.js) since they're

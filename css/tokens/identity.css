@@ -110,8 +110,8 @@
   --col-overlay-light: rgba(255, 255, 255, 0.2);
   --col-overlay-dark: rgba(13, 13, 12, 0.2);
 
-  --ff-heading: "Suisse", Arial, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-  --ff-body: "Suisse", Arial, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --ff-heading: "IdentitySuisse", Arial, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --ff-body: "IdentitySuisse", Arial, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
 
   --fs-h1: clamp(1.4375rem, 0.9rem + 1.4vw, 2.25rem); /* fs-700 — DISPUTED, see MULTI-BRAND.md-style flag: sourced from the stale cb-identity2025, the current cb-identitygroup2026 base h1{} rule uses --fs-850/--fw-book instead. Needs a proper re-audit before anything else trusts this. */
   --lh-heading-h1: var(--lh-700); /* paired with --fs-h1's fs-700 rung */
