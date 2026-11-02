@@ -215,7 +215,7 @@ The order is deliberate and was shipped backwards once — see MULTI-BRAND.md.
 
 ## Fonts
 
-`fonts/` holds only Suisse Intl (Light, Regular, Book, Semibold woff2),
+`fonts/` holds only IdentitySuisse (Light, Regular, Book, Semibold woff2),
 declared in `src/css/site/identity.css`. Semibold is registered as weight
 **600**, not the legacy theme's mislabelled 500, so `var(--fw-semibold)`
 matches it exactly. `inc/head-tags.php` preloads every `fonts/*.woff2`
@@ -483,7 +483,7 @@ blocks/                 One directory per block (add_block.sh scaffolds here)
     EditorBlockShell.js Collapsible wrapper (title bar + open/closed toggle) for a block's edit UI,
                         persisting open state per block-instance in localStorage so pages with many
                         blocks stay scannable.
-fonts/                  Suisse Intl woff2 — preloaded automatically, no registration step
+fonts/                  IdentitySuisse woff2 — preloaded automatically, no registration step
 img/, img/icons/        Theme images; img/icons/*.svg feed get_icon()
 js/                     COMPILED theme.js/theme.min.js (+ maps), plus plain admin scripts
                         (tabs.js, gallery-field.js, repeater-field.js) and vendor/ (GSAP, ScrollTrigger, Lenis)

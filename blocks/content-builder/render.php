@@ -130,11 +130,8 @@ if ( ! function_exists( 'cb_identityjs2026_content_builder_list_lines' ) ) {
 }
 
 /**
- * A module's fs-* and fw-* select values as a class string — "fw-book" and
- * "fw-semibold" both resolve to the same real 500 weight via a block-local
- * CSS override (see content-builder.css), not their own distinct tokens —
- * confirmed real behaviour, not reproduced here in PHP, just passed through
- * as the plain class names the CSS override targets.
+ * A module's fs-* and fw-* select values as a class string. The CSS utilities
+ * resolve each class through its corresponding weight token.
  *
  * @param string $fs
  * @param string $fw

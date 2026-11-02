@@ -8,45 +8,38 @@
  */
 
 /*
- * Suisse font files — the 4 weights actually used by identity's token
- * scale (--fw-light/regular/book/semibold), copied from
- * cb-identitygroup2026/fonts/ (Hairline/Thin/Medium/Bold/Black/italics
- * exist as files there too but aren't referenced by any token, so not
- * copied — dead @font-face declarations still cost a request).
+ * IdentitySuisse font files — the 4 weights actually used by identity's
+ * token scale (--fw-light/regular/book/semibold).
  *
- * font-weight: 600 on the Semibold face, NOT the 500 cb-identitygroup2026's
- * own _typography.scss uses — that 500 is the same mislabelling bug
- * confirmed earlier ($fw-semi: 500 should be 600). Declaring the real face
- * at our corrected 600 means var(--fw-semibold) matches it exactly, no
- * browser font-weight fallback-matching ambiguity.
+ * The Semibold face is registered as 600 so var(--fw-semibold) matches it.
  */
 @font-face {
-	font-family: "Suisse";
-	src: url("../../fonts/SuisseIntl-Light.woff2") format("woff2");
+	font-family: "IdentitySuisse";
+	src: url("../../fonts/IdentitySuisse-Light.woff2") format("woff2");
 	font-weight: 300;
 	font-style: normal;
 	font-display: swap;
 }
 
 @font-face {
-	font-family: "Suisse";
-	src: url("../../fonts/SuisseIntl-Regular.woff2") format("woff2");
+	font-family: "IdentitySuisse";
+	src: url("../../fonts/IdentitySuisse-Regular.woff2") format("woff2");
 	font-weight: 400;
 	font-style: normal;
 	font-display: swap;
 }
 
 @font-face {
-	font-family: "Suisse";
-	src: url("../../fonts/SuisseIntl-Book.woff2") format("woff2");
+	font-family: "IdentitySuisse";
+	src: url("../../fonts/IdentitySuisse-Book.woff2") format("woff2");
 	font-weight: 450;
 	font-style: normal;
 	font-display: swap;
 }
 
 @font-face {
-	font-family: "Suisse";
-	src: url("../../fonts/SuisseIntl-Semibold.woff2") format("woff2");
+	font-family: "IdentitySuisse";
+	src: url("../../fonts/IdentitySuisse-Semibold.woff2") format("woff2");
 	font-weight: 600;
 	font-style: normal;
 	font-display: swap;

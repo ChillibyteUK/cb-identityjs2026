@@ -15,7 +15,7 @@
   --fw-regular: 400;
   --fw-book: 450;
   --fw-semibold: 600;
-  --fw-semi: 600; /* same real Semibold face as --fw-semibold: the 500 this token carried in cb-identity2025/_tokens.scss was the original typo (SuisseIntl-SemiBold.woff2 declared at font-weight 500 instead of 600), carried over into cb-identitygroup2026's _tokens.scss. No 500 face exists — 300/400/450/600 is the full scale. */
+  --fw-semi: 600; /* same real Semibold face as --fw-semibold; no 500 face exists — 300/400/450/600 is the full scale. */
 
   /* Rung font-size scale — the real system's own literal fs-* naming
      (content builder modules and similar per-instance size/weight ACF
