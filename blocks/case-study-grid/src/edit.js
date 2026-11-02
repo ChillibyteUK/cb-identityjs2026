@@ -117,6 +117,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					value={ count }
 					min={ 1 }
 					max={ 24 }
+					help={ __( 'If fewer case studies match than this, the rest are filled with the latest ones (never repeating a card already shown).', 'cb-identityjs2026' ) }
 					onChange={ ( value ) => setAttributes( { count: '' === value ? 1 : Number( value ) } ) }
 				/>
 			) }

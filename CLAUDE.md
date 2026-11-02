@@ -356,7 +356,7 @@ see MULTI-BRAND.md.
 
 ## Blocks
 
-26 native blocks under `blocks/`: brand-grid, case-study-grid (Grid mode filters by `selectedServices`/`selectedThemes`/`selectedRegions` — AND across taxonomies; Auto mode matches the page's own terms, or its slug to a term slug, in theme/service/region; Curated mode is a hand-picked ordered list via `PostTypeMultiPicker`, all picks shown, Count ignored), case-study-hero (optional Title field overrides the post title as the h1),
+26 native blocks under `blocks/`: brand-grid, case-study-grid (Grid mode filters by `selectedServices`/`selectedThemes`/`selectedRegions` — AND across taxonomies; Auto mode matches the page's own terms, or its slug to a term slug, in theme/service/region; Curated mode is a hand-picked ordered list via `PostTypeMultiPicker`, all picks shown, Count ignored; Grid and Auto top up to Count with the latest case studies when there are too few matches, never repeating a card or listing the current case study), case-study-hero (optional Title field overrides the post title as the h1),
 child-page-nav, contact-directory, contact-form (Gravity Forms shortcode),
 content-builder (rows of many module types, optional background parallax; a `divider` module draws a full-width line in the section line colour; rows have Padding Top/Bottom radio groups of 0 / 1.5 / 3 / 5 rem (`paddingTop`/`paddingBottom`; legacy `hasPaddingTop`/`hasPaddingBottom` booleans map to 1.5 / 3, and new rows default to 3 / 3); the `empty` module takes a decimal-rem `emptyHeight`, default 0),
 cta (picks a Site-Wide Settings CTA), detail-list, faq (feeds the aggregated

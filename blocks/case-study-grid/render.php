@@ -160,8 +160,11 @@ if ( 'auto' === $mode ) {
 		}
 	}
 
+	// Nothing to match on: no terms on this page and no slug match. Term 0 matches
+	// nothing, so the queries below come back empty and the top-up at the bottom
+	// fills the grid with the latest case studies instead of rendering nothing.
 	if ( empty( $current_terms ) ) {
-		return;
+		$current_terms = array( 0 );
 	}
 
 	$posts = array();
@@ -212,10 +215,6 @@ if ( 'auto' === $mode ) {
 			$posts = array_merge( $posts, wp_list_pluck( $fill_query->posts, 'ID' ) );
 		}
 		wp_reset_postdata();
-	}
-
-	if ( empty( $posts ) ) {
-		return;
 	}
 } elseif ( 'curated' === $mode ) {
 	// Hand-picked, ordered list (the Case Studies picker) — same idea as Work
@@ -456,6 +455,31 @@ if ( 'auto' === $mode ) {
 			$posts = array_slice( $posts, 0, $count );
 		}
 	}
+}
+
+// Top up: when a grid or auto block finds fewer matches than its Count (including
+// none), fill the remaining slots with the latest case studies, skipping any
+// already shown — and, on a case study's own page, that case study. Curated lists
+// show exactly what was picked, so they're never topped up.
+if ( 'curated' !== $mode && count( $posts ) < $count ) {
+	$exclude = $posts;
+	if ( is_singular( 'case_study' ) ) {
+		$exclude[] = get_the_ID();
+	}
+	$top_up = new WP_Query(
+		array(
+			'post_type'      => 'case_study',
+			'post_status'    => 'publish',
+			'posts_per_page' => $count - count( $posts ),
+			'orderby'        => 'date',
+			'order'          => 'DESC',
+			'post__not_in'   => $exclude,
+			'fields'         => 'ids',
+			'no_found_rows'  => true,
+		)
+	);
+	$posts = array_merge( $posts, $top_up->posts );
+	wp_reset_postdata();
 }
 
 if ( empty( $posts ) ) {
