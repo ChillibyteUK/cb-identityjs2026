@@ -5953,7 +5953,7 @@ select {
 	}
 
 	.service-grid__body--align-end {
-		text-align: right;
+		text-align: end; /* logical: this body sits beside its image, so the text must hug it in both directions */
 		align-items: flex-end;
 	}
 }
