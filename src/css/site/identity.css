@@ -305,6 +305,11 @@ html {
 .footer__logo-clip {
 	overflow: hidden;
 	display: block;
+	/* The 200%-wide inner block overflows toward the inline-end side. Under
+	   RTL that's the left, which runs the slide in reverse (and the wordmark
+	   is artwork, not text, so it never mirrors) — pin LTR so the reveal is
+	   identical in both directions. */
+	direction: ltr;
 	width: 100%;
 	/* Settled state is inner at 200% width (JS), so displayed height is 2x
 	   the SVG's own viewBox ratio (1332.6 x 81.83) relative to clip's own
