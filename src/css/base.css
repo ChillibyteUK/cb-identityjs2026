@@ -206,3 +206,17 @@ ol {
 	font-size: var(--fs-h3, 1.5em);
 	font-weight: var(--fw-heading, 600);
 }
+
+/*
+ * Directional arrows point right in the artwork (img/arrow-*.svg, and the
+ * inline arrow-n600 icon in Child Page Nav). Mirror them under RTL so they
+ * point the way the reading direction goes. Matching the image path keeps
+ * this to one rule for every block (Case Study Grid, Work Index, Push Panel,
+ * Brand Grid, File List, Content Builder, Page Header Alt, news templates)
+ * rather than a per-block override. None of these arrows carries its own
+ * transform, so scaleX(-1) can't clash with an existing one.
+ */
+[dir="rtl"] img[src*="/img/arrow-"],
+[dir="rtl"] .child-page-nav__item-icon svg {
+	transform: scaleX(-1);
+}
