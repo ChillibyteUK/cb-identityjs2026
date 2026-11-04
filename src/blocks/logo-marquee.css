@@ -60,3 +60,23 @@
 		transform: translate3d(-50%, 0, 0);
 	}
 }
+
+/*
+ * RTL: the track is anchored to the container's right edge and overflows
+ * to the left, so the LTR keyframes (0 -> -50%) would slide it off the
+ * visible window and leave it empty. Run the mirror image instead (0 ->
+ * +50%): logos travel left-to-right, the reverse of LTR, and the two
+ * identical groups still loop seamlessly.
+ */
+[dir="rtl"] .logo-marquee__track {
+	animation-name: logo-marquee-scroll-rtl;
+}
+
+@keyframes logo-marquee-scroll-rtl {
+	from {
+		transform: translate3d(0, 0, 0);
+	}
+	to {
+		transform: translate3d(50%, 0, 0);
+	}
+}
