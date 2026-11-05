@@ -132,11 +132,21 @@
 	      clip.style.setProperty('--logo-final-offset', '0px');
 	      return;
 	    }
+	    const vbX = svg.viewBox && svg.viewBox.baseVal ? svg.viewBox.baseVal.x : 0;
 	    const bbox = group.getBBox();
-	    const visibleSvgUnits = bbox.x + bbox.width;
+	    const barsX = bbox.x - vbX; // bbox is in user space, which starts at the viewBox origin
 	    const svgRect = svg.getBoundingClientRect();
 	    const svgDisplayWidth = svgRect.width || 0;
-	    const offsetPx = visibleSvgUnits / viewBoxWidth * svgDisplayWidth;
+	    // The bars slide out past whichever edge of the logo they sit on: the
+	    // left for the English logo (offset negative), the right for the
+	    // Arabic one (offset positive). Decided from the artwork itself, not
+	    // the page direction.
+	    if (barsX + bbox.width / 2 > viewBoxWidth / 2) {
+	      const offsetPx = (viewBoxWidth - barsX) / viewBoxWidth * svgDisplayWidth;
+	      clip.style.setProperty('--logo-final-offset', `${Math.ceil(offsetPx + 1)}px`);
+	      return;
+	    }
+	    const offsetPx = (barsX + bbox.width) / viewBoxWidth * svgDisplayWidth;
 	    const safeOffset = Math.ceil(offsetPx + 1);
 	    clip.style.setProperty('--logo-final-offset', `-${safeOffset}px`);
 	  }
