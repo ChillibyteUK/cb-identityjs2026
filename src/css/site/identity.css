@@ -331,6 +331,20 @@ html {
 	height: auto;
 }
 
+/*
+ * Arabic footer logo (template-parts/logo-footer-ar.php): the mirror of the
+ * English reveal. Its viewBox is 1496.1 x 128.67 (two halves of 748.05), so
+ * the clip's displayed size is one half: 748.05 / 128.67. It rests showing
+ * the RIGHT half (the bars) and the JS slides it to 0 to show the wordmark.
+ */
+.footer__logo-clip--ar {
+	aspect-ratio: 748.05 / 128.67;
+}
+
+.footer__logo-inner--ar {
+	transform: translateX(-50%);
+}
+
 .footer__colophon {
 	color: var(--col-text-muted);
 	font-size: var(--fs-small);

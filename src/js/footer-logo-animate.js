@@ -13,6 +13,9 @@ export function initFooterLogoAnimate() {
 	const svg = document.getElementById('footer-logo-svg');
 	if (!clip || !inner || !svg) return;
 
+	// Arabic footer logo (see .footer__logo-inner--ar): rests on the bars at
+	// the far end and slides the other way, the mirror of the English reveal.
+	const reverse = inner.dataset.reveal === 'reverse';
 	const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 	let triggered = false;
 
@@ -25,7 +28,7 @@ export function initFooterLogoAnimate() {
 		// the cause of a visible 100%->200% snap; this function now only
 		// ever changes `transform`.
 		if (prefersReduced) {
-			inner.style.transform = 'translateX(-50%)';
+			inner.style.transform = reverse ? 'translateX(0)' : 'translateX(-50%)';
 			return;
 		}
 		const animDuration = 1.6;
@@ -33,12 +36,18 @@ export function initFooterLogoAnimate() {
 		const cssFallback = () => {
 			inner.style.transition = `transform ${animDuration}s cubic-bezier(.22,.9,.32,1)`;
 			requestAnimationFrame(() => {
-				inner.style.transform = 'translateX(-50%)';
+				inner.style.transform = reverse ? 'translateX(0)' : 'translateX(-50%)';
 			});
 		};
 		if (window.gsap && typeof window.gsap.to === 'function') {
 			try {
-				window.gsap.to(inner, { xPercent: -50, duration: animDuration, ease: gsapEase });
+				if (reverse) {
+					// The CSS rest state is translateX(-50%); start GSAP from the
+					// same place explicitly so it doesn't add to it.
+					window.gsap.fromTo(inner, { x: 0, xPercent: -50 }, { x: 0, xPercent: 0, duration: animDuration, ease: gsapEase });
+				} else {
+					window.gsap.to(inner, { xPercent: -50, duration: animDuration, ease: gsapEase });
+				}
 			} catch (error) {
 				// Same GSAP-internal-throw failure mode as the other animation
 				// scripts here — fall back to the plain CSS-transition path
