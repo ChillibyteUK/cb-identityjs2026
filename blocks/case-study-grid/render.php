@@ -22,6 +22,40 @@
 
 defined( 'ABSPATH' ) || exit;
 
+if ( ! function_exists( 'cb_identityjs2026_case_study_grid_term_ids' ) ) {
+	/**
+	 * Resolve saved term IDs to the current Polylang language.
+	 *
+	 * pll_get_term() returns the term itself when it's already in the current
+	 * language and its translation otherwise; an ID with no translation is
+	 * kept as it is. Without Polylang (or outside a language context) the IDs
+	 * come back unchanged, so single-language sites behave exactly as before.
+	 *
+	 * @param array $ids Saved term IDs.
+	 * @return int[]
+	 */
+	function cb_identityjs2026_case_study_grid_term_ids( $ids ) {
+		$ids = array_filter( array_map( 'absint', (array) $ids ) );
+
+		if ( ! $ids || ! function_exists( 'pll_get_term' ) || ! function_exists( 'pll_current_language' ) ) {
+			return $ids;
+		}
+
+		$lang = pll_current_language();
+		if ( ! $lang ) {
+			return $ids;
+		}
+
+		$resolved = array();
+		foreach ( $ids as $id ) {
+			$translated = pll_get_term( $id, $lang );
+			$resolved[] = $translated ? (int) $translated : $id;
+		}
+
+		return array_values( array_unique( $resolved ) );
+	}
+}
+
 $mode = $attributes['mode'] ?? 'grid';
 
 /**
@@ -253,9 +287,12 @@ if ( 'auto' === $mode ) {
 		$query_args['post__not_in'] = array( get_the_ID() );
 	}
 
-	$selected_services = array_filter( array_map( 'absint', $attributes['selectedServices'] ?? array() ) );
-	$selected_themes   = array_filter( array_map( 'absint', $attributes['selectedThemes'] ?? array() ) );
-	$selected_regions  = array_filter( array_map( 'absint', $attributes['selectedRegions'] ?? array() ) );
+	// Saved term IDs may be in another Polylang language (an Arabic copy of a
+	// page still holds the English IDs it was duplicated with); resolve them
+	// to the current language's terms before querying.
+	$selected_services = cb_identityjs2026_case_study_grid_term_ids( $attributes['selectedServices'] ?? array() );
+	$selected_themes   = cb_identityjs2026_case_study_grid_term_ids( $attributes['selectedThemes'] ?? array() );
+	$selected_regions  = cb_identityjs2026_case_study_grid_term_ids( $attributes['selectedRegions'] ?? array() );
 
 	// Real production algorithm (cb-identitygroup2026/blocks/cb-related-
 	// work.php), confirmed by direct comparison against

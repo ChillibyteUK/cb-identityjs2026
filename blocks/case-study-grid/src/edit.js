@@ -36,14 +36,44 @@ const TAXONOMY_OPTIONS = [
 	{ label: __( 'Region', 'cb-identityjs2026' ), value: 'region' },
 ];
 
+/**
+ * Polylang gives every term a `translations` map ({ en: 12, ar: 171 }). A
+ * saved selection can hold any member of that group — e.g. an Arabic copy of
+ * a page still holding the English term IDs it was duplicated with — so a
+ * checkbox is ticked if the term OR any of its translations is selected.
+ * Without Polylang `translations` is undefined and this is just the term id.
+ *
+ * @param {Object} term Term record with id and optional translations.
+ * @return {number[]} Every term id in this term's translation group.
+ */
+function termGroupIds( term ) {
+	return [ term.id, ...Object.values( term.translations || {} ) ];
+}
+
+function isTermSelected( selected, term ) {
+	const group = termGroupIds( term );
+	return selected.some( ( id ) => group.includes( id ) );
+}
+
+/**
+ * Tick/untick a term: drop every id in its translation group, then add the
+ * term's own id when ticking — so the saved value ends up in the language of
+ * the term list being shown (the page's own language).
+ */
+function toggledSelection( selected, term ) {
+	const group = termGroupIds( term );
+	const without = selected.filter( ( id ) => ! group.includes( id ) );
+	return isTermSelected( selected, term ) ? without : [ ...without, term.id ];
+}
+
 export default function Edit( { attributes, setAttributes, clientId } ) {
 	const { mode, heroCaseStudy, count, taxonomyFilter, selectedServices, selectedThemes, selectedRegions, caseStudies } = attributes;
 	const blockProps = useBlockProps( { className: 'container cb-identityjs2026-editor-block' } );
 
 	const { serviceTerms, hasResolvedServices, themeTerms, hasResolvedThemes, regionTerms, hasResolvedRegions } = useSelect( ( select ) => {
-		const serviceQuery = { per_page: -1, orderby: 'name', order: 'asc', _fields: [ 'id', 'name' ] };
-		const themeQuery = { per_page: -1, orderby: 'name', order: 'asc', _fields: [ 'id', 'name' ] };
-		const regionQuery = { per_page: -1, orderby: 'name', order: 'asc', _fields: [ 'id', 'name' ] };
+		const serviceQuery = { per_page: -1, orderby: 'name', order: 'asc', _fields: [ 'id', 'name', 'translations' ] };
+		const themeQuery = { per_page: -1, orderby: 'name', order: 'asc', _fields: [ 'id', 'name', 'translations' ] };
+		const regionQuery = { per_page: -1, orderby: 'name', order: 'asc', _fields: [ 'id', 'name', 'translations' ] };
 		return {
 			regionTerms: select( coreStore ).getEntityRecords( 'taxonomy', 'region', regionQuery ),
 			hasResolvedRegions: select( coreStore ).hasFinishedResolution( 'getEntityRecords', [ 'taxonomy', 'region', regionQuery ] ),
@@ -54,25 +84,16 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 		};
 	}, [] );
 
-	function toggleService( id ) {
-		const next = selectedServices.includes( id )
-			? selectedServices.filter( ( existing ) => existing !== id )
-			: [ ...selectedServices, id ];
-		setAttributes( { selectedServices: next } );
+	function toggleService( term ) {
+		setAttributes( { selectedServices: toggledSelection( selectedServices, term ) } );
 	}
 
-	function toggleTheme( id ) {
-		const next = selectedThemes.includes( id )
-			? selectedThemes.filter( ( existing ) => existing !== id )
-			: [ ...selectedThemes, id ];
-		setAttributes( { selectedThemes: next } );
+	function toggleTheme( term ) {
+		setAttributes( { selectedThemes: toggledSelection( selectedThemes, term ) } );
 	}
 
-	function toggleRegion( id ) {
-		const next = selectedRegions.includes( id )
-			? selectedRegions.filter( ( existing ) => existing !== id )
-			: [ ...selectedRegions, id ];
-		setAttributes( { selectedRegions: next } );
+	function toggleRegion( term ) {
+		setAttributes( { selectedRegions: toggledSelection( selectedRegions, term ) } );
 	}
 
 	return (
@@ -155,8 +176,8 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 									<CheckboxControl
 										key={ term.id }
 										label={ term.name }
-										checked={ selectedServices.includes( term.id ) }
-										onChange={ () => toggleService( term.id ) }
+										checked={ isTermSelected( selectedServices, term ) }
+										onChange={ () => toggleService( term ) }
 									/>
 								) ) }
 							</div>
@@ -181,8 +202,8 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 									<CheckboxControl
 										key={ term.id }
 										label={ term.name }
-										checked={ selectedThemes.includes( term.id ) }
-										onChange={ () => toggleTheme( term.id ) }
+										checked={ isTermSelected( selectedThemes, term ) }
+										onChange={ () => toggleTheme( term ) }
 									/>
 								) ) }
 							</div>
@@ -207,8 +228,8 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 									<CheckboxControl
 										key={ term.id }
 										label={ term.name }
-										checked={ selectedRegions.includes( term.id ) }
-										onChange={ () => toggleRegion( term.id ) }
+										checked={ isTermSelected( selectedRegions, term ) }
+										onChange={ () => toggleRegion( term ) }
 									/>
 								) ) }
 							</div>
