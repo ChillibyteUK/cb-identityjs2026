@@ -155,8 +155,8 @@ while ( have_posts() ) {
 
 		<?php
 		$cta_setting = 'press' === $category_slug
-			? cb_identityjs2026_get_setting( 'cta_category_press' )
-			: cb_identityjs2026_get_setting( 'cta_category_insights' );
+			? cb_identityjs2026_get_page_cta_setting( 'cta_category_press' )
+			: cb_identityjs2026_get_page_cta_setting( 'cta_category_insights' );
 
 		echo render_block( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- render_block() output is already escaped by the block's own render.php.
 			array(

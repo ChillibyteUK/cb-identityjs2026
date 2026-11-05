@@ -77,7 +77,7 @@ get_header( cb_identityjs2026_get_site() );
 	echo render_block( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- render_block() output is already escaped by the block's own render.php.
 		array(
 			'blockName' => 'cb-identityjs2026/cta',
-			'attrs'     => array( 'ctaChoice' => cb_identityjs2026_get_setting( 'cta_index' ) ),
+			'attrs'     => array( 'ctaChoice' => cb_identityjs2026_get_page_cta_setting( 'cta_index' ) ),
 		)
 	);
 	?>

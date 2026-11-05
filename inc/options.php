@@ -215,6 +215,12 @@ function cb_identityjs2026_register_settings_page() {
 			'section'     => 'cb_identityjs2026_page_ctas',
 			'description' => 'CTA shown at the bottom of category-insights.php.',
 		),
+		'cta_category_news'         => array(
+			'label'       => 'News Archive',
+			'type'        => 'cta_select',
+			'section'     => 'cb_identityjs2026_page_ctas',
+			'description' => 'CTA shown at the bottom of category-news.php.',
+		),
 		'cta_category_press'        => array(
 			'label'       => 'Press Archive',
 			'type'        => 'cta_select',
@@ -239,10 +245,30 @@ function cb_identityjs2026_register_settings_page() {
 		),
 	);
 
-	// Same identity-only gate as the section itself above — these three
-	// would otherwise register against a section that was never added.
+	// One extra dropdown per non-default Polylang language for each page CTA
+	// (key suffix `_{lang}`, e.g. `cta_index_ar`). Empty means "use the base
+	// setting" — see cb_identityjs2026_get_page_cta_setting().
+	$page_cta_keys = array( 'cta_index', 'cta_category_insights', 'cta_category_news', 'cta_category_press' );
+	foreach ( cb_identityjs2026_secondary_languages() as $lang => $lang_name ) {
+		foreach ( $page_cta_keys as $page_cta_key ) {
+			$fields[ $page_cta_key . '_' . $lang ] = array_merge(
+				$fields[ $page_cta_key ],
+				array(
+					'label'       => $fields[ $page_cta_key ]['label'] . ' (' . $lang_name . ')',
+					'description' => 'Used instead of the setting above on ' . $lang_name . ' pages. Leave on Default to use the setting above.',
+				)
+			);
+		}
+	}
+
+	// Same identity-only gate as the section itself above — these would
+	// otherwise register against a section that was never added.
 	if ( 'identity' !== cb_identityjs2026_get_site() ) {
-		unset( $fields['cta_index'], $fields['cta_category_insights'], $fields['cta_category_press'] );
+		foreach ( array_keys( $fields ) as $field_key ) {
+			if ( 0 === strpos( $field_key, 'cta_index' ) || 0 === strpos( $field_key, 'cta_category_' ) ) {
+				unset( $fields[ $field_key ] );
+			}
+		}
 	}
 
 	foreach ( $fields as $key => $field ) {
@@ -285,6 +311,59 @@ function cb_identityjs2026_get_repeater_setting( $key ) {
  */
 function cb_identityjs2026_get_gallery_setting( $key ) {
 	return array_filter( array_map( 'absint', explode( ',', cb_identityjs2026_get_setting( $key ) ) ) );
+}
+
+/**
+ * Polylang languages other than the default one, as slug => name.
+ *
+ * Empty when Polylang isn't active (or has a single language), so nothing
+ * language-specific is registered on sites that don't need it.
+ *
+ * @return string[]
+ */
+function cb_identityjs2026_secondary_languages() {
+	if ( ! function_exists( 'pll_languages_list' ) || ! function_exists( 'pll_default_language' ) ) {
+		return array();
+	}
+
+	$slugs   = pll_languages_list( array( 'fields' => 'slug' ) );
+	$names   = pll_languages_list( array( 'fields' => 'name' ) );
+	$default = pll_default_language();
+	$out     = array();
+
+	foreach ( $slugs as $i => $slug ) {
+		if ( $slug !== $default ) {
+			$out[ $slug ] = $names[ $i ] ?? $slug;
+		}
+	}
+
+	return $out;
+}
+
+/**
+ * Read one of the Page CTAs settings (cta_index, cta_category_*) for the
+ * current language.
+ *
+ * On a non-default Polylang language this returns the `{key}_{lang}` setting
+ * when it's been set, and otherwise falls back to the base `{key}` setting —
+ * so English, single-language sites and any language without its own choice
+ * behave exactly as before.
+ *
+ * @param string $key Base setting key, e.g. 'cta_index'.
+ * @return string CTA ID ('' = use the first CTA).
+ */
+function cb_identityjs2026_get_page_cta_setting( $key ) {
+	if ( function_exists( 'pll_current_language' ) && function_exists( 'pll_default_language' ) ) {
+		$lang = pll_current_language();
+		if ( $lang && pll_default_language() !== $lang ) {
+			$value = cb_identityjs2026_get_setting( $key . '_' . $lang );
+			if ( '' !== $value ) {
+				return $value;
+			}
+		}
+	}
+
+	return cb_identityjs2026_get_setting( $key );
 }
 
 /**
